@@ -744,8 +744,8 @@ def subhojit(request):
 
 def name_and_logo_modifier_for_easy_access(request):
     # Ensure the user has access first
-    if not request.session.get('session'):
-        return HttpResponse("Sorry, you can't afford it...")
+    # if not request.session.get('session'):
+    #     return HttpResponse("Sorry, you can't afford it...")
 
     if request.method == 'POST':
         website_name = request.POST.get('website_name')
