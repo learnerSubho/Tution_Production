@@ -362,13 +362,19 @@ def PromoteStudent(request):
 def promote(request,id):
     if request.method == 'POST':
         student = models.Student.objects.get(student_id = id)
+        fees_obj = student.fees.all().last()
+        year_outstanding = fees_obj.due_months[2]+fees_obj.due_months[3]
+        print(year_outstanding)
         classes = ['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII']
         try:
             next_class = classes[classes.index(student.classname.classname)+1]
-            student.classname = models.Classname.objects.get(classname = next_class)
-            student.save()
         except Exception as e:
             return JsonResponse({'status':'Error','message':str(e)})
+        models.Batch.objects.get_or_create(classname = models.Classname.objects.get(classname=next_class),batch_name=student.batch.batch_name)
+        student.classname = models.Classname.objects.get(classname=next_class)
+        student.batch = models.Batch.objects.get(classname=student.classname,batch_name=student.batch.batch_name)
+        student.year_outstanding = year_outstanding
+        student.save()
         return JsonResponse({'status':'success','message':f'Student {student.studentname} promoted to next class {student.classname.classname}'})
 
 # Start of Fees Management
