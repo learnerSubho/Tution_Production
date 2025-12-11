@@ -261,6 +261,186 @@
             background: #fed7d7;
         }
 
+        /* Floating Notification Modal Styles */
+        .notification-toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            border-radius: 12px;
+            padding: 16px 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 300px;
+            max-width: 400px;
+            z-index: 9999;
+            transform: translateX(500px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .notification-toast.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .notification-toast.success {
+            border-left: 4px solid #48bb78;
+        }
+
+        .notification-toast.error {
+            border-left: 4px solid #f56565;
+        }
+
+        .notification-toast.warning {
+            border-left: 4px solid #ed8936;
+        }
+
+        .notification-icon {
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-title {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 4px;
+            font-size: 14px;
+        }
+
+        .notification-message {
+            color: #718096;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .notification-close {
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: #a0aec0;
+            cursor: pointer;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .notification-close:hover {
+            background: #edf2f7;
+            color: #2d3748;
+        }
+
+        /* Confirmation Modal Styles */
+        .confirm-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(2px);
+            z-index: 9998;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .confirm-modal.show {
+            display: flex;
+        }
+
+        .confirm-modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            transform: scale(0.9);
+            opacity: 0;
+            transition: all 0.2s ease;
+        }
+
+        .confirm-modal.show .confirm-modal-content {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .confirm-modal-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .confirm-modal-icon {
+            font-size: 28px;
+        }
+
+        .confirm-modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .confirm-modal-message {
+            color: #718096;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .confirm-modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        .confirm-modal-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .confirm-modal-btn.cancel {
+            background: #e2e8f0;
+            color: #2d3748;
+        }
+
+        .confirm-modal-btn.cancel:hover {
+            background: #cbd5e0;
+        }
+
+        .confirm-modal-btn.confirm {
+            background: #667eea;
+            color: white;
+        }
+
+        .confirm-modal-btn.confirm:hover {
+            background: #5a67d8;
+        }
+
+        .confirm-modal-btn.danger {
+            background: #f56565;
+            color: white;
+        }
+
+        .confirm-modal-btn.danger:hover {
+            background: #e53e3e;
+        }
+
         @media (max-width: 768px) {
             .form-row {
                 grid-template-columns: 1fr;
@@ -272,6 +452,12 @@
 
             .card {
                 padding: 24px;
+            }
+
+            .notification-toast {
+                right: 10px;
+                left: 10px;
+                min-width: auto;
             }
         }
     </style>
@@ -290,92 +476,91 @@
             <h2 class="card-title">Add New Batch</h2>
             <p class="card-subtitle">Assign batch names to your classes for better organization</p>
 
-            
-                <form id="batchid" method="post" action="{% url 'AddBatchs' %}" onsubmit="AddBatch(this,event)">
-                    {% csrf_token %}
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="classSelect">Select Class <span class="required">*</span></label>
-                            <select id="classSelect" name='className' required>
-                                <option value="">Choose a class</option>
-                                {% for class in classes %}
-                                <option value="{{class.class_id}}">{{class.classname}}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="batchName">Batch Name <span class="required">*</span></label>
-                            <input type="text" id="batchName" name='batchName' placeholder="e.g., Morning Batch A"
-                                required>
-                        </div>
+            <form id="batchid" method="post" action="{% url 'AddBatchs' %}" onsubmit="AddBatch(this,event)">
+                {% csrf_token %}
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="classSelect">Select Class <span class="required">*</span></label>
+                        <select id="classSelect" name='className' required>
+                            <option value="">Choose a class</option>
+                            {% for class in classes %}
+                            <option value="{{class.class_id}}">{{class.classname}}</option>
+                            {% endfor %}
+                        </select>
                     </div>
 
-                    <div class="button-group">
-                        <button type="button" class="btn btn-reset" onclick="resetForm()">Reset Form</button>
-                        <button type="submit" class="btn btn-primary">Add Batch</button>
-                    </div>
-                </form>
-
-                <div class="batches-section">
-                    <h3 class="section-title">Added Batches</h3>
-                    <p class="section-subtitle">List of all batches with their assigned classes</p>
-
-                    <div class="table-container">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>S.No.</th>
-                                    <th>Class Name</th>
-                                    <th>Batch Name</th>
-                                    <th>Edit</th>
-                                    <th>Delete</th>
-                                </tr>
-                            </thead>
-                            <tbody id="batchTableBody">
-                                {% if count > 0 %}
-                                {% for batch in batchs %}
-                                <tr>
-                                    <td>{{forloop.counter}}</td>
-                                    <td>{{batch.classname.classname}}</td>
-                                    <td>{{batch.batch_name}}</td>
-                                    <td>
-                                        <button data-url="{% url 'EditBatch' batch.batch_id %}"
-                                            style="background-color: #4CAF50; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px; display: inline-flex; align-items: center; gap: 5px; transition: background-color 0.3s;"
-                                            onmouseover="this.style.backgroundColor='#45a049'"
-                                            onmouseout="this.style.backgroundColor='#4CAF50'" onclick="openModal(this)">
-                                            📝
-                                        </button>
-                                    </td>
-                                    <td>
-                                        <button data-url="{% url 'DeleteBatch' batch.batch_id %}"
-                                            style="background-color: #f73d04ff; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px; display: inline-flex; align-items: center; gap: 5px; transition: background-color 0.3s;"
-                                            onmouseover="this.style.backgroundColor='#df3e12ff'"
-                                            onmouseout="this.style.backgroundColor='#d50f0fff'"
-                                            onclick="DeleteBatch(this)">
-                                            🗑️
-                                        </button>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                                {% else %}
-                                <tr>
-                                    <td colspan="5">
-                                        <div class="empty-state">
-                                            <div class="empty-icon">📚</div>
-                                            <p class="empty-text">No batches added yet. Add your first batch above!</p>
-                                        </div>
-                                    </td>
-                                </tr>
-                                {% endif %}
-                            </tbody>
-                        </table>
+                    <div class="form-group">
+                        <label for="batchName">Batch Name <span class="required">*</span></label>
+                        <input type="text" id="batchName" name='batchName' placeholder="e.g., Morning Batch A"
+                            required>
                     </div>
                 </div>
+
+                <div class="button-group">
+                    <button type="button" class="btn btn-reset" onclick="resetForm()">Reset Form</button>
+                    <button type="submit" class="btn btn-primary">Add Batch</button>
+                </div>
+            </form>
+
+            <div class="batches-section">
+                <h3 class="section-title">Added Batches</h3>
+                <p class="section-subtitle">List of all batches with their assigned classes</p>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>S.No.</th>
+                                <th>Class Name</th>
+                                <th>Batch Name</th>
+                                <th>Edit</th>
+                                <th>Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody id="batchTableBody">
+                            {% if count > 0 %}
+                            {% for batch in batchs %}
+                            <tr>
+                                <td>{{forloop.counter}}</td>
+                                <td>{{batch.classname.classname}}</td>
+                                <td>{{batch.batch_name}}</td>
+                                <td>
+                                    <button data-url="{% url 'EditBatch' batch.batch_id %}"
+                                        style="background-color: #4CAF50; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px; display: inline-flex; align-items: center; gap: 5px; transition: background-color 0.3s;"
+                                        onmouseover="this.style.backgroundColor='#45a049'"
+                                        onmouseout="this.style.backgroundColor='#4CAF50'" onclick="openModal(this)">
+                                        📝
+                                    </button>
+                                </td>
+                                <td>
+                                    <button data-url="{% url 'DeleteBatch' batch.batch_id %}"
+                                        style="background-color: #f73d04ff; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px; display: inline-flex; align-items: center; gap: 5px; transition: background-color 0.3s;"
+                                        onmouseover="this.style.backgroundColor='#df3e12ff'"
+                                        onmouseout="this.style.backgroundColor='#d50f0fff'"
+                                        onclick="DeleteBatch(this)">
+                                        🗑️
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            {% else %}
+                            <tr>
+                                <td colspan="5">
+                                    <div class="empty-state">
+                                        <div class="empty-icon">📚</div>
+                                        <p class="empty-text">No batches added yet. Add your first batch above!</p>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Add this modal just above the closing </body> tag -->
+    <!-- Edit Modal -->
     <div id="editModal" style="
     display: none;
     position: fixed;
@@ -433,8 +618,101 @@
         </div>
     </div>
 
+    <!-- Confirmation Modal -->
+    <div id="confirmModal" class="confirm-modal">
+        <div class="confirm-modal-content">
+            <div class="confirm-modal-header">
+                <span class="confirm-modal-icon" id="confirmIcon">⚠️</span>
+                <h3 class="confirm-modal-title" id="confirmTitle">Confirm Action</h3>
+            </div>
+            <p class="confirm-modal-message" id="confirmMessage">Are you sure you want to proceed?</p>
+            <div class="confirm-modal-actions">
+                <button class="confirm-modal-btn cancel" onclick="closeConfirmModal()">Cancel</button>
+                <button class="confirm-modal-btn confirm" id="confirmBtn" onclick="confirmAction()">Confirm</button>
+            </div>
+        </div>
+    </div>
 
     <script>
+        // Notification System
+        function showNotification(message, type = 'success') {
+            const existingToast = document.querySelector('.notification-toast');
+            if (existingToast) {
+                existingToast.remove();
+            }
+
+            const icons = {
+                success: '✓',
+                error: '✕',
+                warning: '⚠'
+            };
+
+            const titles = {
+                success: 'Success',
+                error: 'Error',
+                warning: 'Warning'
+            };
+
+            const toast = document.createElement('div');
+            toast.className = `notification-toast ${type}`;
+            toast.innerHTML = `
+                <span class="notification-icon">${icons[type]}</span>
+                <div class="notification-content">
+                    <div class="notification-title">${titles[type]}</div>
+                    <div class="notification-message">${message}</div>
+                </div>
+                <button class="notification-close" onclick="this.parentElement.remove()">×</button>
+            `;
+
+            document.body.appendChild(toast);
+
+            setTimeout(() => toast.classList.add('show'), 10);
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 5000);
+        }
+
+        // Confirmation Modal System
+        let confirmCallback = null;
+
+        function showConfirmModal(title, message, onConfirm, icon = '⚠️', isDanger = false) {
+            return new Promise((resolve) => {
+                const modal = document.getElementById('confirmModal');
+                const confirmBtn = document.getElementById('confirmBtn');
+                
+                document.getElementById('confirmTitle').textContent = title;
+                document.getElementById('confirmMessage').textContent = message;
+                document.getElementById('confirmIcon').textContent = icon;
+                
+                if (isDanger) {
+                    confirmBtn.className = 'confirm-modal-btn danger';
+                } else {
+                    confirmBtn.className = 'confirm-modal-btn confirm';
+                }
+                
+                confirmCallback = () => {
+                    resolve(true);
+                    closeConfirmModal();
+                };
+                
+                modal.classList.add('show');
+            });
+        }
+
+        function closeConfirmModal() {
+            const modal = document.getElementById('confirmModal');
+            modal.classList.remove('show');
+            confirmCallback = null;
+        }
+
+        function confirmAction() {
+            if (confirmCallback) {
+                confirmCallback();
+            }
+        }
+
         function goback() {
             if (window.history.length > 1) {
                 window.history.back();
@@ -442,12 +720,14 @@
                 window.location.href = '/teacher/dashboard/';
             }
         }
+
         function AddBatch(form, e) {
-            e.preventDefault()
-            const formdata = new FormData(form)
-            const submitbtn = document.querySelector('button[type="submit"]')
-            submitbtn.disabled = true
-            submitbtn.innerText = 'Adding...'
+            e.preventDefault();
+            const formdata = new FormData(form);
+            const submitbtn = document.querySelector('button[type="submit"]');
+            submitbtn.disabled = true;
+            submitbtn.innerText = 'Adding...';
+
             fetch(form.action, {
                 method: 'POST',
                 body: formdata,
@@ -458,26 +738,34 @@
                 .then(res => res.json())
                 .then(data => {
                     if (data.status == 'success') {
-                        alert(data.message)
-                        form.reset()
-                        window.location.reload()
-
-                    }
-                    else {
-                        alert(data.message)
+                        showNotification(data.message, 'success');
+                        form.reset();
+                        setTimeout(() => window.location.reload(), 1500);
+                    } else {
+                        showNotification(data.message, 'error');
+                        submitbtn.disabled = false;
+                        submitbtn.innerText = 'Add Batch';
                     }
                 })
                 .catch(err => {
-                    alert(err)
-                })
+                    showNotification('An error occurred. Please try again.', 'error');
+                    submitbtn.disabled = false;
+                    submitbtn.innerText = 'Add Batch';
+                });
         }
-
-
 
         const editModal = document.getElementById('editModal');
 
-        function openModal(button) {
-            if (!confirm("Are you sure you want to edit this batch information?")) return;
+        async function openModal(button) {
+            const confirmed = await showConfirmModal(
+                'Edit Batch',
+                'Are you sure you want to edit this batch information?',
+                null,
+                '📝',
+                false
+            );
+
+            if (!confirmed) return;
 
             const row = button.closest("tr");
             const className = row.children[1].innerText.trim();
@@ -485,13 +773,10 @@
             const editUrl = button.dataset.url;
             const form = document.querySelector('#editBatchForm');
 
-            // Set form action to edit URL
             form.action = editUrl;
-            alert(form.action)
-            // Fill modal fields with existing data
+            
             document.getElementById("editBatchName").value = batchName;
 
-            // Select correct class in dropdown
             const classSelect = document.getElementById("editClassSelect");
             for (let option of classSelect.options) {
                 if (option.text === className) {
@@ -500,52 +785,74 @@
                 }
             }
 
-            // Open modal
             editModal.style.display = "flex";
-            document.body.style.overflow = "hidden"; // Prevent background scrolling
+            document.body.style.overflow = "hidden";
         }
 
         function closeModal() {
             editModal.style.display = "none";
-            document.body.style.overflow = "auto"; // Restore scrolling
+            document.body.style.overflow = "auto";
         }
 
-        function updateBatch(form,e){
-            e.preventDefault()
-            const formdata = new FormData(form)
-            const url = form.action
-            const submitbtn = form.querySelector('button[type="submit"]')
-            submitbtn.disabled = true
-            submitbtn.innerText = 'Saving Changes...'
+        function updateBatch(form, e) {
+            e.preventDefault();
+            const formdata = new FormData(form);
+            const url = form.action;
+            const submitbtn = form.querySelector('button[type="submit"]');
+            submitbtn.disabled = true;
+            submitbtn.innerText = 'Saving Changes...';
 
-            fetch(url,{
-                method:'POST',
-                body:formdata,
-                headers:{
-                    'X-CSRFToken':formdata.get('csrfmiddlewaretoken')
+            fetch(url, {
+                method: 'POST',
+                body: formdata,
+                headers: {
+                    'X-CSRFToken': formdata.get('csrfmiddlewaretoken')
                 }
             })
-            .then( response => response.json())
-            .then(data => {
-                if(data.status == 'success'){
-                    alert(data.message)
-                    window.location.reload()
-                }
-                else{
-                    alert(data.message)
-                }
-            })
-            .catch(err => {
-                alert(err)
-            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status == 'success') {
+                        showNotification(data.message, 'success');
+                        setTimeout(() => window.location.reload(), 1500);
+                    } else {
+                        showNotification(data.message, 'error');
+                        submitbtn.disabled = false;
+                        submitbtn.innerText = 'Save Changes';
+                    }
+                })
+                .catch(err => {
+                    showNotification('An error occurred. Please try again.', 'error');
+                    submitbtn.disabled = false;
+                    submitbtn.innerText = 'Save Changes';
+                });
+        }
+
+        async function DeleteBatch(button) {
+            const url = button.dataset.url;
             
-        }
-        function DeleteBatch(button) {
-            const url = button.dataset.url
-            button.disabled = true
-            button.innerText = 'Deleting'
-            if (!confirm('Are You sure to delete this batch?')) return
-            if (!confirm('All data related to this batch and student will be premanently deleted?')) return
+            const firstConfirm = await showConfirmModal(
+                'Delete Batch',
+                'Are you sure you want to delete this batch?',
+                null,
+                '🗑️',
+                true
+            );
+
+            if (!firstConfirm) return;
+
+            const secondConfirm = await showConfirmModal(
+                'Final Confirmation',
+                'All data related to this batch and students will be permanently deleted. This action cannot be undone!',
+                null,
+                '⚠️',
+                true
+            );
+
+            if (!secondConfirm) return;
+
+            button.disabled = true;
+            button.innerText = 'Deleting...';
+
             fetch(url, {
                 method: 'POST',
                 headers: {
@@ -555,21 +862,24 @@
                 .then(res => res.json())
                 .then(data => {
                     if (data.status == 'success') {
-                        alert(data.message)
-                    }
-                    else {
-                        alert(data.message)
+                        showNotification(data.message, 'success');
+                        setTimeout(() => window.location.reload(), 1500);
+                    } else {
+                        showNotification(data.message, 'error');
+                        button.disabled = false;
+                        button.innerText = '🗑️';
                     }
                 })
                 .catch(err => {
-                    alert(err)
-                })
+                    showNotification('An error occurred. Please try again.', 'error');
+                    button.disabled = false;
+                    button.innerText = '🗑️';
+                });
         }
 
         function resetForm() {
-            document.querySelector('#batchid').reset()
+            document.querySelector('#batchid').reset();
         }
-
     </script>
 </body>
 
