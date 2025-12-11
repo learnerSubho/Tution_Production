@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finance Management - TuitionTeacher</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .header {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .logo {
+            background: #667eea;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-right: 15px;
+        }
+
+        .header h1 {
+            color: #2d3748;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .savings-card {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .savings-card h2 {
+            color: #718096;
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+
+        .savings-amount {
+            font-size: 48px;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .savings-amount.positive-change {
+            color: #48bb78;
+        }
+
+        .savings-amount.negative-change {
+            color: #f56565;
+        }
+
+        .savings-info {
+            color: #a0aec0;
+            font-size: 14px;
+        }
+
+        .sections-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .section {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .section-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            margin-right: 12px;
+        }
+
+        .income-icon {
+            background: #48bb78;
+            color: white;
+        }
+
+        .outcome-icon {
+            background: #f56565;
+            color: white;
+        }
+
+        .section h3 {
+            color: #2d3748;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            color: #4a5568;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 6px;
+        }
+
+        .input-group input,
+        .input-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+            font-family: inherit;
+        }
+
+        .input-group input:focus,
+        .input-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .input-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .add-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .income-btn {
+            background: #48bb78;
+            color: white;
+        }
+
+        .income-btn:hover {
+            background: #38a169;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(72, 187, 120, 0.4);
+        }
+
+        .outcome-btn {
+            background: #f56565;
+            color: white;
+        }
+
+        .outcome-btn:hover {
+            background: #e53e3e;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(245, 101, 101, 0.4);
+        }
+
+        .transactions {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .transactions-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .transactions h3 {
+            color: #2d3748;
+            font-size: 20px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .filters {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .filter-label {
+            font-size: 12px;
+            color: #718096;
+            font-weight: 500;
+        }
+
+        .filter-select {
+            padding: 8px 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #2d3748;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .filter-select:hover {
+            border-color: #cbd5e0;
+            transform: translateY(-2px);
+        }
+
+        .filter-select.active {
+            border-color: #667eea;
+            background: #edf2f7;
+        }
+
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .summary-card {
+            padding: 15px;
+            border-radius: 8px;
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .summary-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .summary-card-title {
+            font-size: 12px;
+            color: #718096;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .summary-card-amount {
+            font-size: 24px;
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        .summary-income {
+            background: #f0fff4;
+            border-color: #9ae6b4;
+        }
+
+        .summary-income .summary-card-amount {
+            color: #48bb78;
+        }
+
+        .summary-outcome {
+            background: #fff5f5;
+            border-color: #fc8181;
+        }
+
+        .summary-outcome .summary-card-amount {
+            color: #f56565;
+        }
+
+        .summary-net {
+            background: #edf2f7;
+            border-color: #cbd5e0;
+        }
+
+        .summary-net .summary-card-amount {
+            color: #667eea;
+        }
+
+        .transaction-list {
+            max-height: 400px;
+            overflow-y: auto;
+            transition: all 0.3s ease;
+        }
+
+        .transaction-item {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            transition: all 0.3s ease;
+            animation: slideIn 0.4s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .transaction-item:hover {
+            background: #f7fafc;
+        }
+
+        .transaction-item:last-child {
+            border-bottom: none;
+        }
+
+        .transaction-info {
+            flex: 1;
+        }
+
+        .transaction-type {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .income-type {
+            color: #48bb78;
+        }
+
+        .outcome-type {
+            color: #f56565;
+        }
+
+        .transaction-desc {
+            color: #2d3748;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .transaction-date {
+            color: #a0aec0;
+            font-size: 12px;
+        }
+
+        .transaction-amount {
+            font-size: 18px;
+            font-weight: 700;
+            white-space: nowrap;
+            margin-left: 15px;
+        }
+
+        .income-amount {
+            color: #48bb78;
+        }
+
+        .outcome-amount {
+            color: #f56565;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #a0aec0;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .sections-container {
+                grid-template-columns: 1fr;
+            }
+
+            .savings-amount {
+                font-size: 36px;
+            }
+
+            .summary-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .transactions-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .filters {
+                width: 100%;
+            }
+
+            .filter-group {
+                flex: 1;
+                min-width: 120px;
+            }
+
+            .filter-select {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">🎓</div>
+            <h1>TuitionTeacher</h1>
+        </div>
+
+        <div class="savings-card">
+            <h2>Total Savings</h2>
+            <div class="savings-amount">₹<span id="totalSavings">0</span></div>
+            <div class="savings-info">Your current balance</div>
+        </div>
+
+        <div class="sections-container">
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-icon income-icon">💰</div>
+                    <h3>Income</h3>
+                </div>
+                <form id="incomeForm">
+                    <div class="input-group">
+                        <label>Amount (₹) *</label>
+                        <input type="number" id="incomeAmount" required min="0" step="0.01" placeholder="Enter amount">
+                    </div>
+                    <div class="input-group">
+                        <label>Source/Description *</label>
+                        <textarea id="incomeDesc" required placeholder="e.g., Monthly tuition fees, Extra classes, etc."></textarea>
+                    </div>
+                    <button type="submit" class="add-btn income-btn">
+                        <span>➕</span>
+                        <span>Add Income</span>
+                    </button>
+                </form>
+            </div>
+
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-icon outcome-icon">💸</div>
+                    <h3>Outcome</h3>
+                </div>
+                <form id="outcomeForm">
+                    <div class="input-group">
+                        <label>Amount (₹) *</label>
+                        <input type="number" id="outcomeAmount" required min="0" step="0.01" placeholder="Enter amount">
+                    </div>
+                    <div class="input-group">
+                        <label>Purpose/Description *</label>
+                        <textarea id="outcomeDesc" required placeholder="e.g., Books purchase, Travel expenses, etc."></textarea>
+                    </div>
+                    <button type="submit" class="add-btn outcome-btn">
+                        <span>➖</span>
+                        <span>Add Expense</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="transactions">
+            <div class="transactions-header">
+                <h3>📋 Recent Transactions</h3>
+                <div class="filters">
+                    <div class="filter-group">
+                        <label class="filter-label">Type</label>
+                        <select id="typeFilter" class="filter-select">
+                            <option value="all">All</option>
+                            <option value="income">Income Only</option>
+                            <option value="outcome">Outcome Only</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Period</label>
+                        <select id="periodFilter" class="filter-select">
+                            <option value="all">All Time</option>
+                            <option value="today">Today</option>
+                            <option value="month">This Month</option>
+                            <option value="year">This Year</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="summary-cards" id="summaryCards">
+                <div class="summary-card summary-income">
+                    <div class="summary-card-title">Total Income</div>
+                    <div class="summary-card-amount">₹<span id="summaryIncome">0</span></div>
+                </div>
+                <div class="summary-card summary-outcome">
+                    <div class="summary-card-title">Total Outcome</div>
+                    <div class="summary-card-amount">₹<span id="summaryOutcome">0</span></div>
+                </div>
+                <div class="summary-card summary-net">
+                    <div class="summary-card-title">Net Balance</div>
+                    <div class="summary-card-amount">₹<span id="summaryNet">0</span></div>
+                </div>
+            </div>
+
+            <div class="transaction-list" id="transactionList">
+                <div class="empty-state">
+                    <div class="empty-state-icon">📭</div>
+                    <p>No transactions yet. Add your first income or expense above.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let totalSavings = 0;
+        let transactions = [];
+
+        function formatNumber(num) {
+            return num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        function formatDate(date) {
+            const options = { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+            return date.toLocaleDateString('en-IN', options);
+        }
+
+        function updateSavings() {
+            const savingsEl = document.getElementById('totalSavings');
+            savingsEl.style.transform = 'scale(1.2)';
+            savingsEl.style.transition = 'transform 0.3s ease';
+            
+            setTimeout(() => {
+                savingsEl.textContent = formatNumber(totalSavings);
+                savingsEl.style.transform = 'scale(1)';
+            }, 150);
+        }
+
+        function updateSavingsWithAnimation(type) {
+            const savingsEl = document.getElementById('totalSavings');
+            const parentEl = savingsEl.parentElement;
+            
+            // Add color change animation
+            parentEl.classList.remove('positive-change', 'negative-change');
+            parentEl.classList.add(type === 'income' ? 'positive-change' : 'negative-change');
+            
+            // Scale animation
+            savingsEl.style.transform = 'scale(1.3)';
+            
+            setTimeout(() => {
+                savingsEl.textContent = formatNumber(totalSavings);
+                savingsEl.style.transform = 'scale(1)';
+                
+                // Remove color class after animation
+                setTimeout(() => {
+                    parentEl.classList.remove('positive-change', 'negative-change');
+                }, 500);
+            }, 200);
+        }
+
+        function addTransaction(type, amount, description) {
+            const transaction = {
+                id: Date.now(),
+                type: type,
+                amount: parseFloat(amount),
+                description: description,
+                date: new Date()
+            };
+
+            transactions.unshift(transaction);
+            
+            if (type === 'income') {
+                totalSavings += transaction.amount;
+            } else {
+                totalSavings -= transaction.amount;
+            }
+
+            updateSavingsWithAnimation(type);
+            renderTransactions();
+        }
+
+        function renderTransactions() {
+            const listEl = document.getElementById('transactionList');
+            
+            if (transactions.length === 0) {
+                listEl.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📭</div>
+                        <p>No transactions yet. Add your first income or expense above.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            listEl.innerHTML = transactions.map(t => `
+                <div class="transaction-item">
+                    <div class="transaction-info">
+                        <div class="transaction-type ${t.type}-type">${t.type}</div>
+                        <div class="transaction-desc">${t.description}</div>
+                        <div class="transaction-date">${formatDate(t.date)}</div>
+                    </div>
+                    <div class="transaction-amount ${t.type}-amount">
+                        ${t.type === 'income' ? '+' : '-'}₹${formatNumber(t.amount)}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        document.getElementById('incomeForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const amount = document.getElementById('incomeAmount').value;
+            const desc = document.getElementById('incomeDesc').value;
+            
+            addTransaction('income', amount, desc);
+            
+            e.target.reset();
+        });
+
+        document.getElementById('outcomeForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const amount = document.getElementById('outcomeAmount').value;
+            const desc = document.getElementById('outcomeDesc').value;
+            
+            addTransaction('outcome', amount, desc);
+            
+            e.target.reset();
+        });
+
+        updateSavings();
+    </script>
+</body>
+</html>

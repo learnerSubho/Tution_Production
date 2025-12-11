@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+  <title>Student Management - TuitionTeacher</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(135deg, #4c6ef5 0%, #5f72ff 100%);
+      min-height: 100vh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container { 
+      max-width: 1200px; 
+      margin: 0 auto; 
+      padding: 20px 16px;
+    }
+
+    .header {
+      display: flex; 
+      align-items: center; 
+      gap: 12px; 
+      margin-bottom: 30px; 
+      color: white;
+    }
+
+    .logo {
+      width: 48px; 
+      height: 48px; 
+      background: white; 
+      border-radius: 12px;
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+
+    .logo-text { 
+      font-size: 24px; 
+      font-weight: 700;
+    }
+
+    .main-content {
+      background: white; 
+      border-radius: 16px; 
+      padding: 24px 20px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    }
+
+    .top-section {
+      display: flex; 
+      justify-content: space-between; 
+      align-items: flex-start;
+      flex-wrap: wrap; 
+      gap: 16px; 
+      margin-bottom: 24px;
+    }
+
+    .title-section h1 { 
+      font-size: 24px; 
+      color: #2d3748; 
+      font-weight: 700; 
+      margin-bottom: 4px;
+    }
+    
+    .title-section p { 
+      color: #718096; 
+      font-size: 14px;
+    }
+
+    .action-buttons { 
+      display: flex; 
+      flex-wrap: wrap; 
+      gap: 10px;
+    }
+
+    .add-student-btn {
+      background: #4c6ef5; 
+      color: white; 
+      border: none; 
+      padding: 11px 22px;
+      border-radius: 10px; 
+      font-size: 14px; 
+      font-weight: 600; 
+      cursor: pointer;
+      transition: all 0.3s ease; 
+      box-shadow: 0 4px 10px rgba(76, 110, 245, 0.3);
+      white-space: nowrap;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .add-student-btn:hover { 
+      background: #3b5bdb; 
+      transform: translateY(-2px);
+    }
+
+    .add-student-btn:active {
+      transform: translateY(0);
+    }
+
+    .promote-btn {
+      background: #48bb78;
+    }
+
+    .promote-btn:hover {
+      background: #38a169;
+    }
+
+    .passout-btn {
+      background: #ed8936;
+    }
+
+    .passout-btn:hover {
+      background: #dd6b20;
+    }
+
+    .search-section {
+      display: flex; 
+      flex-wrap: wrap; 
+      align-items: center;
+      gap: 12px; 
+      margin-bottom: 24px;
+    }
+
+    .search-container { 
+      position: relative; 
+      flex: 1; 
+      min-width: 200px;
+    }
+
+    .search-input {
+      width: 100%; 
+      padding: 12px 45px 12px 18px;
+      border: 2px solid #e2e8f0; 
+      border-radius: 10px; 
+      font-size: 14px;
+      transition: all 0.3s ease; 
+      outline: none;
+    }
+
+    .search-input:focus {
+      border-color: #4c6ef5; 
+      box-shadow: 0 0 0 3px rgba(76, 110, 245, 0.1);
+    }
+
+    .search-icon {
+      position: absolute; 
+      right: 16px; 
+      top: 50%;
+      transform: translateY(-50%); 
+      color: #718096; 
+      font-size: 16px;
+      pointer-events: none;
+    }
+
+    .filter-select {
+      padding: 12px 18px;
+      border-radius: 10px;
+      border: 2px solid #e2e8f0;
+      font-size: 14px;
+      color: #2d3748;
+      background: white;
+      cursor: pointer;
+      transition: 0.3s ease;
+      min-width: 140px;
+      -webkit-appearance: none;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23718096' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 36px;
+    }
+
+    .filter-select:focus {
+      border-color: #4c6ef5;
+      box-shadow: 0 0 0 3px rgba(76, 110, 245, 0.1);
+      outline: none;
+    }
+
+    .stats-section {
+      display: grid; 
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px; 
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: linear-gradient(135deg, #4c6ef5, #5f72ff);
+      padding: 16px; 
+      border-radius: 12px; 
+      color: white; 
+      text-align: center;
+      box-shadow: 0 3px 10px rgba(76, 110, 245, 0.2);
+    }
+
+    .stat-card h3 {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      opacity: 0.95;
+    }
+
+    .stat-card p {
+      font-size: 28px;
+      font-weight: 700;
+    }
+
+    .table-container { 
+      overflow-x: auto; 
+      border-radius: 10px; 
+      border: 1px solid #e2e8f0;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    table { 
+      width: 100%; 
+      border-collapse: collapse;
+    }
+
+    thead { 
+      background: linear-gradient(135deg, #4c6ef5, #5f72ff);
+    }
+
+    thead th {
+      color: white; 
+      padding: 12px 10px; 
+      font-size: 12px;
+      text-align: left; 
+      font-weight: 600; 
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    tbody tr { 
+      border-bottom: 1px solid #e2e8f0; 
+      transition: 0.2s;
+    }
+    
+    tbody tr:hover { 
+      background: #f8f9fe;
+    }
+
+    tbody td { 
+      padding: 12px 10px; 
+      font-size: 13px; 
+      color: #4a5568;
+    }
+
+    tbody td strong {
+      color: #2d3748;
+      font-weight: 600;
+    }
+
+    .action-btn {
+      border: none;
+      padding: 7px 14px; 
+      border-radius: 7px; 
+      font-size: 12px;
+      font-weight: 600; 
+      cursor: pointer; 
+      transition: 0.3s;
+      white-space: nowrap;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .record-payment-btn {
+      background: #4c6ef5; 
+      color: white;
+    }
+
+    .record-payment-btn:hover { 
+      background: #3b5bdb;
+    }
+
+    .delete-btn {
+      background: #f56565;
+      color: white;
+      padding: 7px 12px;
+    }
+
+    .delete-btn:hover {
+      background: #e53e3e;
+    }
+
+    .edit-btn {
+      background: #48bb78;
+      color: white;
+      padding: 7px 12px;
+    }
+
+    .edit-btn:hover {
+      background: #38a169;
+    }
+
+    .passout-btn {
+      background: #ed8936;
+      color: white;
+      padding: 7px 12px;
+    }
+
+    .passout-btn:hover {
+      background: #dd6b20;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: #718096;
+    }
+
+    .empty-state p {
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+      .container {
+        padding: 16px 12px;
+      }
+
+      .header {
+        margin-bottom: 20px;
+      }
+
+      .logo {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+      }
+
+      .logo-text {
+        font-size: 20px;
+      }
+
+      .main-content { 
+        padding: 20px 16px;
+        border-radius: 12px;
+      }
+
+      .top-section {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 16px;
+      }
+
+      .title-section h1 {
+        font-size: 22px;
+      }
+
+      .title-section p {
+        font-size: 13px;
+      }
+
+      .action-buttons {
+        width: 100%;
+      }
+
+      .add-student-btn {
+        flex: 1;
+        min-width: 0;
+        padding: 12px 16px;
+        justify-content: center;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .search-section { 
+        flex-direction: column; 
+        align-items: stretch;
+      }
+
+      .search-container {
+        width: 100%;
+        min-width: auto;
+      }
+
+      .filter-select { 
+        width: 100%;
+        min-width: auto;
+      }
+
+      .stats-section {
+        grid-template-columns: 1fr;
+      }
+
+      .table-container {
+        margin-left: -16px;
+        margin-right: -16px;
+        border-radius: 0;
+        border-left: none;
+        border-right: none;
+      }
+
+      table { 
+        font-size: 12px;
+      }
+
+      thead th {
+        padding: 10px 8px;
+        font-size: 11px;
+      }
+
+      tbody td {
+        padding: 10px 8px;
+        font-size: 12px;
+      }
+
+      .action-btn {
+        padding: 6px 10px;
+        font-size: 11px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 12px 8px;
+      }
+
+      .main-content {
+        padding: 16px 12px;
+      }
+
+      .title-section h1 {
+        font-size: 20px;
+      }
+
+      thead th {
+        padding: 8px 6px;
+        font-size: 10px;
+      }
+
+      tbody td {
+        padding: 8px 6px;
+        font-size: 11px;
+      }
+
+      .action-btn {
+        padding: 5px 8px;
+        font-size: 10px;
+      }
+    }
+
+    /* Landscape mobile */
+    @media (max-height: 500px) and (orientation: landscape) {
+      .container {
+        padding: 12px;
+      }
+
+      .header {
+        margin-bottom: 12px;
+      }
+
+      .main-content {
+        padding: 16px;
+      }
+
+      .top-section {
+        margin-bottom: 16px;
+      }
+
+      .search-section {
+        margin-bottom: 16px;
+      }
+
+      .stats-section {
+        margin-bottom: 16px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="logo">🎓</div>
+      <span class="logo-text">TuitionTeacher</span>
+    </div>
+
+    <div class="main-content">
+      <div class="top-section">
+        <div class="title-section">
+          <h1>Student's Promotion</h1>
+          <p>Promote all studentes to next class</p>
+        </div>
+      </div>
+
+      <div class="search-section">
+        <div class="search-container">
+          <input type="text" class="search-input" id="searchInput"
+            placeholder="Search students..."
+            onkeyup="filterStudents()" />
+          <span class="search-icon">🔍</span>
+        </div>
+
+        <select id="classFilter" class="filter-select" onchange="filterStudents()">
+          <option value="all">All Classes</option>
+          {% for unit in ordered_class %}
+          <option value="{{unit.class_id}}">Class {{unit.classname}}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="table-container">
+        <table id="studentTable">
+          <thead>
+            <tr>
+              <th>Student Name</th>
+              <th>Father Name</th>
+              <th>Class</th>
+              <th>Mobile</th>
+              <th>Email</th>
+              <th>Address</th>
+              <th>Promote</th>
+              <th>Pass Out</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for student in students %}
+            <tr>
+              <td><strong>{{student.studentname}}</strong></td>
+              <td>{{student.fathername}}</td>
+              <td>{{student.classname.classname}}</td>
+              <td>{{student.phone}}</td>
+              <td>{{student.email}}</td>
+              <td>{{student.address}}</td>
+              <td><button class="action-btn promote-btn" onclick="promoteStudent(this,'{{student.student_id}}')">⬆️ Promote</button></td>
+              <td><button class="action-btn passout-btn" onclick="passoutStudent(this)">🎓 Pass Out</button></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="stats-section" style="padding-top: 7px;">
+        <div class="stat-card">
+          <h3>Total Students</h3>
+          <p id="totalStudents">{{count}}</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // Promote individual student to next class
+    function promoteStudent(button,id) {
+      const row = button.closest("tr");
+      const classCell = row.cells[2];
+      const currentClass = classCell.textContent.trim();
+      const name = row.querySelector("td strong").textContent;
+      
+      let nextClass;
+      if (currentClass === "X") {
+        nextClass = "XI";
+      } else if (currentClass === "XI") {
+        nextClass = "XII";
+      } else if (currentClass === "XII") {
+        alert(`${name} is already in Class XII and cannot be promoted further. Use Pass Out instead.`);
+        return;
+      }
+      url = `/teacher/promote/${id}/`;
+      fetch(url,{
+        method:'POST',
+        headers:{
+          'X-CSRFToken': '{{ csrf_token }}',
+        }
+      })
+      .then(res => res.json())
+      .then(data =>{
+        if(data.status == 'success'){
+          alert(data.message);
+        }
+        else{
+          alert(data.message);
+        }
+      })
+      .then(err => {
+        alert(err);
+      })
+    }
+
+    // Promote all students at once
+    function promoteAllStudents() {
+      const rows = document.querySelectorAll("#studentTable tbody tr:not(.empty-state)");
+      
+      if (rows.length === 0) {
+        alert("No students to promote!");
+        return;
+      }
+      
+      if (confirm(`Promote all students to their next class?`)) {
+        let promotedCount = 0;
+        let skippedCount = 0;
+        
+        rows.forEach(row => {
+          const classCell = row.cells[2];
+          const currentClass = classCell.textContent.trim();
+          const promoteBtn = row.querySelector(".promote-btn");
+          
+          if (currentClass === "X") {
+            classCell.textContent = "XI";
+            promotedCount++;
+          } else if (currentClass === "XI") {
+            classCell.textContent = "XII";
+            promoteBtn.disabled = true;
+            promoteBtn.style.opacity = "0.5";
+            promoteBtn.style.cursor = "not-allowed";
+            promotedCount++;
+          } else if (currentClass === "XII") {
+            skippedCount++;
+          }
+        });
+        
+        let message = `${promotedCount} student(s) promoted successfully!`;
+        if (skippedCount > 0) {
+          message += `\n${skippedCount} student(s) in Class XII were not promoted.`;
+        }
+        alert(message);
+      }
+    }
+
+    // Pass out student (remove from list)
+    function passoutStudent(button) {
+      const row = button.closest("tr");
+      const name = row.querySelector("td strong").textContent;
+      const currentClass = row.cells[2].textContent.trim();
+      
+      if (confirm(`Mark ${name} (Class ${currentClass}) as passed out?\nThis will remove them from the list.`)) {
+        row.remove();
+        updateTotalStudents();
+        alert(`${name} has been marked as passed out!`);
+      }
+    }
+
+    // Pass out all Class XII students
+    function passoutStudents() {
+      const rows = document.querySelectorAll("#studentTable tbody tr:not(.empty-state)");
+      const class12Students = Array.from(rows).filter(row => 
+        row.cells[2].textContent.trim() === "XII"
+      );
+      
+      if (class12Students.length === 0) {
+        alert("No Class XII students to pass out!");
+        return;
+      }
+      
+      if (confirm(`Pass out all ${class12Students.length} Class XII student(s)?`)) {
+        class12Students.forEach(row => row.remove());
+        updateTotalStudents();
+        alert(`${class12Students.length} student(s) have been marked as passed out!`);
+      }
+    }
+
+    function filterStudents() {
+      const searchInput = document.getElementById("searchInput").value.toLowerCase();
+      const selectedClass = document.getElementById("classFilter").value.toLowerCase();
+      const rows = document.querySelectorAll("#studentTable tbody tr:not(.empty-state)");
+
+      let visibleCount = 0;
+      rows.forEach(row => {
+        const cells = row.getElementsByTagName("td");
+        const classText = cells[2].textContent.toLowerCase();
+        const matchSearch = Array.from(cells).some(cell => cell.textContent.toLowerCase().includes(searchInput));
+        const matchClass = selectedClass === "all" || classText === selectedClass;
+        
+        if (matchSearch && matchClass) {
+          row.style.display = "";
+          visibleCount++;
+        } else {
+          row.style.display = "none";
+        }
+      });
+
+      if (visibleCount === 0) {
+        showEmptyState();
+      } else {
+        removeEmptyState();
+      }
+    }
+
+    function updateTotalStudents() {
+      const total = document.querySelectorAll("#studentTable tbody tr:not(.empty-state)").length;
+      document.getElementById("totalStudents").textContent = total;
+    }
+
+    function showEmptyState() {
+      const tbody = document.querySelector("#studentTable tbody");
+      if (!document.querySelector(".empty-state")) {
+        const emptyRow = document.createElement("tr");
+        emptyRow.className = "empty-state";
+        emptyRow.innerHTML = '<td colspan="8" class="empty-state"><p>No students found</p><small>Try adjusting your search or filters</small></td>';
+        tbody.appendChild(emptyRow);
+      }
+    }
+
+    function removeEmptyState() {
+      const emptyState = document.querySelector(".empty-state");
+      if (emptyState) {
+        emptyState.remove();
+      }
+    }
+  </script>
+</body>
+</html>

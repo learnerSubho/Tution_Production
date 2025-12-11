@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+    <title>Add Student - TuitionTeacher</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+        }
+
+        body {
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #4c6ef5 0%, #5f72ff 100%);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 250px;
+            background: #f0f0f0;
+            clip-path: polygon(0 60%, 100% 0, 100% 100%, 0 100%);
+            z-index: 1;
+        }
+
+        .container {
+            position: relative;
+            z-index: 2;
+            max-width: 900px;
+            width: 95%;
+            margin: 0 auto;
+            padding: 30px 16px;
+        }
+
+        /* Header Section */
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 40px;
+            color: white;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            width: 48px;
+            height: 48px;
+            background: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            flex-shrink: 0;
+        }
+
+        .logo-text {
+            font-size: 28px;
+            font-weight: 700;
+            word-break: break-word;
+        }
+
+        /* Back Link */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: white;
+            text-decoration: none;
+            margin-bottom: 20px;
+            font-size: 15px;
+            transition: all 0.2s ease;
+            flex-wrap: wrap;
+        }
+
+        .back-link:hover {
+            gap: 10px;
+        }
+
+        /* Main Content */
+        .main-content {
+            background: white;
+            border-radius: 18px;
+            padding: 40px 32px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            width: 100%;
+        }
+
+        .form-header {
+            margin-bottom: 30px;
+        }
+
+        .form-header h1 {
+            font-size: 28px;
+            color: #2d3748;
+            font-weight: 700;
+            margin-bottom: 8px;
+            line-height: 1.2;
+        }
+
+        .form-header p {
+            color: #718096;
+            font-size: 15px;
+            line-height: 1.4;
+        }
+
+        /* Form Styles */
+        form {
+            width: 100%;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #2d3748;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .form-group label .required {
+            color: #e53e3e;
+            margin-left: 2px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            outline: none;
+            font-family: inherit;
+        }
+
+        .form-input:focus {
+            border-color: #4c6ef5;
+            box-shadow: 0 0 0 3px rgba(76, 110, 245, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: #a0aec0;
+        }
+
+        select.form-input {
+            cursor: pointer;
+            background-color: white;
+        }
+
+        textarea.form-input {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        /* Button Section */
+        .button-section {
+            display: flex;
+            gap: 12px;
+            margin-top: 32px;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+        }
+
+        .btn {
+            padding: 14px 32px;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+            min-width: 140px;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: #4c6ef5;
+            color: white;
+            box-shadow: 0 4px 10px rgba(76, 110, 245, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: #3b5bdb;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #2d3748;
+        }
+
+        .btn-secondary:hover {
+            background: #cbd5e0;
+        }
+
+        /* Grid Layout */
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+            width: 100%;
+        }
+
+        /* Table Styles */
+        .table-section {
+            margin-top: 40px;
+            padding-top: 40px;
+            border-top: 2px solid #e2e8f0;
+        }
+
+        .table-header {
+            margin-bottom: 20px;
+        }
+
+        .table-header h2 {
+            font-size: 22px;
+            color: #2d3748;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .table-header p {
+            color: #718096;
+            font-size: 14px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            border-radius: 10px;
+            border: 2px solid #e2e8f0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        thead {
+            background: #4c6ef5;
+            color: white;
+        }
+
+        th {
+            padding: 16px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #e2e8f0;
+            transition: background-color 0.2s ease;
+        }
+
+        tbody tr:hover {
+            background-color: #f7fafc;
+        }
+
+        tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        td {
+            padding: 16px;
+            color: #2d3748;
+            font-size: 15px;
+        }
+
+        .action-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: #e53e3e;
+            color: white;
+        }
+
+        .action-btn:hover {
+            background: #c53030;
+            transform: translateY(-1px);
+        }
+
+        .empty-state {
+            padding: 40px 20px;
+            text-align: center;
+            color: #718096;
+            font-size: 15px;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+            opacity: 0.5;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 28px 20px;
+            }
+
+            .form-header h1 {
+                font-size: 24px;
+            }
+
+            .button-section {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            th,
+            td {
+                padding: 12px 10px;
+                font-size: 14px;
+            }
+
+            .table-header h2 {
+                font-size: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .logo-text {
+                font-size: 22px;
+            }
+
+            .main-content {
+                padding: 24px 16px;
+            }
+
+            .form-header h1 {
+                font-size: 22px;
+            }
+
+            .form-header p {
+                font-size: 14px;
+            }
+        }
+
+        edit-btn,
+        .delete-btn {
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        .edit-btn {
+            background: #3b82f6;
+        }
+
+        .edit-btn:hover {
+            background: #2563eb;
+        }
+
+        .delete-btn {
+            background: #ef4444;
+        }
+
+        .delete-btn:hover {
+            background: #dc2626;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(2px);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 30px 28px;
+            width: 90%;
+            max-width: 480px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            position: relative;
+            animation: slideUp 0.3s ease;
+        }
+
+        .modal-content h2 {
+            margin-bottom: 20px;
+            color: #2d3748;
+            font-size: 22px;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 14px;
+            right: 18px;
+            font-size: 26px;
+            color: #718096;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .close-btn:hover {
+            color: #2d3748;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(40px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="{{info.website_logo.url}}" alt="" class="logo">
+            <span class="logo-text">{{info.website_name}}</span>
+        </div>
+
+        <a href="#" class="back-link" onclick="goBack()">← Back to Class Management</a>
+
+        <div class="main-content">
+            <div class="form-header">
+                <h1>Add New Class</h1>
+                <p>
+                    Fill in the class details to add them to your tuition management
+                    system
+                </p>
+            </div>
+
+            <form id="studentForm">
+                {% csrf_token %}
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="className">Class Name <span class="required">*</span></label>
+                        <input type="text" id="className" name="className" class="form-input"
+                            placeholder="e.g., Class X - Science" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="feesPerMonth">Fees per Month <span class="required">*</span></label>
+                        <input type="number" id="feesPerMonth" name="feesPerMonth" class="form-input"
+                            placeholder="Enter monthly fees" min="0" step="1" required />
+                    </div>
+                </div>
+
+                <div class="button-section">
+                    <button type="button" class="btn btn-secondary" onclick="resetForm()">
+                        Reset Form
+                    </button>
+                    <button type="submit" class="btn btn-primary">Add Class</button>
+                </div>
+            </form>
+
+            <div class="table-section">
+                <div class="table-header">
+                    <h2>Added Classes</h2>
+                    <p>List of all classes with their monthly fees</p>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>S.No.</th>
+                                <th>Class Name</th>
+                                <th>Fees per Month</th>
+                                <th>Edit</th>
+                                <th>Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody id="classTableBody">
+                            {% if classes %} {% for class in classes %}
+                            <tr>
+                                <td>{{forloop.counter}}</td>
+                                <td>{{class.classname}}</td>
+                                <td>{{class.fees}}</td>
+                                <td>
+                                    <button class="delete-btn" data-url="{% url 'EditClass' class.class_id %}"
+                                        style="background-color: green;" onclick="openModal(this)">
+                                        📝 Edit
+                                    </button>
+                                </td>
+                                <td>
+                                    <button class="delete-btn" data-url="{% url 'DeleteClass' class.class_id %}"
+                                        onclick="deleteClass(this)">
+                                        🗑️ Delete
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %} {% else %}
+                            <tr>
+                                <td colspan="4" class="empty-state">
+                                    <div class="empty-state-icon">📚</div>
+                                    <div>No classes added yet. Add your first class above!</div>
+                                </td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Class Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <h2>Edit Class</h2>
+            <form id="editClassForm" enctype="multipart/form-data" method="post" onsubmit="EditClass(this,event)">
+                {% csrf_token %}
+                <input type="hidden" id="editClassId" name="class_id" />
+
+                <div class="form-group">
+                    <label for="editClassName">Class Name <span class="required">*</span></label>
+                    <input type="text" id="editClassName" name="className" class="form-input" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="editFees">Fees per Month <span class="required">*</span></label>
+                    <input type="number" id="editFees" name="feesPerMonth" class="form-input" required />
+                </div>
+
+                <div class="button-section">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let classes = [];
+
+        document.querySelectorAll('.edit-btn').forEach(button => {
+            button.disabled = true;
+        })
+
+        document
+            .getElementById("studentForm")
+            .addEventListener("submit", function (e) {
+                e.preventDefault();
+                const submitbtn = document.querySelector('button[type="submit"]')
+                submitbtn.disabled = true;
+                submitbtn.innerText = 'Adding...';
+                const formdata = new FormData(this);
+                fetch('{% url "AddClasses" %}', {
+                    method: "POST",
+                    body: formdata,
+                    headers: {
+                        "X-CSRFToken": formdata.get("csrfmiddlewaretoken"),
+                    },
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        if (data.message) {
+                            window.location.reload();
+                        }
+                    })
+                    .catch((error) => {
+                        alert("An error occurred. Please try again.");
+                    });
+            });
+
+        function deleteClass(button) {
+            const url = button.dataset.url;
+            const row = button.closest('tr');
+            if (!confirm("Are you sure, you want to delete class?")) return;
+            if (!confirm("All the details related to the class will be deleted. DO you agree with it?")) return;
+            if (!confirm("Another time warning you be carefull you may loose all the student data of this class?")) return;
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': "{{csrf_token}}"
+                }
+            }).then(response => response.json())
+                .then(data => {
+                    alert(data.message)
+                    if (data.message) {
+                        row.remove()
+                    }
+                })
+                .catch(error => {
+                    alert(error)
+                })
+
+        }
+
+
+
+        const editModal = document.getElementById("editModal");
+        const editForm = document.getElementById("editClassForm");
+
+        function openModal(button) {
+            if(!confirm("Are you sure to edit class information?"))return;
+            const row = button.closest("tr");
+            const className = row.children[1].innerText.trim();
+            const fees = row.children[2].innerText.trim();
+            const editUrl = button.dataset.url;
+            const form = document.querySelector('#editClassForm')
+            form.action = editUrl
+            // Fill form values
+            document.getElementById("editClassName").value = className;
+            document.getElementById("editFees").value = fees;
+            editModal.style.display = "flex";
+            document.body.style.overflow = "hidden";
+        }
+
+        function closeModal() {
+            editModal.style.display = "none";
+            document.body.style.overflow = "auto";
+        }
+
+        // Close modal when clicking outside
+        window.addEventListener("click", (e) => {
+            if (e.target === editModal) closeModal();
+        });
+
+        function EditClass(form,e) {
+            e.preventDefault()
+            const url = form.action
+            const formdata = new FormData(form)
+            const submitbtn = form.querySelector('button[type="submit"]')
+            submitbtn.disabled = true
+            submitbtn.innerText = 'Saving Changes...'
+            fetch(url,{
+                method:'POST',
+                body:formdata,
+                headers:{
+                    'X-CSRFToken':formdata.get('csrfmiddlewaretoken')
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.status == 'success'){
+                    alert(data.message)
+                    window.location.reload()
+                }
+                else{
+                    alert(data.message)
+                }
+            })
+            .catch(err => {
+                alert(err)
+            })
+            
+        }
+
+
+
+        function resetForm() {
+            document.getElementById("studentForm").reset();
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+</body>
+
+</html>

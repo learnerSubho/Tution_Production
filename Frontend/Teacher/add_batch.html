@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Batch - TuitionTeacher</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            background: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .app-name {
+            color: white;
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        .back-link {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            max-width: 980px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-title {
+            font-size: 28px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 8px;
+        }
+
+        .card-subtitle {
+            font-size: 14px;
+            color: #718096;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #2d3748;
+            margin-bottom: 8px;
+        }
+
+        .required {
+            color: #e53e3e;
+        }
+
+        select,
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #2d3748;
+            transition: all 0.2s;
+        }
+
+        select:focus,
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        select {
+            cursor: pointer;
+            background: white;
+        }
+
+        .button-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 32px;
+        }
+
+        .btn {
+            padding: 14px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-reset {
+            background: #e2e8f0;
+            color: #2d3748;
+        }
+
+        .btn-reset:hover {
+            background: #cbd5e0;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5a67d8;
+        }
+
+        .batches-section {
+            margin-top: 40px;
+            padding-top: 40px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .section-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 8px;
+        }
+
+        .section-subtitle {
+            font-size: 14px;
+            color: #718096;
+            margin-bottom: 24px;
+        }
+
+        .table-container {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #667eea;
+        }
+
+        th {
+            padding: 16px;
+            text-align: left;
+            font-size: 13px;
+            font-weight: 600;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        td {
+            padding: 16px;
+            color: #2d3748;
+            font-size: 14px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .empty-text {
+            color: #718096;
+            font-size: 14px;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-right: 8px;
+        }
+
+        .edit-btn {
+            background: #edf2f7;
+            color: #2d3748;
+        }
+
+        .edit-btn:hover {
+            background: #e2e8f0;
+        }
+
+        .delete-btn {
+            background: #fff5f5;
+            color: #e53e3e;
+        }
+
+        .delete-btn:hover {
+            background: #fed7d7;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .button-group {
+                grid-template-columns: 1fr;
+            }
+
+            .card {
+                padding: 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="{{info.website_logo.url}}" alt="" class="logo">
+            <h1 class="app-name">{{info.website_name}}</h1>
+        </div>
+
+        <a href="#" class="back-link" onclick="event.preventDefault(); goback();">← Back to Class Management</a>
+
+        <div class="card">
+            <h2 class="card-title">Add New Batch</h2>
+            <p class="card-subtitle">Assign batch names to your classes for better organization</p>
+
+            
+                <form id="batchid" method="post" action="{% url 'AddBatchs' %}" onsubmit="AddBatch(this,event)">
+                    {% csrf_token %}
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="classSelect">Select Class <span class="required">*</span></label>
+                            <select id="classSelect" name='className' required>
+                                <option value="">Choose a class</option>
+                                {% for class in classes %}
+                                <option value="{{class.class_id}}">{{class.classname}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="batchName">Batch Name <span class="required">*</span></label>
+                            <input type="text" id="batchName" name='batchName' placeholder="e.g., Morning Batch A"
+                                required>
+                        </div>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="button" class="btn btn-reset" onclick="resetForm()">Reset Form</button>
+                        <button type="submit" class="btn btn-primary">Add Batch</button>
+                    </div>
+                </form>
+
+                <div class="batches-section">
+                    <h3 class="section-title">Added Batches</h3>
+                    <p class="section-subtitle">List of all batches with their assigned classes</p>
+
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>S.No.</th>
+                                    <th>Class Name</th>
+                                    <th>Batch Name</th>
+                                    <th>Edit</th>
+                                    <th>Delete</th>
+                                </tr>
+                            </thead>
+                            <tbody id="batchTableBody">
+                                {% if count > 0 %}
+                                {% for batch in batchs %}
+                                <tr>
+                                    <td>{{forloop.counter}}</td>
+                                    <td>{{batch.classname.classname}}</td>
+                                    <td>{{batch.batch_name}}</td>
+                                    <td>
+                                        <button data-url="{% url 'EditBatch' batch.batch_id %}"
+                                            style="background-color: #4CAF50; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px; display: inline-flex; align-items: center; gap: 5px; transition: background-color 0.3s;"
+                                            onmouseover="this.style.backgroundColor='#45a049'"
+                                            onmouseout="this.style.backgroundColor='#4CAF50'" onclick="openModal(this)">
+                                            📝
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <button data-url="{% url 'DeleteBatch' batch.batch_id %}"
+                                            style="background-color: #f73d04ff; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px; display: inline-flex; align-items: center; gap: 5px; transition: background-color 0.3s;"
+                                            onmouseover="this.style.backgroundColor='#df3e12ff'"
+                                            onmouseout="this.style.backgroundColor='#d50f0fff'"
+                                            onclick="DeleteBatch(this)">
+                                            🗑️
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                                {% else %}
+                                <tr>
+                                    <td colspan="5">
+                                        <div class="empty-state">
+                                            <div class="empty-icon">📚</div>
+                                            <p class="empty-text">No batches added yet. Add your first batch above!</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+        </div>
+    </div>
+
+    <!-- Add this modal just above the closing </body> tag -->
+    <div id="editModal" style="
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(2px);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+">
+        <div style="
+        background: white;
+        border-radius: 12px;
+        padding: 30px;
+        width: 90%;
+        max-width: 500px;
+        position: relative;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    ">
+            <button onclick="closeModal()" style="
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            border: none;
+            background: transparent;
+            font-size: 20px;
+            cursor: pointer;
+        ">&times;</button>
+
+            <h2 style="margin-bottom: 20px; color: #2d3748;">Edit Batch</h2>
+            <form id="editBatchForm" onsubmit="updateBatch(this,event)">
+                {% csrf_token %}
+                <input type="hidden" id="editBatchId" name="batch_id">
+
+                <div class="form-group">
+                    <label for="editClassSelect">Select Class <span class="required">*</span></label>
+                    <select id="editClassSelect" name="className" required>
+                        <option value="">Choose a class</option>
+                        {% for class in classes %}
+                        <option value="{{class.class_id}}">{{class.classname}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="editBatchName">Batch Name <span class="required">*</span></label>
+                    <input type="text" id="editBatchName" name="batchName" required>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+                    <button type="button" onclick="closeModal()" class="btn btn-reset">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <script>
+        function goback() {
+            if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                window.location.href = '/teacher/dashboard/';
+            }
+        }
+        function AddBatch(form, e) {
+            e.preventDefault()
+            const formdata = new FormData(form)
+            const submitbtn = document.querySelector('button[type="submit"]')
+            submitbtn.disabled = true
+            submitbtn.innerText = 'Adding...'
+            fetch(form.action, {
+                method: 'POST',
+                body: formdata,
+                headers: {
+                    'X-CSRFToken': formdata.get('csrfmiddlewaretoken')
+                }
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status == 'success') {
+                        alert(data.message)
+                        form.reset()
+                        window.location.reload()
+
+                    }
+                    else {
+                        alert(data.message)
+                    }
+                })
+                .catch(err => {
+                    alert(err)
+                })
+        }
+
+
+
+        const editModal = document.getElementById('editModal');
+
+        function openModal(button) {
+            if (!confirm("Are you sure you want to edit this batch information?")) return;
+
+            const row = button.closest("tr");
+            const className = row.children[1].innerText.trim();
+            const batchName = row.children[2].innerText.trim();
+            const editUrl = button.dataset.url;
+            const form = document.querySelector('#editBatchForm');
+
+            // Set form action to edit URL
+            form.action = editUrl;
+            alert(form.action)
+            // Fill modal fields with existing data
+            document.getElementById("editBatchName").value = batchName;
+
+            // Select correct class in dropdown
+            const classSelect = document.getElementById("editClassSelect");
+            for (let option of classSelect.options) {
+                if (option.text === className) {
+                    option.selected = true;
+                    break;
+                }
+            }
+
+            // Open modal
+            editModal.style.display = "flex";
+            document.body.style.overflow = "hidden"; // Prevent background scrolling
+        }
+
+        function closeModal() {
+            editModal.style.display = "none";
+            document.body.style.overflow = "auto"; // Restore scrolling
+        }
+
+        function updateBatch(form,e){
+            e.preventDefault()
+            const formdata = new FormData(form)
+            const url = form.action
+            const submitbtn = form.querySelector('button[type="submit"]')
+            submitbtn.disabled = true
+            submitbtn.innerText = 'Saving Changes...'
+
+            fetch(url,{
+                method:'POST',
+                body:formdata,
+                headers:{
+                    'X-CSRFToken':formdata.get('csrfmiddlewaretoken')
+                }
+            })
+            .then( response => response.json())
+            .then(data => {
+                if(data.status == 'success'){
+                    alert(data.message)
+                    window.location.reload()
+                }
+                else{
+                    alert(data.message)
+                }
+            })
+            .catch(err => {
+                alert(err)
+            })
+            
+        }
+        function DeleteBatch(button) {
+            const url = button.dataset.url
+            button.disabled = true
+            button.innerText = 'Deleting'
+            if (!confirm('Are You sure to delete this batch?')) return
+            if (!confirm('All data related to this batch and student will be premanently deleted?')) return
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': "{{csrf_token}}"
+                }
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status == 'success') {
+                        alert(data.message)
+                    }
+                    else {
+                        alert(data.message)
+                    }
+                })
+                .catch(err => {
+                    alert(err)
+                })
+        }
+
+        function resetForm() {
+            document.querySelector('#batchid').reset()
+        }
+
+    </script>
+</body>
+
+</html>

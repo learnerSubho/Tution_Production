@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Verification</title>
+    <style>
+        /* Base styling to match your theme */
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to right, #4e54c8, #8f94fb);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .otp-container {
+            background: #fff;
+            padding: 40px 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            text-align: center;
+            width: 350px;
+        }
+
+        .otp-container h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .otp-input {
+            width: 100%;
+            padding: 12px 15px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            transition: 0.3s;
+        }
+
+        .otp-input:focus {
+            border-color: #4e54c8;
+            outline: none;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 12px;
+            background: #4e54c8;
+            color: #fff;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .submit-btn:hover {
+            background: #8f94fb;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 400px) {
+            .otp-container {
+                width: 90%;
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="otp-container">
+        <h2>Enter OTP</h2>
+        <form onsubmit="verifyotp(this,event)">
+            <input type="text" name="otp" class="otp-input" placeholder="Enter OTP" required>
+            <button type="submit" class="submit-btn">Verify</button>
+        </form>
+    </div>
+    <script>
+        function verifyotp(form,e){
+            e.preventdefault()
+            const formdata = new FormData(form)
+            fetch(window.location.href,{
+                method:'post',
+                body:formdata,
+                headers:{
+                    'X-CSRFToken':formdata.get('csrfmiddlewaretoken')
+                }
+            })
+        }
+    </script>
+</body>
+</html>

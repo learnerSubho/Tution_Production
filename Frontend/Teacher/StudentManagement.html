@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+  <title>Student Management - TuitionTeacher</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        "Helvetica Neue", Arial, sans-serif;
+      background: linear-gradient(135deg, #4c6ef5 0%, #5f72ff 100%);
+      min-height: 100vh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px 16px;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 30px;
+      color: white;
+    }
+
+    .logo {
+      width: 48px;
+      height: 48px;
+      background: white;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+
+    .logo-text {
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .main-content {
+      background: white;
+      border-radius: 16px;
+      padding: 24px 20px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    }
+
+    .top-section {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .title-section h1 {
+      font-size: 24px;
+      color: #2d3748;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .title-section p {
+      color: #718096;
+      font-size: 14px;
+    }
+
+    .action-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .add-student-btn {
+      background: #4c6ef5;
+      color: white;
+      border: none;
+      padding: 11px 22px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 10px rgba(76, 110, 245, 0.3);
+      white-space: nowrap;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .add-student-btn:hover {
+      background: #3b5bdb;
+      transform: translateY(-2px);
+    }
+
+    .add-student-btn:active {
+      transform: translateY(0);
+    }
+
+    .promote-btn {
+      background: #48bb78;
+    }
+
+    .promote-btn:hover {
+      background: #38a169;
+    }
+
+    .search-section {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .search-container {
+      position: relative;
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 12px 45px 12px 18px;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      outline: none;
+    }
+
+    .search-input:focus {
+      border-color: #4c6ef5;
+      box-shadow: 0 0 0 3px rgba(76, 110, 245, 0.1);
+    }
+
+    .search-icon {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #718096;
+      font-size: 16px;
+      pointer-events: none;
+    }
+
+    .filter-select {
+      padding: 12px 18px;
+      border-radius: 10px;
+      border: 2px solid #e2e8f0;
+      font-size: 14px;
+      color: #2d3748;
+      background: white;
+      cursor: pointer;
+      transition: 0.3s ease;
+      min-width: 140px;
+      -webkit-appearance: none;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23718096' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 36px;
+    }
+
+    .filter-select:focus {
+      border-color: #4c6ef5;
+      box-shadow: 0 0 0 3px rgba(76, 110, 245, 0.1);
+      outline: none;
+    }
+
+    .stats-section {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: linear-gradient(135deg, #4c6ef5, #5f72ff);
+      padding: 16px;
+      border-radius: 12px;
+      color: white;
+      text-align: center;
+      box-shadow: 0 3px 10px rgba(76, 110, 245, 0.2);
+    }
+
+    .stat-card h3 {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      opacity: 0.95;
+    }
+
+    .stat-card p {
+      font-size: 28px;
+      font-weight: 700;
+    }
+
+    .table-container {
+      overflow-x: auto;
+      border-radius: 10px;
+      border: 1px solid #e2e8f0;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead {
+      background: linear-gradient(135deg, #4c6ef5, #5f72ff);
+    }
+
+    thead th {
+      color: white;
+      padding: 12px 10px;
+      font-size: 12px;
+      text-align: left;
+      font-weight: 600;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid #e2e8f0;
+      transition: 0.2s;
+    }
+
+    tbody tr:hover {
+      background: #f8f9fe;
+    }
+
+    tbody td {
+      padding: 12px 10px;
+      font-size: 13px;
+      color: #4a5568;
+    }
+
+    tbody td strong {
+      color: #2d3748;
+      font-weight: 600;
+    }
+
+    .action-btn {
+      border: none;
+      padding: 7px 14px;
+      border-radius: 7px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+      white-space: nowrap;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .record-payment-btn {
+      background: #4c6ef5;
+      color: white;
+    }
+
+    .record-payment-btn:hover {
+      background: #3b5bdb;
+    }
+
+    .delete-btn {
+      background: #f56565;
+      color: white;
+      padding: 7px 12px;
+    }
+
+    .delete-btn:hover {
+      background: #e53e3e;
+    }
+
+    .edit-btn {
+      background: #48bb78;
+      color: white;
+      padding: 7px 12px;
+    }
+
+    .edit-btn:hover {
+      background: #38a169;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: #718096;
+    }
+
+    .empty-state p {
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+      .container {
+        padding: 16px 12px;
+      }
+
+      .header {
+        margin-bottom: 20px;
+      }
+
+      .logo {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+      }
+
+      .logo-text {
+        font-size: 20px;
+      }
+
+      .main-content {
+        padding: 20px 16px;
+        border-radius: 12px;
+      }
+
+      .top-section {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 16px;
+      }
+
+      .title-section h1 {
+        font-size: 22px;
+      }
+
+      .title-section p {
+        font-size: 13px;
+      }
+
+      .action-buttons {
+        width: 100%;
+      }
+
+      .add-student-btn {
+        flex: 1;
+        min-width: 0;
+        padding: 12px 16px;
+        justify-content: center;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .search-section {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .search-container {
+        width: 100%;
+        min-width: auto;
+      }
+
+      .filter-select {
+        width: 100%;
+        min-width: auto;
+      }
+
+      .stats-section {
+        grid-template-columns: 1fr;
+      }
+
+      .table-container {
+        margin-left: -16px;
+        margin-right: -16px;
+        border-radius: 0;
+        border-left: none;
+        border-right: none;
+      }
+
+      table {
+        font-size: 12px;
+      }
+
+      thead th {
+        padding: 10px 8px;
+        font-size: 11px;
+      }
+
+      tbody td {
+        padding: 10px 8px;
+        font-size: 12px;
+      }
+
+      .action-btn {
+        padding: 6px 10px;
+        font-size: 11px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 12px 8px;
+      }
+
+      .main-content {
+        padding: 16px 12px;
+      }
+
+      .title-section h1 {
+        font-size: 20px;
+      }
+
+      thead th {
+        padding: 8px 6px;
+        font-size: 10px;
+      }
+
+      tbody td {
+        padding: 8px 6px;
+        font-size: 11px;
+      }
+
+      .action-btn {
+        padding: 5px 8px;
+        font-size: 10px;
+      }
+    }
+
+    /* Landscape mobile */
+    @media (max-height: 500px) and (orientation: landscape) {
+      .container {
+        padding: 12px;
+      }
+
+      .header {
+        margin-bottom: 12px;
+      }
+
+      .main-content {
+        padding: 16px;
+      }
+
+      .top-section {
+        margin-bottom: 16px;
+      }
+
+      .search-section {
+        margin-bottom: 16px;
+      }
+
+      .stats-section {
+        margin-bottom: 16px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="header">
+      <img src="{{info.website_logo.url}}" alt="" class="logo">
+      <span class="logo-text">{{info.website_name}}</span>
+    </div>
+
+    <div class="main-content">
+      <div class="top-section">
+        <div class="title-section">
+          <h1>Student Management</h1>
+          <p>Manage and track your students' information</p>
+        </div>
+        <div class="action-buttons">
+          <button class="add-student-btn" onclick="openAddModal()">
+            <span>➕</span>
+            <span>Add Student</span>
+          </button>
+          <a href="#" onclick="promoteStudent()" style="text-decoration: none; color: white">
+            <button class="add-student-btn promote-btn" onclick="promoteStudent()">
+              <span>⬆️</span>
+              <span>Promote</span>
+            </button></a>
+        </div>
+      </div>
+
+      <div class="search-section">
+        <div class="search-container">
+          <input type="text" class="search-input" id="searchInput" placeholder="Search students..."
+            onkeyup="filterStudents()" />
+          <span class="search-icon">🔍</span>
+        </div>
+
+        <select id="classFilter" class="filter-select" onchange="filterStudents()">
+          <option value="all">All Classes</option>
+          {% for class in classes %}
+          <option value="{{class.classname}}">{{class.classname}}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="table-container">
+        <table id="studentTable">
+          <thead>
+            <tr>
+              <th>Student Name</th>
+              <th>Father Name</th>
+              <th>Class</th>
+              <th>Mobile</th>
+              <th>Email</th>
+              <th>Address</th>
+              <th>Payment</th>
+              <th>Edit</th>
+              <th>Delete</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for student in students %}
+            <tr>
+              <td><strong>{{student.studentname}}</strong></td>
+              <td>{{student.fathername}}</td>
+              <td>{{student.classname.classname}}</td>
+              <td>{{student.phone}}</td>
+              <td>{{student.email}}</td>
+              <td>{{student.address}}</td>
+              <td>
+                <button class="action-btn record-payment-btn" onclick="recordPayment('{{student.student_id}}')">
+                  Record
+                </button>
+              </td>
+              <td>
+                <button class="action-btn edit-btn" onclick="openEditModal({
+                studentName: '{{student.studentname}}',
+                fatherName: '{{student.fathername}}',
+                classId: '{{student.classname.class_id}}',
+                batchId: '{{student.batchname.batch_id}}',
+                batchName: '{{student.batchname.batch_name}}',
+                phone: '{{student.phone}}',
+                email: '{{student.email}}',
+                address: '{{student.address}}'
+              },'{{student.student_id}}')">
+                  📝
+                </button>
+              </td>
+              <td>
+                <button class="action-btn delete-btn" data-url="{% url 'DeleteStudent' student.student_id %}"
+                  onclick="deleteRow(this)">
+                  🗑️
+                </button>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="stats-section" style="padding-top: 6px">
+        <div class="stat-card">
+          <h3>Total Students</h3>
+          <p id="totalStudents">{{count}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Add Student Modal -->
+  <div id="addStudentModal" style="
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.6);
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+      ">
+    <div style="
+          background: white;
+          border-radius: 12px;
+          width: 95%;
+          max-width: 520px;
+          padding: 28px 24px;
+          box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+          position: relative;
+        ">
+      <h2 style="
+            font-size: 22px;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 16px;
+          ">
+        Add New Student
+      </h2>
+      <form id="addStudentForm" data-url="{% url 'AddStudent' %}" onsubmit="AddStudent(this,event)">
+        {% csrf_token %}
+        <div style="margin-bottom: 16px">
+          <label style="display: block; font-weight: 500; margin-bottom: 6px">Student Name</label>
+          <input type="text" id="studentName" name="studentName" placeholder="Enter student name" required style="
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #e2e8f0;
+                border-radius: 8px;
+              " />
+        </div>
+
+        <div style="margin-bottom: 16px">
+          <label style="display: block; font-weight: 500; margin-bottom: 6px">Father's Name</label>
+          <input type="text" id="fatherName" name="fatherName" placeholder="Enter father's name" required style="
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #e2e8f0;
+                border-radius: 8px;
+              " />
+        </div>
+
+        <div style="
+              display: grid;
+              grid-template-columns: 1fr 1fr;
+              gap: 12px;
+              margin-bottom: 16px;
+            ">
+          <div>
+            <label style="display: block; font-weight: 500; margin-bottom: 6px">Class</label>
+            <select id="classSelect" name="className" required onchange="classselection(this)" style="
+                  width: 100%;
+                  padding: 10px;
+                  border: 1px solid #e2e8f0;
+                  border-radius: 8px;
+                ">
+              <option value="">Select Class</option>
+              {% for class in classes %}
+              <option value="{{class.class_id}}">{{class.classname}}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div>
+            <label style="display: block; font-weight: 500; margin-bottom: 6px">Batch</label>
+            <select id="batchSelect" name="batchName" required style="
+                  width: 100%;
+                  padding: 10px;
+                  border: 1px solid #e2e8f0;
+                  border-radius: 8px;
+                ">
+              <option value="">Select Batch</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 16px">
+          <label style="display: block; font-weight: 500; margin-bottom: 6px">Mobile Number</label>
+          <input type="text" id="phone" name="phone" placeholder="Enter mobile number" required style="
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #e2e8f0;
+                border-radius: 8px;
+              " />
+        </div>
+
+        <div style="margin-bottom: 16px">
+          <label style="display: block; font-weight: 500; margin-bottom: 6px">Email</label>
+          <input type="email" id="email" name="email" placeholder="Enter email address" style="
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #e2e8f0;
+                border-radius: 8px;
+              " />
+        </div>
+
+        <div style="margin-bottom: 16px">
+          <label style="display: block; font-weight: 500; margin-bottom: 6px">Address</label>
+          <textarea id="address" name="address" placeholder="Enter full address" style="
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #e2e8f0;
+                border-radius: 8px;
+                resize: none;
+              " rows="2"></textarea>
+        </div>
+
+        <div style="margin-bottom: 20px">
+          <label style="display: block; font-weight: 500; margin-bottom: 6px">Upload Student Photo</label>
+          <input type="file" id="photo" name="photo" accept="image/*" style="width: 100%; padding: 8px" />
+        </div>
+
+        <div style="
+              display: flex;
+              justify-content: flex-end;
+              gap: 10px;
+              margin-top: 20px;
+            ">
+          <button type="button" onclick="closeAddModal()" style="
+                background: #e2e8f0;
+                color: #2d3748;
+                padding: 10px 16px;
+                border: none;
+                border-radius: 8px;
+                font-weight: 500;
+                cursor: pointer;
+              ">
+            Cancel
+          </button>
+          <button type="submit" style="
+                background: #4c6ef5;
+                color: white;
+                padding: 10px 16px;
+                border: none;
+                border-radius: 8px;
+                font-weight: 500;
+                cursor: pointer;
+              ">
+            Save
+          </button>
+        </div>
+      </form>
+
+      <!-- Close icon -->
+      <span onclick="closeAddModal()" style="
+            position: absolute;
+            top: 12px;
+            right: 16px;
+            font-size: 22px;
+            cursor: pointer;
+            color: #4a5568;
+            user-select: none;
+          ">&times;</span>
+    </div>
+  </div>
+  <!-- Edit Student Modal -->
+  <div id="editStudentModal" style="
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.6);
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+      ">
+    <div style="
+          background: white;
+          border-radius: 12px;
+          width: 95%;
+          max-width: 520px;
+          padding: 28px 24px;
+          box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+          position: relative;
+        ">
+      <h2 style="
+            font-size: 22px;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 16px;
+          ">
+        Edit Student
+      </h2>
+      <form id="editStudentForm" method="post" enctype="multipart/form-data" onsubmit="EditStudent(this,event)">
+        {% csrf_token %}
+        <div style="margin-bottom: 16px">
+          <label style="display: block; font-weight: 500; margin-bottom: 6px">Student Name</label>
+          <input type="text" id="editStudentName" name="studentName" placeholder="Enter student name" required style="
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #e2e8f0;
+                border-radius: 8px;
+              " />
+        </div>
+
+        <div style="margin-bottom: 16px">
+          <label style="display: block; font-weight: 500; margin-bottom: 6px">Father's Name</label>
+          <input type="text" id="editFatherName" name="fatherName" placeholder="Enter father's name" required style="
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #e2e8f0;
+                border-radius: 8px;
+              " />
+        </div>
+
+        <div style="
+              display: grid;
+              grid-template-columns: 1fr 1fr;
+              gap: 12px;
+              margin-bottom: 16px;
+            ">
+          <div>
+            <label style="display: block; font-weight: 500; margin-bottom: 6px">Class</label>
+            <select id="editClassSelect" name="className" required style="
+                  width: 100%;
+                  padding: 10px;
+                  border: 1px solid #e2e8f0;
+                  border-radius: 8px;
+                " onchange="editclassselection(this)">
+              <option value="">Select Class</option>
+              {% for class in classes %}
+              <option value="{{class.class_id}}">{{class.classname}}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div>
+            <label style="display: block; font-weight: 500; margin-bottom: 6px">Batch</label>
+            <select id="editBatchSelect" name="batchName" required style="
+                  width: 100%;
+                  padding: 10px;
+                  border: 1px solid #e2e8f0;
+                  border-radius: 8px;
+                ">
+              <option value="">Select Batch</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 16px">
+          <label style="display: block; font-weight: 500; margin-bottom: 6px">Mobile Number</label>
+          <input type="text" id="editPhone" name="phone" placeholder="Enter mobile number" required style="
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #e2e8f0;
+                border-radius: 8px;
+              " />
+        </div>
+
+        <div style="margin-bottom: 16px">
+          <label style="display: block; font-weight: 500; margin-bottom: 6px">Email</label>
+          <input type="email" id="editEmail" name="email" placeholder="Enter email address" style="
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #e2e8f0;
+                border-radius: 8px;
+              " />
+        </div>
+
+        <div style="margin-bottom: 16px">
+          <label style="display: block; font-weight: 500; margin-bottom: 6px">Address</label>
+          <textarea id="editAddress" name="address" placeholder="Enter full address" style="
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #e2e8f0;
+                border-radius: 8px;
+                resize: none;
+              " rows="2"></textarea>
+        </div>
+
+        <div style="
+              display: flex;
+              justify-content: flex-end;
+              gap: 10px;
+              margin-top: 20px;
+            ">
+          <button type="button" onclick="closeEditModal()" style="
+                background: #e2e8f0;
+                color: #2d3748;
+                padding: 10px 16px;
+                border: none;
+                border-radius: 8px;
+                font-weight: 500;
+                cursor: pointer;
+              ">
+            Cancel
+          </button>
+          <button type="submit" style="
+                background: #4c6ef5;
+                color: white;
+                padding: 10px 16px;
+                border: none;
+                border-radius: 8px;
+                font-weight: 500;
+                cursor: pointer;
+              ">
+            Save
+          </button>
+        </div>
+      </form>
+
+      <!-- Close icon -->
+      <span onclick="closeEditModal()" style="
+            position: absolute;
+            top: 12px;
+            right: 16px;
+            font-size: 22px;
+            cursor: pointer;
+            color: #4a5568;
+            user-select: none;
+          ">&times;</span>
+    </div>
+  </div>
+
+  <script>
+    // Open Add Student Modal
+    function openAddModal() {
+      document.getElementById("addStudentModal").style.display = "flex";
+      document.body.style.overflow = "hidden";
+    }
+
+    // Close Add Student Modal
+    function closeAddModal() {
+      document.getElementById("addStudentModal").style.display = "none";
+      document.body.style.overflow = "auto";
+    }
+
+    function editclassselection(select) {
+      const selectedelem = select.value;
+      const batchSelect = document.getElementById("editBatchSelect");
+      const url = "{% url 'get_batches' 0 %}".replace("0", selectedelem);
+      fetch(url)
+        .then((res) => res.json())
+        .then((data) => {
+          batchSelect.innerHTML = '<option value=" ">Select Batch</option>';
+          if (data.batches.length > 0) {
+            data.batches.forEach((batch) => {
+              const option = document.createElement("option");
+              option.value = batch.id;
+              option.textContent = batch.name;
+              batchSelect.appendChild(option);
+            });
+          } else {
+            const option = document.createElement("option");
+            option.textContent = "No batches found";
+            option.disabled = true;
+            batchSelect.appendChild(option);
+          }
+        })
+        .catch((err) => {
+          batchSelect.innerHTML =
+            "<option disabled>Error in Loading</option>";
+          alert(err);
+        });
+    }
+    function classselection(select){
+      const selected_class = select.value;
+      const batch_list = document.getElementById('batchSelect')
+      const url = "{% url 'get_batches' 0 %}".replace('0',selected_class)
+      fetch(url)
+      .then(res => res.json())
+      .then(data => {
+        batch_list.innerHTML = '<option value=" ">Select Batch</option>';
+        if(data.batches.length > 0){
+          data.batches.forEach(batch => {
+            const new_batch = document.createElement("option")
+            new_batch.value = batch.id
+            new_batch.textContent = batch.name
+            batch_list.appendChild(new_batch)
+          })
+        }
+        else{
+          const no_batch = document.createElement('option')
+          no_batch.textContent = 'No batches found'
+          no_batch.disabled = true
+          batch_list.appendChild(no_batch)
+        }
+      })
+      .catch(err => {
+        batch_list.innerHTML = '<option disabled>Error in Loading</option>'
+      })
+    }
+
+    function AddStudent(form, e) {
+      e.preventDefault();
+      const formdata = new FormData(form);
+      const submitbtn = form.querySelector('button[type="submit"]');
+      submitbtn.disabled = true;
+      submitbtn.innerText = "Recording...";
+      const url = form.dataset.url;
+      fetch(url, {
+        method: "POST",
+        body: formdata,
+        headers: {
+          "X-CSRFToken": formdata.get("csrfmiddlewaretoken"),
+        },
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.status == "success") {
+            form.reset();
+            submitbtn.disabled = false;
+            submitbtn.innerText = "Save";
+            window.location.reload();
+          } else {
+            alert(data.message);
+          }
+        })
+        .catch((err) => {
+          alert(err);
+        });
+    }
+
+    // Open Edit Student Modal with existing data
+function openEditModal(studentData,student_id) {
+  document.getElementById('editStudentModal').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  const form = document.getElementById('editStudentForm')
+  const baseUrl = "{% url 'EditStudent' 0 %}"
+  const url = baseUrl.replace('0',student_id)
+  form.action = url
+
+  // Populate fields
+  document.getElementById('editStudentName').value = studentData.studentName || '';
+  document.getElementById('editFatherName').value = studentData.fatherName || '';
+  document.getElementById('editClassSelect').value = studentData.classId || '';
+  document.getElementById('editBatchSelect').innerHTML = `<option value="${studentData.batchId}">${studentData.batchName}</option>`;
+  document.getElementById('editPhone').value = studentData.phone || '';
+  document.getElementById('editEmail').value = studentData.email || '';
+  document.getElementById('editAddress').value = studentData.address || '';
+}
+
+// Close Edit Student Modal
+function closeEditModal() {
+  document.getElementById('editStudentModal').style.display = 'none';
+  document.body.style.overflow = 'auto';
+}
+function editclassselection(select) {
+      const selectedelem = select.value;
+      const batchSelect = document.getElementById("editBatchSelect");
+      const url = "{% url 'get_batches' 0 %}".replace("0", selectedelem);
+      fetch(url)
+        .then((res) => res.json())
+        .then((data) => {
+          batchSelect.innerHTML = '<option value=" ">Select Batch</option>';
+          if (data.batches.length > 0) {
+            data.batches.forEach((batch) => {
+              const option = document.createElement("option");
+              option.value = batch.id;
+              option.textContent = batch.name;
+              batchSelect.appendChild(option);
+            });
+          } else {
+            const option = document.createElement("option");
+            option.textContent = "No batches found";
+            option.disabled = true;
+            batchSelect.appendChild(option);
+          }
+        })
+        .catch((err) => {
+          batchSelect.innerHTML =
+            "<option disabled>Error in Loading</option>";
+          alert(err);
+        });
+    }
+
+    function EditStudent(form,e){
+      e.preventDefault()
+      const formdata = new FormData(form)
+      const submitbtn = form.querySelector('button[type="submit"]')
+      submitbtn.disabled = true
+      submitbtn.innerText = 'Saving'
+      const url = form.action
+      fetch(url,{
+        method:'POST',
+        body: formdata,
+        headers:{
+          'X-CSRFToken':formdata.get('csrfmiddlewaretoken')
+        }
+      })
+      .then(res => res.json())
+      .then(data => {
+        if(data.status == 'success'){
+          window.location.reload()
+        }
+        else{
+          alert(data.message)
+        }
+      })
+      .catch(err => {
+        alert(err)
+      })
+    }
+    function promoteStudent() {
+      window.location.href = "/teacher/PromoteStudent";
+    }
+
+    function recordPayment(student_id) {
+      window.location.href = `/teacher/RecordPayment/${student_id}`
+    }
+
+    function editStudent(button) {
+      window.location.href = button.dataset.url;
+    }
+
+    function filterStudents() {
+      const searchInput = document
+        .getElementById("searchInput")
+        .value.toLowerCase();
+      const selectedClass = document
+        .getElementById("classFilter")
+        .value.toLowerCase();
+      const rows = document.querySelectorAll("#studentTable tbody tr");
+
+      let visibleCount = 0;
+      rows.forEach((row) => {
+        const cells = row.getElementsByTagName("td");
+        const classText = cells[2].textContent.toLowerCase();
+        const matchSearch = Array.from(cells).some((cell) =>
+          cell.textContent.toLowerCase().includes(searchInput)
+        );
+        const matchClass =
+          selectedClass === "all" || classText === selectedClass;
+
+        if (matchSearch && matchClass) {
+          row.style.display = "";
+          visibleCount++;
+        } else {
+          row.style.display = "none";
+        }
+      });
+
+      if (visibleCount === 0) {
+        showEmptyState();
+      } else {
+        removeEmptyState();
+      }
+    }
+
+    function deleteRow(button) {
+      const row = button.closest("tr");
+      const name = row.querySelector("td strong").textContent;
+      const url = button.dataset.url;
+      if (!confirm(`Are you sure you want to delete ${name}?`)) return;
+      fetch(url, {
+        method: "POST",
+        headers: {
+          "X-CSRFToken": "{{ csrf_token }}",
+        },
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.status == "success") {
+            alert(`Student ${name} deleted successfully!`);
+            window.location.reload();
+          }
+        })
+        .catch((err) => {
+          alert("Error deleting student", err);
+        });
+    }
+
+    function updateTotalStudents() {
+      const total = document.querySelectorAll(
+        "#studentTable tbody tr"
+      ).length;
+      document.getElementById("totalStudents").textContent = total;
+    }
+
+    function showEmptyState() {
+      const tbody = document.querySelector("#studentTable tbody");
+      if (!document.querySelector(".empty-state")) {
+        const emptyRow = document.createElement("tr");
+        emptyRow.className = "empty-state";
+        emptyRow.innerHTML =
+          '<td colspan="9" class="empty-state"><p>No students found</p><small>Try adjusting your search or filters</small></td>';
+        tbody.appendChild(emptyRow);
+      }
+    }
+
+    function removeEmptyState() {
+      const emptyState = document.querySelector(".empty-state");
+      if (emptyState) {
+        emptyState.remove();
+      }
+    }
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Record - Student Management</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+        }
+
+        .page-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .page-subtitle {
+            font-size: 16px;
+            color: #666;
+        }
+
+        .student-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            display: flex;
+            gap: 30px;
+            align-items: center;
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .student-photo-wrapper {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            flex-shrink: 0;
+        }
+
+        .student-photo {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .student-details {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .detail-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 600;
+        }
+
+        .detail-value {
+            font-size: 22px;
+            color: white;
+            font-weight: 700;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .payment-info-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .info-card {
+            padding: 18px;
+            background: white;
+            border-radius: 10px;
+            border-left: 4px solid #ef4444;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .info-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        }
+
+        .info-card-label {
+            font-size: 11px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .info-card-value {
+            font-size: 22px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .records-section {
+            margin-top: 40px;
+        }
+
+        .records-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .btn-print {
+            background: #10b981;
+            color: white;
+            padding: 12px 28px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+
+        .btn-print:hover {
+            background: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+
+        .records-table {
+            width: 100%;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid #e5e7eb;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .records-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .records-table thead {
+            background: #667eea;
+            color: white;
+        }
+
+        .records-table th {
+            padding: 16px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .records-table td {
+            padding: 16px;
+            border-bottom: 1px solid #e5e7eb;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .records-table tbody tr:hover {
+            background: #f9fafb;
+        }
+
+        .records-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .no-records {
+            text-align: center;
+            padding: 50px;
+            color: #888;
+            font-size: 16px;
+        }
+
+        /* Print Styles */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .container {
+                box-shadow: none;
+                padding: 20px;
+            }
+
+            .btn-print,
+            .page-subtitle {
+                display: none !important;
+            }
+
+            .student-card {
+                background: #667eea !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .records-table thead {
+                background: #667eea !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .info-card {
+                border-left-color: #ef4444 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .page-header {
+                margin-bottom: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            .student-card {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .student-details {
+                gap: 10px;
+            }
+
+            .payment-info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .records-header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+
+            .btn-print {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .records-table {
+                overflow-x: auto;
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">Student Payment Record</h1>
+            <p class="page-subtitle">View payment history and outstanding fees</p>
+        </div>
+
+        <!-- Student Information Card -->
+        <div class="student-card">
+            <div class="student-photo-wrapper">
+                <!-- Django template variable: {{ student.photo.url }} -->
+                <img src="{{student.photo.url}}" alt="Student Photo" class="student-photo">
+            </div>
+            <div class="student-details">
+                <div class="detail-item">
+                    <span class="detail-label">Student Name</span>
+                    <!-- Django template variable: {{ student.name }} -->
+                    <span class="detail-value">{{student.studentname}}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Class</span>
+                    <!-- Django template variable: {{ student.class }} -->
+                    <span class="detail-value">{{student.classname.classname}}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Outstanding Information -->
+        <h2 class="section-title">Outstanding Fees</h2>
+        <div class="payment-info-grid">
+            <div class="info-card">
+                <div class="info-card-label">Due Months</div>
+                {% if student.fees.last.due_months.0 > 0 %}
+                    {% if student.fees.last.due_months.0 > 1 %}
+                    <div class="info-card-value" style="color: red;">{{student.fees.last.due_months.0}}</div>
+                    {% else %}
+                    <div class="info-card-value" style="color: rgb(221, 105, 10);">{{student.fees.last.due_months.0}}</div>
+                    {% endif %}
+                {% else %}
+                    <div class="info-card-value" style="color: green;">{{student.fees.last.due_months.0}} Extra Paid</div>
+                {% endif %}
+            </div>
+            <div class="info-card">
+                <div class="info-card-label">Due Amount</div>
+                <!-- Django template variable: {{ payment_info.due_amount }} -->
+                <div class="info-card-value">₹{{student.fees.last.due_months.2}}</div>
+            </div>
+            <div class="info-card">
+                <div class="info-card-label">Year Outstanding</div>
+                <div class="info-card-value">₹{{student.fees.last.due_months.3}}</div>
+            </div>
+        </div>
+
+        <!-- Payment Records Section -->
+        <div class="records-section">
+            <div class="records-header">
+                <h2 class="section-title" style="margin: 0; padding: 0; border: none;">Payment Records</h2>
+                
+                <button class="btn-print" onclick="printStatement()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/>
+                        <path d="M6 14h12v8H6z"/>
+                    </svg>
+                    Print Statement
+                </button>
+            </div>
+
+            <div class="records-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Amount Paid</th>
+                            <th>Payment Mode</th>
+                            <th>Remarks</th>
+                            <th>Paying Month</th>
+                            <th>How many Month</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recordsBody">
+                        {% for record in all_records %}
+                        <tr>
+                            <td>{{ record.paid_at }}</td>
+                            <td>₹{{ record.fees }}</td>
+                            <td>{{ record.mode }}</td>
+                            <td>{{ record.remark }}</td>
+                            <td>{{ record.paying_month }}</td>
+                            <td>{{ record.how_many_month }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="no-records">No payment records found</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function printStatement() {
+            window.print();
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Notice Board - TuitionTeacher</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Oxygen, Ubuntu, Cantarell, sans-serif;
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 16px;
+        padding: 40px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      }
+
+      .header {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 40px;
+      }
+
+      .logo {
+        width: 50px;
+        height: 50px;
+        background: white;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+      }
+
+      .logo-text {
+        font-size: 28px;
+        font-weight: 600;
+        color: #333;
+      }
+
+      .page-title {
+        font-size: 32px;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 8px;
+      }
+
+      .page-subtitle {
+        color: #666;
+        font-size: 14px;
+      }
+
+      .notice-form {
+        background: #f8f9ff;
+        padding: 30px;
+        border-radius: 12px;
+        margin-bottom: 40px;
+        border: 2px solid #e0e7ff;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      .form-group label {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 8px;
+        font-size: 14px;
+        display: block;
+      }
+
+      .form-group textarea {
+        width: 100%;
+        padding: 12px 16px;
+        border: 2px solid #e0e7ff;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: all 0.3s;
+        background: white;
+        font-family: inherit;
+        resize: vertical;
+        min-height: 120px;
+      }
+
+      .form-group textarea:focus {
+        outline: none;
+        border-color: #6366f1;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+      }
+
+      .image-upload {
+        position: relative;
+      }
+
+      .image-upload input[type="file"] {
+        opacity: 0;
+        position: absolute;
+        z-index: -1;
+      }
+
+      .image-upload-label {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 16px;
+        background: white;
+        border: 2px dashed #6366f1;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s;
+        justify-content: center;
+      }
+
+      .image-upload-label:hover {
+        background: #f8f9ff;
+        border-color: #8b5cf6;
+      }
+
+      .image-preview {
+        margin-top: 15px;
+        display: none;
+      }
+
+      .image-preview img {
+        max-width: 200px;
+        max-height: 200px;
+        border-radius: 8px;
+        border: 2px solid #e0e7ff;
+      }
+
+      .image-name {
+        color: #666;
+        font-size: 13px;
+        margin-top: 5px;
+      }
+
+      .btn-post {
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        color: white;
+        border: none;
+        padding: 12px 32px;
+        border-radius: 8px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+      }
+
+      .btn-post:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6);
+      }
+
+      .notices-table {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .table-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 30px;
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        color: white;
+      }
+
+      .table-header h3 {
+        font-size: 20px;
+      }
+
+      .total-count {
+        background: rgba(255, 255, 255, 0.2);
+        padding: 6px 16px;
+        border-radius: 20px;
+        font-size: 14px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      thead {
+        background: #f8f9ff;
+      }
+
+      th {
+        padding: 16px;
+        text-align: left;
+        font-weight: 600;
+        color: #333;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      td {
+        padding: 16px;
+        border-bottom: 1px solid #f0f0f0;
+        color: #555;
+        font-size: 14px;
+      }
+
+      tbody tr {
+        transition: all 0.3s;
+      }
+
+      tbody tr:hover {
+        background: #f8f9ff;
+      }
+
+      .notice-image {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 2px solid #e0e7ff;
+      }
+
+      .no-image {
+        width: 80px;
+        height: 80px;
+        background: #f0f0f0;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #999;
+        font-size: 12px;
+      }
+
+      .notice-instruction {
+        max-width: 400px;
+        line-height: 1.5;
+        color: #555;
+      }
+
+      .btn-action {
+        padding: 8px 16px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 600;
+        transition: all 0.3s;
+        margin-right: 8px;
+      }
+
+      .btn-edit {
+        background: #10b981;
+        color: white;
+      }
+
+      .btn-edit:hover {
+        background: #059669;
+        transform: translateY(-1px);
+      }
+
+      .btn-delete {
+        background: #ef4444;
+        color: white;
+      }
+
+      .btn-delete:hover {
+        background: #dc2626;
+        transform: translateY(-1px);
+      }
+
+      .btn-view {
+        background: #6366f1;
+        color: white;
+      }
+
+      .btn-view:hover {
+        background: #4f46e5;
+        transform: translateY(-1px);
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #999;
+      }
+
+      .empty-state-icon {
+        font-size: 48px;
+        margin-bottom: 16px;
+      }
+
+      /* Modal Styles */
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .modal.active {
+        display: flex;
+      }
+
+      .modal-content {
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        max-width: 500px;
+        width: 90%;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        max-height: 80vh;
+        overflow-y: auto;
+      }
+
+      .modal-header {
+        font-size: 22px;
+        font-weight: 700;
+        margin-bottom: 20px;
+        color: #333;
+      }
+
+      .modal-buttons {
+        display: flex;
+        gap: 12px;
+        justify-content: flex-end;
+        margin-top: 20px;
+      }
+
+      .btn-cancel {
+        background: #e5e7eb;
+        color: #333;
+        padding: 10px 24px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+      }
+
+      .btn-confirm {
+        background: #ef4444;
+        color: white;
+        padding: 10px 24px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+      }
+
+      .close-btn {
+        float: right;
+        font-size: 24px;
+        cursor: pointer;
+        font-weight: bold;
+        color: #666;
+        line-height: 1;
+      }
+
+      .close-btn:hover {
+        color: #333;
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          padding: 20px;
+        }
+
+        .page-title {
+          font-size: 24px;
+        }
+
+        .notice-form {
+          padding: 20px;
+        }
+
+        table {
+          font-size: 12px;
+        }
+
+        th,
+        td {
+          padding: 12px 8px;
+        }
+
+        .notice-image,
+        .no-image {
+          width: 60px;
+          height: 60px;
+        }
+
+        .btn-action {
+          padding: 6px 12px;
+          font-size: 12px;
+          display: block;
+          margin-bottom: 5px;
+        }
+
+        .table-wrapper {
+          overflow-x: auto;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="header">
+        <img src="{{info.website_logo.url}}" alt="" class="logo">
+        <div class="logo-text">{{info.website_name}}</div>
+      </div>
+
+      <div>
+        <h1 class="page-title">Notice Board</h1>
+        <p class="page-subtitle">
+          Post and manage important notices for students
+        </p>
+      </div>
+
+      <div class="notice-form">
+        <form
+          method="POST"
+          onsubmit="AddNotice(this,event)"
+          enctype="multipart/form-data"
+        >
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="instructionInput">Notice Instructions *</label>
+            <textarea
+              name="notice_instraction"
+              id="instructionInput"
+              placeholder="Enter important instructions or announcements..."
+              required
+            ></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Attach Image (Optional)</label>
+            <div class="image-upload">
+              <label class="image-upload-label" for="imageInput">
+                🖼️ Choose Image
+              </label>
+              <input
+                type="file"
+                id="imageInput"
+                name="notice_photo"
+                accept="image/*"
+              />
+            </div>
+            <div class="image-preview" id="imagePreview">
+              <img id="previewImg" src="" alt="Preview" />
+            </div>
+            <div class="image-name" id="imageName"></div>
+          </div>
+
+          <button type="submit" class="btn-post">📢 Post Notice</button>
+        </form>
+      </div>
+
+      <div class="notices-table">
+        <div class="table-header">
+          <h3>Posted Notices</h3>
+          <div class="total-count">
+            Total: <span id="totalCount">{{ count }}</span>
+          </div>
+        </div>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Image</th>
+                <th>Instructions</th>
+                <th>Posted Date</th>
+                <th>Edit</th>
+                <th>Delete</th>
+              </tr>
+            </thead>
+            <tbody id="noticesBody">
+              {% if notices %} {% for notice in notices %}
+              <tr>
+                {% if notice.notice_photo %}
+                <td>
+                  <button
+                    class="btn-action btn-view"
+                    onclick="openImageModal('{{ notice.notice_photo.url }}')"
+                  >
+                    🖼️ View Notice
+                  </button>
+                </td>
+                {% else %}
+                <td>
+                  <div class="no-image">No Image</div>
+                </td>
+                {% endif %}
+
+                <td class="notice-instruction">
+                  {{ notice.notice_instraction }}
+                </td>
+                <td>{{ notice.notice_date|date:"Y-m-d H:i" }}</td>
+
+                <td>
+                  <button
+                    class="btn-action btn-edit"
+                    onclick="openEditNoticeModal(
+            '{{ notice.notice_id }}', 
+            '{{ notice.notice_instraction|escapejs }}', 
+            '{% if notice.notice_photo %}{{ notice.notice_photo.url }}{% endif %}'
+        )"
+                  >
+                    📝 Edit
+                  </button>
+                </td>
+                <td>
+                  <button
+                    data-url="{% url "DeleteNotice" notice.notice_id %}"
+                    class="btn-action btn-delete"
+                    onclick="DeleteNotice(this)"
+                  >
+                    🗑️ Delete
+                  </button>
+                </td>
+              </tr>
+              {% endfor %} {% else %}
+              <tr>
+                <td colspan="5" class="empty-state">
+                  <div class="empty-state-icon">📋</div>
+                  <div>No notices posted yet. Create your first notice!</div>
+                </td>
+              </tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Image Modal -->
+    <div class="modal" id="imageModal">
+      <div class="modal-content" style="max-width: 700px; text-align: center">
+        <span class="close-btn" onclick="closeImageModal()">&times;</span>
+        <h3 style="margin-bottom: 20px">Notice Image</h3>
+        <img
+          id="modalImage"
+          src=""
+          alt="Notice Image"
+          style="
+            max-width: 100%;
+            border-radius: 12px;
+            border: 2px solid #e0e7ff;
+          "
+        />
+      </div>
+    </div>
+
+    <!-- Edit Notice Modal -->
+    <div class="modal" id="editNoticeModal">
+      <div class="modal-content" style="max-width: 600px">
+        <span class="close-btn" onclick="closeEditNoticeModal()">&times;</span>
+        <div class="modal-header">Edit Notice</div>
+        <form id="editNoticeForm" data-base-url="{% url "EditNotice" 0 %}" enctype="multipart/form-data" onsubmit="EditNotice(this,event)">
+            {% csrf_token %}
+          <!-- Instructions -->
+          <div class="form-group">
+            <label for="editInstruction">Notice Instructions *</label>
+            <textarea
+              id="editInstruction"
+              name="notice_instraction"
+              required
+              style="width: 100%; padding: 10px; border-radius: 8px; border: 2px solid #e0e7ff; min-height: 120px"
+            ></textarea>
+          </div>
+
+          <!-- Current Image -->
+          <div class="form-group">
+            <label>Current Image</label>
+            <div class="image-preview" id="editImagePreview" style="display: none">
+              <img
+                id="editModalImage"
+                src=""
+                alt="Notice Image"
+                style="
+                  max-width: 100%;
+                  border-radius: 8px;
+                  border: 2px solid #e0e7ff;
+                "
+              />
+            </div>
+            <div id="noImageText" style="color: #999; font-size: 14px; display: none">No current image</div>
+          </div>
+
+          <!-- Change Image (optional) -->
+          <div class="form-group">
+            <label>Change Image (Optional)</label>
+            <div class="image-upload">
+              <div
+                class="image-upload-label"
+                onclick="document.getElementById('editImageInput').click()"
+              >
+                🖼️ Choose New Image
+              </div>
+              <input
+                type="file"
+                id="editImageInput"
+                name="notice_photo"
+                accept="image/*"
+                style="display: none"
+              />
+              <div class="image-name" id="editImageName"></div>
+            </div>
+          </div>
+
+          <!-- Buttons -->
+          <div class="modal-buttons">
+            <button
+              type="button"
+              class="btn-cancel"
+              onclick="closeEditNoticeModal()"
+            >
+              Cancel
+            </button>
+            <button type="submit" class="btn-post">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      
+      // Add Notice Function
+      function AddNotice(form, e) {
+        e.preventDefault();
+        const formdata = new FormData(form);
+        const submitbtn = form.querySelector('button[type="submit"]');
+        submitbtn.disabled = true;
+        submitbtn.innerText = "Submitting Notice";
+
+        fetch(window.location.href, {
+          method: "POST",
+          body: formdata,
+          headers: {
+            "X-CSRFToken": formdata.get("csrfmiddlewaretoken"),
+          },
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.status == "success") {
+              alert("Notice updated successfully");
+              window.location.reload();
+            } else {
+              alert(data.message);
+              submitbtn.disabled = false;
+              submitbtn.innerText = "📢 Post Notice";
+            }
+          })
+          .catch((err) => {
+            alert("Error: " + err);
+            submitbtn.disabled = false;
+            submitbtn.innerText = "📢 Post Notice";
+          });
+      }
+
+      // Delete Notice Function
+      
+
+      // Global variable to track current notice ID
+      let editNoticeId = null;
+
+      // Image upload handling for main form
+      const imageInput = document.getElementById("imageInput");
+      const imagePreview = document.getElementById("imagePreview");
+      const previewImg = document.getElementById("previewImg");
+      const imageName = document.getElementById("imageName");
+
+      imageInput.addEventListener("change", function (e) {
+        const file = e.target.files[0];
+        if (file) {
+          imageName.textContent = file.name;
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            previewImg.src = e.target.result;
+            imagePreview.style.display = "block";
+          };
+          reader.readAsDataURL(file);
+        } else {
+          imageName.textContent = "";
+          imagePreview.style.display = "none";
+        }
+      });
+
+      // Edit image upload handling
+      const editImageInput = document.getElementById("editImageInput");
+      const editImageName = document.getElementById("editImageName");
+
+      editImageInput.addEventListener("change", function (e) {
+        const file = e.target.files[0];
+        if (file) {
+          editImageName.textContent = "New image: " + file.name;
+        } else {
+          editImageName.textContent = "";
+        }
+      });
+
+      // Function to open image modal
+      function openImageModal(imageUrl) {
+        console.log("Opening image modal:", imageUrl);
+        const modal = document.getElementById("imageModal");
+        const modalImage = document.getElementById("modalImage");
+        modalImage.src = imageUrl;
+        modal.classList.add("active");
+      }
+
+      // Function to close image modal
+      function closeImageModal() {
+        const modal = document.getElementById("imageModal");
+        modal.classList.remove("active");
+      }
+
+      // Open Edit Notice Modal
+      function openEditNoticeModal(noticeId, instructions, imageUrl) {
+        console.log("Opening edit modal", noticeId, instructions, imageUrl);
+        editNoticeId = noticeId;
+
+        // Fill the instructions field
+        document.getElementById("editInstruction").value = instructions;
+        
+        // Handle image display
+        const editImg = document.getElementById("editModalImage");
+        const editPreview = document.getElementById("editImagePreview");
+        const noImageText = document.getElementById("noImageText");
+
+        if (imageUrl && imageUrl.trim() !== '') {
+          editImg.src = imageUrl;
+          editPreview.style.display = "block";
+          noImageText.style.display = "none";
+        } else {
+          editImg.src = "";
+          editPreview.style.display = "none";
+          noImageText.style.display = "block";
+        }
+
+        // Clear the file input and its name display
+        document.getElementById("editImageInput").value = "";
+        document.getElementById("editImageName").textContent = "";
+
+        const form = document.getElementById('editNoticeForm')
+        const baseURL = form.dataset.baseUrl
+        form.action = baseURL.replace('0',noticeId)
+        alert(form.action)
+
+        // Show modal
+        const modal = document.getElementById("editNoticeModal");
+        modal.classList.add("active");
+        console.log("Modal classList:", modal.classList);
+      }
+
+      // Close Edit Notice Modal
+      function closeEditNoticeModal() {
+        document.getElementById("editNoticeModal").classList.remove("active");
+      }
+
+      // Close modal when clicking outside
+      window.addEventListener('click', function(event) {
+        const imageModal = document.getElementById('imageModal');
+        const editModal = document.getElementById('editNoticeModal');
+        
+        if (event.target === imageModal) {
+          closeImageModal();
+        }
+        if (event.target === editModal) {
+          closeEditNoticeModal();
+        }
+      });
+      function EditNotice(form,e){
+        e.preventDefault()
+        const submitbtn = form.querySelector('button[type="submit"]')
+        const url = form.action
+        submitbtn.disabled = true
+        submitbtn.innerText = 'Saving...'
+        const formdata = new FormData(form)
+        fetch(url,{
+            method:'POST',
+            body:formdata,
+            headers:{
+                'X-CSRFToken':formdata.get('csrfmiddlewaretoken')
+            }
+        })
+        .then(res => res.json())
+        .then(data=>{
+            if(data.status=='success'){
+                alert(data.message)
+                window.location.href = `/teacher/AddNotice/`
+            }
+            else{
+                alert(data.message)
+            }
+        })
+        .catch(err => {
+            alert(err)
+        })
+      }
+      function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+      function DeleteNotice(button){
+        const url = button.dataset.url
+        const row = button.closest('tr')
+        fetch(url,{
+          method:'POST',
+          headers:{
+            'X-CSRFToken':getCookie('csrftoken')
+          }
+        })
+        .then(res => res.json())
+        .then(data => {
+          if(data.status == 'success'){
+            alert(data.message)
+            window.location.reload()
+          }
+          else{
+            alert(data.message)
+          }
+        })
+        .catch(err => {
+          alert(err)
+        })
+      }
+    </script>
+  </body>
+</html>

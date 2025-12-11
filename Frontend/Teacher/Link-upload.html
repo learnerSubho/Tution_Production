@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Meet Links - TuitionTeacher</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding: 0 10px;
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+            background: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .brand-name {
+            color: white;
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #2d3748;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #718096;
+            font-size: 16px;
+            margin-bottom: 30px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .section-header span {
+            font-size: 20px;
+        }
+
+        .section-header h2 {
+            color: #4a5568;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            color: #4a5568;
+            font-weight: 500;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .required {
+            color: #e53e3e;
+        }
+
+        input[type="text"],
+        input[type="url"],
+        input[type="date"],
+        input[type="time"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .link-count-selector {
+            background: linear-gradient(135deg, #edf2f7 0%, #e2e8f0 100%);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            border: 2px solid #cbd5e0;
+        }
+
+        .link-count-selector h3 {
+            color: #2d3748;
+            font-size: 18px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .count-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .count-btn {
+            padding: 12px 24px;
+            border: 2px solid #cbd5e0;
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            color: #4a5568;
+            transition: all 0.3s;
+        }
+
+        .count-btn:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .count-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+        }
+
+        .custom-count {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .custom-count input {
+            width: 100px;
+        }
+
+        .links-container {
+            display: none;
+        }
+
+        .links-container.active {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .link-entry {
+            background: #f7fafc;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 2px solid #e2e8f0;
+            position: relative;
+        }
+
+        .link-entry h3 {
+            color: #4a5568;
+            font-size: 16px;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            display: inline-block;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 30px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .info-text {
+            color: #718096;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+
+        /* History Section */
+        .history-section {
+            margin-top: 50px;
+            padding-top: 40px;
+            border-top: 2px solid #e2e8f0;
+        }
+
+        .total-count {
+            margin-left: auto;
+            background: #667eea;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .filter-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .history-container {
+            min-height: 200px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #a0aec0;
+        }
+
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 15px;
+        }
+
+        .empty-state p {
+            font-size: 16px;
+        }
+
+        .history-card {
+            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .history-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border-color: #667eea;
+        }
+
+        .history-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 15px;
+        }
+
+        .history-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 5px;
+        }
+
+        .history-date {
+            font-size: 13px;
+            color: #718096;
+        }
+
+        .history-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .copy-btn {
+            background: #48bb78;
+            color: white;
+        }
+
+        .copy-btn:hover {
+            background: #38a169;
+        }
+
+        .delete-btn {
+            background: #fc8181;
+            color: white;
+        }
+
+        .delete-btn:hover {
+            background: #e53e3e;
+        }
+
+        .history-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .detail-label {
+            font-size: 12px;
+            color: #718096;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .detail-value {
+            font-size: 14px;
+            color: #2d3748;
+            font-weight: 600;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-class {
+            background: #bee3f8;
+            color: #2c5282;
+        }
+
+        .badge-batch {
+            background: #fbd38d;
+            color: #7c2d12;
+        }
+
+        .meet-link-display {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #4a5568;
+            word-break: break-all;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .meet-link-display a {
+            color: #667eea;
+            text-decoration: none;
+            flex: 1;
+        }
+
+        .meet-link-display a:hover {
+            text-decoration: underline;
+        }
+
+        .link-icon {
+            font-size: 18px;
+        }
+
+        .info-box {
+            background: #edf2f7;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .info-box p {
+            color: #4a5568;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 1024px) {
+        .container {
+            padding: 30px 20px;
+        }
+        h1 {
+            font-size: 28px;
+        }
+        .subtitle {
+            font-size: 15px;
+        }
+        .section-header h2 {
+            font-size: 18px;
+        }
+        .count-btn {
+            padding: 10px 18px;
+            font-size: 14px;
+        }
+        .custom-count input {
+            width: 80px;
+        }
+        .submit-btn {
+            font-size: 16px;
+            padding: 14px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .row {
+            grid-template-columns: 1fr;
+        }
+        .link-count-selector h3 {
+            font-size: 16px;
+        }
+        .link-entry {
+            padding: 20px;
+        }
+        .link-entry h3 {
+            font-size: 15px;
+        }
+        .history-card {
+            padding: 15px;
+        }
+        .history-title {
+            font-size: 16px;
+        }
+        .history-date {
+            font-size: 12px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .brand-name {
+            font-size: 22px;
+        }
+        .logo {
+            width: 40px;
+            height: 40px;
+            font-size: 20px;
+        }
+        .count-btn {
+            padding: 8px 14px;
+            font-size: 13px;
+        }
+        .custom-count input {
+            width: 60px;
+        }
+        .submit-btn {
+            font-size: 14px;
+            padding: 12px;
+        }
+        .info-box p {
+            font-size: 12px;
+        }
+        .meet-link-display {
+            font-size: 13px;
+        }
+    }
+
+    @media (max-width: 360px) {
+        .container {
+            padding: 20px 15px;
+        }
+        h1 {
+            font-size: 24px;
+        }
+        .subtitle {
+            font-size: 14px;
+        }
+        .section-header h2 {
+            font-size: 16px;
+        }
+    }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">🎓</div>
+        <div class="brand-name">TuitionTeacher</div>
+    </div>
+
+    <div class="container">
+        <h1>Upload Google Meet Links</h1>
+        <p class="subtitle">Share meeting links with your students across classes and batches</p>
+
+        <form id="meetLinkForm">
+            <!-- Link Count Selector -->
+            <div class="link-count-selector">
+                <h3>🔢 How many meeting links do you want to upload?</h3>
+                <div class="count-buttons">
+                    <button type="button" class="count-btn" onclick="selectLinkCount(1)">1 Link</button>
+                    <button type="button" class="count-btn" onclick="selectLinkCount(2)">2 Links</button>
+                    <button type="button" class="count-btn" onclick="selectLinkCount(3)">3 Links</button>
+                    <button type="button" class="count-btn" onclick="selectLinkCount(4)">4 Links</button>
+                    <button type="button" class="count-btn" onclick="selectLinkCount(5)">5 Links</button>
+                    <div class="custom-count">
+                        <span style="color: #4a5568; font-weight: 600;">Custom:</span>
+                        <input type="number" id="customCount" min="1" max="20" placeholder="Enter">
+                        <button type="button" class="count-btn" onclick="selectCustomCount()">Set</button>
+                    </div>
+                </div>
+                <div class="info-box" style="margin-top: 15px;">
+                    <p>💡 <strong>Tip:</strong> Select the number of links first, then fill in the details for each link including class, batch, date, time, and meeting URL.</p>
+                </div>
+            </div>
+
+            <!-- Links Container -->
+            <div id="linksContainer" class="links-container">
+                <div class="section-header">
+                    <span>🔗</span>
+                    <h2>Meeting Links Details</h2>
+                </div>
+                <!-- Dynamic link entries will be added here -->
+            </div>
+
+            <button type="submit" class="submit-btn" id="submitBtn" disabled>📤 Upload & Send Links</button>
+        </form>
+
+        <!-- History Section -->
+        <div class="history-section">
+            <div class="section-header">
+                <span>📜</span>
+                <h2>Upload History</h2>
+                <span class="total-count">Total: <span id="historyCount">0</span></span>
+            </div>
+
+            <div class="filter-row">
+                <select id="filterClass" onchange="filterHistory()">
+                    <option value="">All Classes</option>
+                    <option value="Class 6">Class 6</option>
+                    <option value="Class 7">Class 7</option>
+                    <option value="Class 8">Class 8</option>
+                    <option value="Class 9">Class 9</option>
+                    <option value="Class 10">Class 10</option>
+                    <option value="Class 11">Class 11</option>
+                    <option value="Class 12">Class 12</option>
+                </select>
+
+                <select id="filterBatch" onchange="filterHistory()">
+                    <option value="">All Batches</option>
+                    <option value="Batch A">Batch A</option>
+                    <option value="Batch B">Batch B</option>
+                    <option value="Batch C">Batch C</option>
+                    <option value="All Batches">All Batches</option>
+                </select>
+            </div>
+
+            <div id="historyContainer" class="history-container">
+                <div class="empty-state">
+                    <div class="empty-icon">📋</div>
+                    <p>No links uploaded yet. Upload your first meeting link!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let uploadHistory = [];
+        let selectedLinkCount = 0;
+
+        // Select link count
+        function selectLinkCount(count) {
+            selectedLinkCount = count;
+            document.querySelectorAll('.count-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById('customCount').value = '';
+            generateLinkForms(count);
+        }
+
+        // Select custom count
+        function selectCustomCount() {
+            const customInput = document.getElementById('customCount');
+            const count = parseInt(customInput.value);
+            
+            if (!count || count < 1 || count > 20) {
+                alert('Please enter a number between 1 and 20');
+                return;
+            }
+            
+            selectedLinkCount = count;
+            document.querySelectorAll('.count-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            generateLinkForms(count);
+        }
+
+        // Generate link forms
+        function generateLinkForms(count) {
+            const container = document.getElementById('linksContainer');
+            container.innerHTML = '';
+            
+            for (let i = 1; i <= count; i++) {
+                const linkEntry = document.createElement('div');
+                linkEntry.className = 'link-entry';
+                linkEntry.innerHTML = `
+                    <h3>📝 Link #${i}</h3>
+                    
+                    <div class="row">
+                        <div class="form-group">
+                            <label>Class <span class="required">*</span></label>
+                            <select name="class_${i}" required onchange="classselection(this)">
+                                <option value="">Select Class</option>
+                                {% for class in classes %}
+                                <option value="{{class.class_id}}">{{class.classname}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Batch</label>
+                            <select id="batch" name="batch_${i}">
+                                
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group">
+                            <label>Date <span class="required">*</span></label>
+                            <input type="date" name="date_${i}" required min="${new Date().toISOString().split('T')[0]}">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Time <span class="required">*</span></label>
+                            <div style="display: flex; gap: 10px;">
+                                <input type="number" name="hour_${i}" min="1" max="12" placeholder="HH" required style="width: 70px;">
+                                <input type="number" name="minute_${i}" min="0" max="59" placeholder="MM" required style="width: 70px;">
+                                <select name="ampm_${i}" required style="width: 80px;">
+                                    <option value="AM">AM</option>
+                                    <option value="PM">PM</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Google Meet Link <span class="required">*</span></label>
+                        <input type="url" name="link_${i}" placeholder="https://meet.google.com/xxx-xxxx-xxx" required>
+                        <p class="info-text">Enter the complete Google Meet link</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Topic/Subject</label>
+                        <input type="text" name="topic_${i}" placeholder="e.g., Mathematics - Chapter 5">
+                    </div>
+                `;
+                container.appendChild(linkEntry);
+            }
+            
+            container.classList.add('active');
+            document.getElementById('submitBtn').disabled = false;
+        }
+
+        function classselection(select){
+      const selected_class = select.value;
+      const batch_list = document.getElementById('batch')
+      const url = "{% url 'get_batches' 0 %}".replace('0',selected_class)
+      fetch(url)
+      .then(res => res.json())
+      .then(data => {
+        if(data.batches.length > 0){
+          batch_list.innerHTML = '<option value="">Select Batch</option>';
+          data.batches.forEach(batch => {
+            const new_batch = document.createElement('option')
+            new_batch.value = batch.id
+            new_batch.textContent = batch.name
+            batch_list.appendChild(new_batch)
+          })
+        }
+        else{
+          const no_batch = document.createElement('option')
+          no_batch.textContent = 'No batches found'
+          no_batch.disabled = true
+          batch_list.appendChild(no_batch)
+        }
+      })
+      .catch(err => {
+        batch_list.innerHTML = '<option disabled>Error in Loading</option>'
+      })
+    }
+
+function getCSRFToken() {
+      const name = 'csrftoken';
+      const cookies = document.cookie.split(';');
+      for (let cookie of cookies) {
+        const [key, value] = cookie.trim().split('=');
+        if (key === name) return value;
+      }
+      return '';
+    }
+        // Form submission
+        document.getElementById('meetLinkForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (selectedLinkCount === 0) {
+                alert('Please select how many links you want to upload first!');
+                return;
+            }
+
+            const links = [];
+            
+            for (let i = 1; i <= selectedLinkCount; i++) {
+                const linkData = {
+                    id: Date.now() + i,
+                    class: document.querySelector(`select[name="class_${i}"]`).value,
+                    batch: document.querySelector(`select[name="batch_${i}"]`).value || 'No Batch',
+                    date: document.querySelector(`input[name="date_${i}"]`).value,
+                    hour: document.querySelector(`input[name="hour_${i}"]`).value,
+                    minute: document.querySelector(`input[name="minute_${i}"]`).value,
+                    ampm: document.querySelector(`select[name="ampm_${i}"]`).value,
+                    time: formatTimeForStorage(
+                        document.querySelector(`input[name="hour_${i}"]`).value,
+                        document.querySelector(`input[name="minute_${i}"]`).value,
+                        document.querySelector(`select[name="ampm_${i}"]`).value
+                    ),
+                    link: document.querySelector(`input[name="link_${i}"]`).value,
+                    topic: document.querySelector(`input[name="topic_${i}"]`).value || 'No Topic',
+                    uploadedAt: new Date().toISOString()
+                };
+                links.push(linkData);
+                
+            }
+
+            fetch(window.location.href,{
+                method:'POST',
+                headers:{
+                    'X-CSRFToken': getCSRFToken()
+                },
+                body: JSON.stringify(links)
+            })
+            .then(res => res.json())
+            .then(data=>{
+                if(data.status == 'success'){
+                    alert(data.message)
+                }
+                else{
+                    alert(data.message)
+                }
+            })
+            .catch(err=>{
+                alert(err)
+            })
+
+            
+            console.log('Uploaded Links:', links);
+            alert(`Successfully uploaded ${links.length} meeting link${links.length > 1 ? 's' : ''}!`);
+            
+            // Update history display
+            renderHistory();
+            
+            // Reset form
+            this.reset();
+            document.getElementById('linksContainer').innerHTML = '';
+            document.getElementById('linksContainer').classList.remove('active');
+            document.querySelectorAll('.count-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('submitBtn').disabled = true;
+            selectedLinkCount = 0;
+        });
+
+        // Render history
+        function renderHistory() {
+    const container = document.getElementById('historyContainer');
+    const filterClass = document.getElementById('filterClass').value;
+    const filterBatch = document.getElementById('filterBatch').value;
+
+    // Filter data based on class and batch
+    const filtered = uploadHistory.filter(item => {
+        if (filterClass && item.class !== filterClass) return false;
+        if (filterBatch && item.batch !== filterBatch) return false;
+        return true;
+    });
+
+    // Update record count
+    document.getElementById('historyCount').textContent = filtered.length;
+
+    // Handle empty state
+    if (filtered.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">📋</div>
+                <p>
+                    No links found.
+                    ${uploadHistory.length > 0 
+                        ? 'Try adjusting filters.' 
+                        : 'Upload your first meeting link!'}
+                </p>
+            </div>
+        `;
+        return;
+    }
+
+    // Render filtered history cards
+    container.innerHTML = filtered.map(item => `
+        <div class="history-card">
+            
+            <!-- Header Section -->
+            <div class="history-header">
+                <div>
+                    <div class="history-title">${item.topic}</div>
+                    <div class="history-date">Uploaded: ${formatDate(item.uploadedAt)}</div>
+                </div>
+
+                <div class="history-actions">
+                    <button class="action-btn copy-btn" onclick="copyLink('${item.link}')">
+                        📋 Copy
+                    </button>
+                    <button 
+                        class="action-btn" 
+                        style="background: #4299e1; color: white;" 
+                        onmouseover="this.style.background='#3182ce'" 
+                        onmouseout="this.style.background='#4299e1'" 
+                        onclick="editLink(${item.id})"
+                    >
+                        ✏️ Edit
+                    </button>
+                    <button class="action-btn delete-btn" onclick="deleteLink(${item.id})">
+                        🗑️ Delete
+                    </button>
+                </div>
+            </div>
+
+            <!-- Details Section -->
+            <div class="history-details">
+                <div class="detail-item">
+                    <div class="detail-label">Class</div>
+                    <div class="detail-value">
+                        <span class="badge badge-class">${item.class}</span>
+                    </div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-label">Batch</div>
+                    <div class="detail-value">
+                        <span class="badge badge-batch">${item.batch}</span>
+                    </div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-label">Date</div>
+                    <div class="detail-value">${formatDisplayDate(item.date)}</div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-label">Time</div>
+                    <div class="detail-value">${formatTime(item.time)}</div>
+                </div>
+            </div>
+
+            <!-- Link Section -->
+            <div class="meet-link-display">
+                <span class="link-icon">🔗</span>
+                <a href="${item.link}" target="_blank">${item.link}</a>
+            </div>
+
+        </div>
+    `).join('');
+}
+
+
+        // Filter history
+        function filterHistory() {
+            renderHistory();
+        }
+
+        // Copy link to clipboard
+        function copyLink(link) {
+            navigator.clipboard.writeText(link).then(() => {
+                alert('Link copied to clipboard!');
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                alert('Failed to copy link');
+            });
+        }
+
+        // Delete link
+        function deleteLink(id) {
+            if (confirm('Are you sure you want to delete this link?')) {
+                uploadHistory = uploadHistory.filter(item => item.id !== id);
+                renderHistory();
+                alert('Link deleted successfully!');
+            }
+        }
+
+        // Format date for display
+        function formatDate(isoString) {
+            const date = new Date(isoString);
+            const options = { 
+                year: 'numeric', 
+                month: 'short', 
+                day: 'numeric', 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            };
+            return date.toLocaleDateString('en-US', options);
+        }
+
+        function formatDisplayDate(dateString) {
+            const date = new Date(dateString);
+            const options = { year: 'numeric', month: 'short', day: 'numeric' };
+            return date.toLocaleDateString('en-US', options);
+        }
+
+        function formatTime(timeString) {
+            const [hours, minutes] = timeString.split(':');
+            const hour = parseInt(hours);
+            const ampm = hour >= 12 ? 'PM' : 'AM';
+            const displayHour = hour % 12 || 12;
+            return `${displayHour}:${minutes} ${ampm}`;
+        }
+
+        function formatTimeForStorage(hour, minute, ampm) {
+            return `${hour}:${minute.padStart(2, '0')} ${ampm}`;
+        }
+
+        // Edit link
+        function editLink(id) {
+            const item = uploadHistory.find(link => link.id === id);
+            if (!item) return;
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // Set link count to 1
+            selectedLinkCount = 1;
+            document.querySelectorAll('.count-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.count-btn')[0].classList.add('active');
+
+            // Generate form
+            generateLinkForms(1);
+
+            // Fill form with existing data
+            setTimeout(() => {
+                document.querySelector(`select[name="class_1"]`).value = item.class;
+                document.querySelector(`select[name="batch_1"]`).value = item.batch === 'No Batch' ? '' : item.batch;
+                document.querySelector(`input[name="date_1"]`).value = item.date;
+                
+                // Parse time
+                const timeParts = item.time.split(':');
+                const hour = timeParts[0];
+                const minuteAmpm = timeParts[1].split(' ');
+                const minute = minuteAmpm[0];
+                const ampm = minuteAmpm[1];
+                
+                document.querySelector(`input[name="hour_1"]`).value = hour;
+                document.querySelector(`input[name="minute_1"]`).value = minute;
+                document.querySelector(`select[name="ampm_1"]`).value = ampm;
+                
+                document.querySelector(`input[name="link_1"]`).value = item.link;
+                document.querySelector(`input[name="topic_1"]`).value = item.topic === 'No Topic' ? '' : item.topic;
+
+                // Delete the old entry
+                uploadHistory = uploadHistory.filter(link => link.id !== id);
+                renderHistory();
+            }, 100);
+        }
+    </script>
+</body>
+</html>

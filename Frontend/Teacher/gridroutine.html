@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekly Schedule</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .top-header {
+            max-width: 1400px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            background: white;
+            padding: 20px 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex: 1;
+        }
+
+        .logo {
+            width: 60px;
+            height: 60px;
+            background: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            object-fit: cover;
+        }
+
+        .tuition-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .back-button {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-decoration: none;
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .back-button:active {
+            transform: translateY(0);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h3 {
+            font-size: 2rem;
+            margin-bottom: 0;
+        }
+
+        .schedule-wrapper {
+            overflow-x: auto;
+            padding: 20px;
+        }
+
+        .schedule-grid {
+            display: grid;
+            gap: 1px;
+            background: #e0e0e0;
+            border: 1px solid #e0e0e0;
+            min-width: 1200px;
+        }
+
+        .cell {
+            background: white;
+            padding: 15px 10px;
+            text-align: center;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .cell:hover:not(.header-cell):not(.day-cell) {
+            background: #f5f5f5;
+            cursor: pointer;
+            transform: scale(1.02);
+        }
+
+        .header-cell {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .day-cell {
+            background: #f8f9fa;
+            font-weight: bold;
+            color: #333;
+            font-size: 1rem;
+            position: sticky;
+            left: 0;
+            z-index: 10;
+        }
+
+        .empty-cell {
+            background: #667eea;
+            position: sticky;
+            left: 0;
+            z-index: 11;
+        }
+
+        .content-cell {
+            font-size: 0.85rem;
+            color: #666;
+            position: relative;
+        }
+
+        .content-cell.filled {
+            background: linear-gradient(135deg, #20c5dbff 0%, #34e059ff 100%);
+            color: #2d3436;
+            font-weight: 500;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .modal-header p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .modal-body {
+            margin-bottom: 25px;
+        }
+
+        .modal-body label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .modal-body input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .modal-body input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .modal-button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .modal-button.cancel {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .modal-button.cancel:hover {
+            background: #e0e0e0;
+        }
+
+        .modal-button.delete {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .modal-button.delete:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.4);
+        }
+
+        .modal-button.save {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .modal-button.save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .top-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .logo-section {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .tuition-name {
+                font-size: 1.2rem;
+            }
+
+            .header h3 {
+                font-size: 1.5rem;
+            }
+            
+            .schedule-wrapper {
+                padding: 10px;
+            }
+
+            .modal-content {
+                padding: 20px;
+            }
+
+            .modal-footer {
+                flex-direction: column;
+            }
+
+            .modal-button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="top-header">
+        <div class="logo-section">
+            <img src="{{info.website_logo.url}}" alt="" class="logo">
+            <div class="tuition-name">{{info.website_name}}</div>
+        </div>
+        <a href="#" onclick="back()" class="back-button">
+            <span>←</span>
+            <span>Back to Class Management</span>
+        </a>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h3>📅 Weekly Schedule</h3>
+        </div>
+        
+        <div class="schedule-wrapper">
+            <div class="schedule-grid" id="scheduleGrid">
+                <!-- Grid will be generated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal" id="activityModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Schedule Activity</h2>
+                <p id="modalSubtitle"></p>
+            </div>
+            <div class="modal-body">
+                <label for="activityInput">Activity Name</label>
+                <input type="text" id="activityInput" placeholder="Enter activity name">
+            </div>
+            <div class="modal-footer">
+                <button class="modal-button cancel" onclick="closeModal()">Cancel</button>
+                <button class="modal-button delete" id="deleteButton" onclick="deleteActivity()">Delete</button>
+                <button class="modal-button save" onclick="saveActivity()">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function back() {
+            window.history.back();
+        }
+
+        // Data - Days of the week and time slots
+        const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        const times = [
+            '07:00 AM', '07:30 AM', '08:00 AM', '08:30 AM', '09:00 AM', '09:30 AM',
+            '10:00 AM', '10:30 AM', '11:00 AM', '11:30 AM', '12:00 PM', '12:30 PM',
+            '01:00 PM', '01:30 PM', '02:00 PM', '02:30 PM', '03:00 PM', '03:30 PM',
+            '04:00 PM', '04:30 PM', '05:00 PM', '05:30 PM', '06:00 PM', '06:30 PM',
+            '07:00 PM', '07:30 PM', '08:00 PM', '08:30 PM', '09:00 PM'
+        ];
+        
+        // Initialize empty grid record
+        const grid_record = {{ grid_record|safe }};
+
+        // Schedule object to store activities
+        const schedule = {};
+        let currentDay = '';
+        let currentTime = '';
+
+        /**
+         * Open modal for activity input
+         */
+        function openModal(day, time) {
+            currentDay = day;
+            currentTime = time;
+            const modal = document.getElementById('activityModal');
+            const input = document.getElementById('activityInput');
+            const subtitle = document.getElementById('modalSubtitle');
+            const deleteButton = document.getElementById('deleteButton');
+            
+            subtitle.textContent = `${day} at ${time}`;
+            input.value = schedule[day][time] || '';
+            
+            // Show/hide delete button based on whether there's existing content
+            if (schedule[day][time]) {
+                deleteButton.style.display = 'block';
+            } else {
+                deleteButton.style.display = 'none';
+            }
+            
+            modal.classList.add('active');
+            input.focus();
+        }
+
+        /**
+         * Close modal
+         */
+        function closeModal() {
+            const modal = document.getElementById('activityModal');
+            modal.classList.remove('active');
+            currentDay = '';
+            currentTime = '';
+        }
+
+        /**
+         * Save activity
+         */
+        function saveActivity() {
+            const input = document.getElementById('activityInput');
+            const activity = input.value.trim();
+            
+            if (!activity) {
+                alert('Please enter an activity name');
+                return;
+            }
+
+            fetch(window.location.href, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken'),
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    day: currentDay,
+                    time: currentTime,
+                    activity: activity
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status == 'success') {
+                    schedule[currentDay][currentTime] = activity;
+                    generateGrid();
+                    closeModal();
+                    alert(data.message);
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(err => {
+                alert('Error: ' + err);
+            });
+        }
+
+        /**
+         * Delete activity
+         */
+        function deleteActivity() {
+            if (!confirm('Are you sure you want to delete this activity?')) {
+                return;
+            }
+
+            fetch(window.location.href, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken'),
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    day: currentDay,
+                    time: currentTime
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status == 'success') {
+                    schedule[currentDay][currentTime] = '';
+                    generateGrid();
+                    closeModal();
+                    alert(data.message);
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(err => {
+                alert('Error: ' + err);
+            });
+        }
+
+        /**
+         * Initialize the schedule object with empty values
+         * Creates a nested structure: schedule[day][time] = ''
+         */
+        function initSchedule() {
+            days.forEach(day => {
+                schedule[day] = {};
+                times.forEach(time => {
+                    schedule[day][time] = grid_record[days.indexOf(day)][times.indexOf(time)];
+                });
+            });
+        }
+
+        /**
+         * Generate the schedule grid dynamically
+         * Creates a grid with:
+         * - Top row: empty cell + time headers
+         * - Each subsequent row: day name + time slot cells
+         */
+        function generateGrid() {
+            const grid = document.getElementById('scheduleGrid');
+            grid.innerHTML = '';
+
+            // Set grid-template-columns dynamically
+            // First column for days (150px), then equal columns for each time slot
+            grid.style.gridTemplateColumns = `150px repeat(${times.length}, 1fr)`;
+
+            // Create empty top-left cell
+            const emptyCell = document.createElement('div');
+            emptyCell.className = 'cell empty-cell';
+            grid.appendChild(emptyCell);
+
+            // Create time header cells
+            times.forEach(time => {
+                const timeCell = document.createElement('div');
+                timeCell.className = 'cell header-cell';
+                timeCell.textContent = time;
+                grid.appendChild(timeCell);
+            });
+
+            // Create rows for each day
+            days.forEach(day => {
+                // Create day name cell
+                const dayCell = document.createElement('div');
+                dayCell.className = 'cell day-cell';
+                dayCell.textContent = day;
+                grid.appendChild(dayCell);
+
+                // Create time slot cells for this day
+                times.forEach(time => {
+                    const contentCell = document.createElement('div');
+                    contentCell.className = 'cell content-cell';
+                    contentCell.textContent = schedule[day][time] || '';
+
+                    // Add 'filled' class if there's content
+                    if (schedule[day][time]) {
+                        contentCell.classList.add('filled');
+                    }
+
+                    // Add click event to edit the cell
+                    contentCell.addEventListener('click', () => {
+                        openModal(day, time);
+                    });
+
+                    grid.appendChild(contentCell);
+                });
+            });
+        }
+        
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Check if this cookie string begins with the name we want
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        // Initialize and generate grid on page load
+        initSchedule();
+        generateGrid();
+    </script>
+</body>
+</html>
