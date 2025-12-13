@@ -32,6 +32,7 @@ urlpatterns = [
     path('salarycard/<int:student_id>/',views.salarycard,name='salarycard'),
     
     path('Notes/', views.Notes, name='Notes'),
+    path('materials_api/',views.materials_api,name='materials_api'),
     path('OnlineClass/', views.OnlineClass, name='OnlineClass'),
     path('Expenditure/', views.Expenditure, name='Expenditure'),
     

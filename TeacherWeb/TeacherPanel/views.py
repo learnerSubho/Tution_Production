@@ -11,6 +11,30 @@ from django.contrib.auth import update_session_auth_hash
 import calendar
 from itertools import zip_longest
 import numpy as np
+from PIL import Image
+import io
+from django.core.files.base import ContentFile
+
+# Compressing Image
+def compressed_image(image, max_width=800, quality=30):
+    img = Image.open(image)
+    if img.mode in ("RGBA", "P", "LA"):
+        img = img.convert("RGB")
+    if img.width > max_width:
+        ratio = max_width / float(img.width)
+        new_height = int(float(img.height) * ratio)
+        img = img.resize((max_width, new_height), Image.LANCZOS)
+    buffer = io.BytesIO()
+    
+    # Save compressed image to buffer
+    img.save(buffer, format="JPEG", quality=quality, optimize=True)
+    buffer.seek(0)
+
+    # Return file in Django-compatible format
+    return ContentFile(buffer.read(), name=image.name)
+
+# def compress_attachment()
+
 # Starting of LOGIN Functionality 
 def loginpage(request):
     '''Renders the login page for teachers.'''
@@ -277,7 +301,7 @@ def AddStudent(request):
                     address=address,
                     classname=models.Classname.objects.get(class_id=classname),
                     batch = models.Batch.objects.get(batch_id = batch),
-                    photo=photo,
+                    photo=compressed_image(photo),
                     admission_date = date(2025,5,5)
                 )
                 models.FeesRecord.objects.create(
@@ -374,6 +398,29 @@ def promote(request,id):
         student.classname = models.Classname.objects.get(classname=next_class)
         student.batch = models.Batch.objects.get(classname=student.classname,batch_name=student.batch.batch_name)
         student.year_outstanding = year_outstanding
+        student.admission_date = datetime(2025,11,3)
+        fees = models.FeesRecord.objects.filter(student=student)
+        for fee in fees:
+            models.rescuedFeesRecord.objects.create(
+                student_name = student.studentname,
+                father_name = student.fathername,
+                phone = student.phone,
+                paid_at = fee.paid_at,
+                remark = fee.remark,
+                mode = fee.mode,
+                fees = fee.fees,
+                total_fees = fee.total_fees,
+                paying_month = fee.paying_month,
+                how_many_month = fee.how_many_month
+            )
+        fees.delete()
+        models.FeesRecord.objects.create(
+            student = student,
+            fees = 0.00,
+            remark = 'Admission',
+            mode = 'Other',
+            paid_at = date(2025,11,5)
+        )
         student.save()
         return JsonResponse({'status':'success','message':f'Student {student.studentname} promoted to next class {student.classname.classname}'})
 
@@ -445,38 +492,124 @@ def salarycard(request,student_id):
 @login_required(login_url='/teacher/loginpage/')
 def Notes(request):
     '''Renders the notes page for teachers.'''
-    return render(request,'Teacher/Notes.html')
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        classname = request.POST.get('className')
+        subject = request.POST.get('subject')
+        document = request.FILES.get('document')
+        visible = request.POST.get('visible') == 'true'
+        description = request.POST.get('description','')
+        
+        if title and classname and subject and document:
+            try:
+                models.Study_Materials.objects.create(
+                    title = title,
+                    classname = models.Classname.objects.get(class_id=classname),
+                    subject = subject,
+                    file = document,
+                    visibility = visible,
+                    description = description,
+                    enable_date = date.today() if visible else None
+                )
+                return JsonResponse({'status':'success','message':'Material added successfully'})
+            except Exception as e:
+                return JsonResponse({'status':'error','message': str(e)})
+        else:
+            return JsonResponse({'status':'error','message':'Fill all the required details.'})
+    elif request.method == 'DELETE':
+        try:
+            data = json.loads(request.body)
+            material_id = data.get('material_id')
+            material = models.Study_Materials.objects.get(material_id=material_id)
+            material.delete()
+            return JsonResponse({'status':'success','message':'Material deleted successfully'})
+        except Exception as e:
+            return JsonResponse({'status':'error','message': str(e)})
+    elif request.method == 'PATCH':
+        try:
+            data = json.loads(request.body)
+            material_id = data.get('material_id')
+            visibility = data.get('visible')
+            print(material_id,visibility)
+            material = models.Study_Materials.objects.get(material_id=material_id)
+            material.visibility = visibility
+            material.enable_date = date.today() if visibility else None
+            material.save()
+            return JsonResponse({'status':'success','message':'Material visibility updated successfully'})
+        except Exception as e:
+            return JsonResponse({'status':'error','message': str(e)})
+    classes = ['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII']
+    cases = [When(classname=name , then = idx+1) for idx,name in enumerate(classes)]
+    models_list = models.Classname.objects.all().annotate(
+            class_order = Case(*cases, default=99, output_field=IntegerField())
+        ).order_by('class_order')
+    return render(request,'Teacher/Notes.html',{'classes':models_list})
+
+def materials_api(request):
+    materials = models.Study_Materials.objects.all()
+
+    data = []
+    for m in materials:
+        data.append({
+            "id": m.material_id,
+            "title": m.title,
+            "className": m.classname.classname,
+            "subject": m.subject,
+            "documentName": m.file.name.split('/')[-1],
+            "documentURL": m.file.url,
+            "documentSize": f"{round(m.file.size / 1024 / 1024, 2)} MB",
+            "visible": m.visibility,
+        })
+
+    return JsonResponse(data, safe=False)
 
 @login_required(login_url='/teacher/loginpage/')
 def OnlineClass(request):
     '''Renders the online class page for teachers.'''
     
     if request.method == 'POST':
-        try:
-            data_info = json.loads(request.body)
-            print(data_info)
-
-            for item in data_info:
+        classname = request.POST.get('className')
+        batch = request.POST.get('batchName')
+        class_date = request.POST.get('classDate')
+        time = request.POST.get('classTime')
+        meet_link = request.POST.get('meetLink')
+        subject = request.POST.get('subject')
+        
+        if classname and class_date and time and meet_link and subject:
+            try:
+                class_obj = models.Classname.objects.get(class_id=classname)
+                if batch:
+                    batch_obj = models.Batch.objects.get(batch_id=batch)
+                else:
+                    batch_obj = None
                 models.Online_Class_Link.objects.create(
-                    classname=models.Classname.objects.get(class_id=item.get('class')),
-                    batch=models.Batch.objects.get(batch_id=item.get('batch')),
-                    class_date=item.get('date'),
-                    time=datetime.strptime(item.get('time'),"%I:%M %p").time(),
-                    subject=item.get('topic'),
-                    class_link=item.get('link')
+                    classname = class_obj,
+                    batch = batch_obj,
+                    class_date = class_date,
+                    time = time,
+                    class_link = meet_link,
+                    subject = subject
                 )
-
-            return JsonResponse({'status': 'success', 'message': 'Created Successfully'})
-
+                return JsonResponse({'status':'success','message':'Online class link added successfully'})
+            except Exception as e:
+                return JsonResponse({'status':'error','message': str(e)})
+        else:
+            return JsonResponse({'status':'error','message':'Fill all the required details.'})
+    elif request.method == 'DELETE':
+        try:
+            data = json.loads(request.body)
+            class_link_id = data.get('class_link_id')
+            class_link = models.Online_Class_Link.objects.get(class_link_id=class_link_id)
+            class_link.delete()
+            return JsonResponse({'status':'success','message':'Class link deleted successfully'})
         except Exception as e:
-            return JsonResponse({'status': 'error', 'message': str(e)})
-    
+            return JsonResponse({'status':'error','message': str(e)})
     classes = ['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII']
     cases = [When(classname=name , then = idx+1) for idx,name in enumerate(classes)]
     ordered_class = models.Classname.objects.all().annotate(
             class_order = Case(*cases, default=99, output_field=IntegerField())
         ).order_by('class_order')
-    return render(request,'Teacher/Link-upload.html',{'classes':ordered_class,'uploadHistory':models.Online_Class_Link.objects.all().order_by('-class_date','-time'),'info':models.Website_Details_For_Easy_Access.objects.first()})
+    return render(request,'Teacher/Link-upload.html',{'classes':ordered_class,'online_classes':models.Online_Class_Link.objects.all().order_by('-class_date','-time'),'info':models.Website_Details_For_Easy_Access.objects.first()})
 
 @login_required(login_url='/teacher/loginpage/')
 def Expenditure(request):
@@ -494,7 +627,7 @@ def AddNotice(request):
             try:
                 models.Notice.objects.create(
                     notice_instraction = notice_instraction,
-                    notice_photo = notice_photo
+                    notice_photo = compressed_image(notice_photo)
                 )
                 return JsonResponse({'status':'success','message':'Notice uploaded successfully'})
             except Exception as e:
@@ -744,8 +877,8 @@ def subhojit(request):
 
 def name_and_logo_modifier_for_easy_access(request):
     # Ensure the user has access first
-    # if not request.session.get('session'):
-    #     return HttpResponse("Sorry, you can't afford it...")
+    if not request.session.get('session'):
+        return HttpResponse("Sorry, you can't afford it...")
 
     if request.method == 'POST':
         website_name = request.POST.get('website_name')
@@ -756,7 +889,7 @@ def name_and_logo_modifier_for_easy_access(request):
                 models.Website_Details_For_Easy_Access.objects.all().delete()
                 models.Website_Details_For_Easy_Access.objects.create(
                     website_name=website_name,
-                    website_logo=website_logo
+                    website_logo=compressed_image(website_logo,800,50)
                 )
                 request.session['session'] = False  # optional logout
                 return redirect('loginpage')

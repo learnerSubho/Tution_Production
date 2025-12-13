@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models import Sum
 from datetime import timedelta,date
 from decimal import Decimal
+import os
 class Classname(models.Model):
     class_id = models.AutoField(primary_key=True)
     classname = models.CharField(max_length=50,unique=True)
@@ -47,6 +48,11 @@ class Student(models.Model):
         db_table = 'student_info'
         ordering = ['studentname']
     
+    def delete(self, *args, **kwargs):
+        if self.photo and os.path.isfile(self.photo.path):
+            os.remove(self.photo.path)
+        super().delete(*args, **kwargs)
+    
     def __str__(self):
         return self.studentname
 
@@ -60,7 +66,10 @@ class Notice(models.Model):
         db_table = 'Notice'
         verbose_name = 'NoticeInstruction'
         ordering = ['notice_id']
-    
+    def delete(self, *args, **kwargs):
+        if self.notice_photo and os.path.isfile(self.notice_photo.path):
+            os.remove(self.notice_photo.path)
+        return super().delete(*args, **kwargs)
     def __str__(self):
         return self.notice_instraction[:1000]
 
@@ -102,6 +111,22 @@ class FeesRecord(models.Model):
     def __str__(self):
         return f'{self.student.studentname}-{self.paid_at}'
 
+class rescuedFeesRecord(models.Model):
+    fees_id = models.AutoField(primary_key=True)
+    student_name = models.CharField(max_length=1000)
+    father_name = models.CharField(max_length=1000,null=True,blank=True)
+    phone = models.CharField(max_length=15,null=True,blank=True)
+    paid_at = models.DateField(auto_now_add=True)
+    remark = models.CharField(max_length=1000,default='Paid')
+    mode = models.CharField(max_length=1000,default='Cash')
+    fees = models.DecimalField(max_digits=10,decimal_places=2)
+    total_fees = models.DecimalField(max_digits=10,decimal_places=2,default=0)
+    paying_month = models.BooleanField(default=False)
+    how_many_month = models.IntegerField(default=0)
+    
+    def __str__(self):
+        return f'{self.student_name}-{self.paid_at}'
+
 class RoutineEntry(models.Model):
     entry_id = models.AutoField(primary_key=True)
     day_name = models.CharField(max_length=20)
@@ -115,6 +140,28 @@ class RoutineEntry(models.Model):
     
     def __str__(self):
         return f"{self.subject}"   
+
+class Study_Materials(models.Model):
+    material_id = models.AutoField(primary_key=True)
+    title = models.CharField(max_length=1000)
+    description = models.TextField(null=True,blank=True)
+    subject = models.CharField(max_length=1000)
+    upload_date = models.DateField(auto_now_add=True)
+    file = models.FileField(upload_to='study_materials')
+    visibility = models.BooleanField(default=True)
+    classname = models.ForeignKey(Classname,on_delete=models.CASCADE,related_name='study_materials')
+    enable_date = models.DateField(null=True,blank=True)
+    
+    class Meta:
+        db_table = 'Study_Materials'
+        verbose_name = 'StudyMaterial'
+        ordering = ['-upload_date']
+    def delete(self, *args, **kwargs):
+        if self.file and os.path.isfile(self.file.path):
+            os.remove(self.file.path)
+        return super().delete(*args, **kwargs)
+    def __str__(self):
+        return f'{self.classname.classname}-{self.subject}-{self.title}'
 
 class Online_Class_Link(models.Model):
     class_link_id = models.AutoField(primary_key=True)
@@ -140,6 +187,11 @@ class Website_Details_For_Easy_Access(models.Model):
     class Meta:
         db_table = "Website_Details"
         verbose_name = "info"
+    
+    def delete(self, *args, **kwargs):
+        if self.website_logo and os.path.isfile(self.website_logo.path):
+            os.remove(self.website_logo.path)
+        return super().delete(*args, **kwargs)
     
     def __str__(self):
         return self.website_name
