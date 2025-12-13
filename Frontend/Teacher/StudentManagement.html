@@ -307,8 +307,208 @@
       margin-bottom: 8px;
     }
 
+    /* Floating Notification Styles */
+    .notification-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-width: 400px;
+    }
+
+    .notification {
+      background: white;
+      padding: 16px 20px;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      animation: slideIn 0.3s ease-out;
+      border-left: 4px solid #4c6ef5;
+    }
+
+    .notification.success {
+      border-left-color: #48bb78;
+    }
+
+    .notification.error {
+      border-left-color: #f56565;
+    }
+
+    .notification.warning {
+      border-left-color: #ed8936;
+    }
+
+    .notification-icon {
+      font-size: 24px;
+      flex-shrink: 0;
+    }
+
+    .notification-content {
+      flex: 1;
+    }
+
+    .notification-title {
+      font-weight: 600;
+      font-size: 14px;
+      color: #2d3748;
+      margin-bottom: 2px;
+    }
+
+    .notification-message {
+      font-size: 13px;
+      color: #718096;
+    }
+
+    .notification-close {
+      cursor: pointer;
+      font-size: 20px;
+      color: #a0aec0;
+      flex-shrink: 0;
+      padding: 0 4px;
+      user-select: none;
+    }
+
+    .notification-close:hover {
+      color: #4a5568;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(400px);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes slideOut {
+      from {
+        transform: translateX(0);
+        opacity: 1;
+      }
+      to {
+        transform: translateX(400px);
+        opacity: 0;
+      }
+    }
+
+    .notification.closing {
+      animation: slideOut 0.3s ease-out forwards;
+    }
+
+    /* Confirmation Modal Styles */
+    .confirm-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      justify-content: center;
+      align-items: center;
+      z-index: 9998;
+      animation: fadeIn 0.2s ease-out;
+    }
+
+    .confirm-modal.show {
+      display: flex;
+    }
+
+    .confirm-modal-content {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      max-width: 400px;
+      width: 90%;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      animation: scaleIn 0.2s ease-out;
+    }
+
+    .confirm-modal-icon {
+      font-size: 48px;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .confirm-modal-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #2d3748;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .confirm-modal-message {
+      font-size: 14px;
+      color: #718096;
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .confirm-modal-buttons {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .confirm-modal-btn {
+      padding: 10px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .confirm-modal-btn.cancel {
+      background: #e2e8f0;
+      color: #2d3748;
+    }
+
+    .confirm-modal-btn.cancel:hover {
+      background: #cbd5e0;
+    }
+
+    .confirm-modal-btn.confirm {
+      background: #f56565;
+      color: white;
+    }
+
+    .confirm-modal-btn.confirm:hover {
+      background: #e53e3e;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes scaleIn {
+      from {
+        transform: scale(0.9);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
     /* Mobile Responsive */
     @media (max-width: 768px) {
+      .notification-container {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        max-width: none;
+      }
+
       .container {
         padding: 16px 12px;
       }
@@ -466,6 +666,22 @@
 </head>
 
 <body>
+  <!-- Notification Container -->
+  <div class="notification-container" id="notificationContainer"></div>
+
+  <!-- Confirmation Modal -->
+  <div class="confirm-modal" id="confirmModal">
+    <div class="confirm-modal-content">
+      <div class="confirm-modal-icon" id="confirmIcon">⚠️</div>
+      <h3 class="confirm-modal-title" id="confirmTitle">Confirm Action</h3>
+      <p class="confirm-modal-message" id="confirmMessage">Are you sure?</p>
+      <div class="confirm-modal-buttons">
+        <button class="confirm-modal-btn cancel" onclick="closeConfirmModal()">Cancel</button>
+        <button class="confirm-modal-btn confirm" id="confirmButton">Confirm</button>
+      </div>
+    </div>
+  </div>
+
   <div class="container">
     <div class="header">
       <img src="{{info.website_logo.url}}" alt="" class="logo">
@@ -551,7 +767,7 @@
               </td>
               <td>
                 <button class="action-btn delete-btn" data-url="{% url 'DeleteStudent' student.student_id %}"
-                  onclick="deleteRow(this)">
+                  data-name="{{student.studentname}}" onclick="deleteRow(this)">
                   🗑️
                 </button>
               </td>
@@ -890,6 +1106,71 @@
   </div>
 
   <script>
+    // Notification System Functions
+    function showNotification(type, title, message) {
+      const container = document.getElementById('notificationContainer');
+      const notification = document.createElement('div');
+      notification.className = `notification ${type}`;
+      
+      const icons = {
+        success: '✅',
+        error: '❌',
+        warning: '⚠️',
+        info: 'ℹ️'
+      };
+      
+      notification.innerHTML = `
+        <span class="notification-icon">${icons[type]}</span>
+        <div class="notification-content">
+          <div class="notification-title">${title}</div>
+          <div class="notification-message">${message}</div>
+        </div>
+        <span class="notification-close" onclick="closeNotification(this)">×</span>
+      `;
+      
+      container.appendChild(notification);
+      
+      setTimeout(() => {
+        closeNotification(notification.querySelector('.notification-close'));
+      }, 5000);
+    }
+
+    function closeNotification(element) {
+      const notification = element.parentElement;
+      notification.classList.add('closing');
+      setTimeout(() => {
+        notification.remove();
+      }, 300);
+    }
+
+    // Confirmation Modal Functions
+    let confirmCallback = null;
+
+    function showConfirmModal(title, message, icon, callback) {
+      const modal = document.getElementById('confirmModal');
+      document.getElementById('confirmTitle').textContent = title;
+      document.getElementById('confirmMessage').textContent = message;
+      document.getElementById('confirmIcon').textContent = icon;
+      
+      confirmCallback = callback;
+      modal.classList.add('show');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeConfirmModal() {
+      const modal = document.getElementById('confirmModal');
+      modal.classList.remove('show');
+      document.body.style.overflow = 'auto';
+      confirmCallback = null;
+    }
+
+    document.getElementById('confirmButton').onclick = function() {
+      if (confirmCallback) {
+        confirmCallback();
+      }
+      closeConfirmModal();
+    };
+
     // Open Add Student Modal
     function openAddModal() {
       document.getElementById("addStudentModal").style.display = "flex";
@@ -927,7 +1208,7 @@
         .catch((err) => {
           batchSelect.innerHTML =
             "<option disabled>Error in Loading</option>";
-          alert(err);
+          showNotification('error', 'Error', 'Failed to load batches');
         });
     }
     function classselection(select){
@@ -955,6 +1236,7 @@
       })
       .catch(err => {
         batch_list.innerHTML = '<option disabled>Error in Loading</option>'
+        showNotification('error', 'Error', 'Failed to load batches');
       })
     }
 
@@ -978,13 +1260,20 @@
             form.reset();
             submitbtn.disabled = false;
             submitbtn.innerText = "Save";
-            window.location.reload();
+            showNotification('success', 'Success', 'Student added successfully!');
+            setTimeout(() => {
+              window.location.reload();
+            }, 1000);
           } else {
-            alert(data.message);
+            submitbtn.disabled = false;
+            submitbtn.innerText = "Save";
+            showNotification('error', 'Error', data.message || 'Failed to add student');
           }
         })
         .catch((err) => {
-          alert(err);
+          submitbtn.disabled = false;
+          submitbtn.innerText = "Save";
+          showNotification('error', 'Error', 'An error occurred while adding student');
         });
     }
 
@@ -1012,34 +1301,6 @@ function closeEditModal() {
   document.getElementById('editStudentModal').style.display = 'none';
   document.body.style.overflow = 'auto';
 }
-function editclassselection(select) {
-      const selectedelem = select.value;
-      const batchSelect = document.getElementById("editBatchSelect");
-      const url = "{% url 'get_batches' 0 %}".replace("0", selectedelem);
-      fetch(url)
-        .then((res) => res.json())
-        .then((data) => {
-          batchSelect.innerHTML = '<option value=" ">Select Batch</option>';
-          if (data.batches.length > 0) {
-            data.batches.forEach((batch) => {
-              const option = document.createElement("option");
-              option.value = batch.id;
-              option.textContent = batch.name;
-              batchSelect.appendChild(option);
-            });
-          } else {
-            const option = document.createElement("option");
-            option.textContent = "No batches found";
-            option.disabled = true;
-            batchSelect.appendChild(option);
-          }
-        })
-        .catch((err) => {
-          batchSelect.innerHTML =
-            "<option disabled>Error in Loading</option>";
-          alert(err);
-        });
-    }
 
     function EditStudent(form,e){
       e.preventDefault()
@@ -1058,14 +1319,21 @@ function editclassselection(select) {
       .then(res => res.json())
       .then(data => {
         if(data.status == 'success'){
-          window.location.reload()
+          showNotification('success', 'Success', 'Student updated successfully!');
+          setTimeout(() => {
+            window.location.reload();
+          }, 1000);
         }
         else{
-          alert(data.message)
+          submitbtn.disabled = false;
+          submitbtn.innerText = 'Save';
+          showNotification('error', 'Error', data.message || 'Failed to update student');
         }
       })
       .catch(err => {
-        alert(err)
+        submitbtn.disabled = false;
+        submitbtn.innerText = 'Save';
+        showNotification('error', 'Error', 'An error occurred while updating student');
       })
     }
     function promoteStudent() {
@@ -1073,7 +1341,17 @@ function editclassselection(select) {
     }
 
     function recordPayment(student_id) {
-      window.location.href = `/teacher/RecordPayment/${student_id}`
+      const url = `/teacher/RecordPayment/${student_id}/`;
+      showConfirmModal(
+        'Record Payment',
+        `Are you sure you want to record payment? This action cannot be undone.`,
+        '🪙',
+        function () {
+            // Directly redirect (GET request)
+            window.location.href = url;
+        }
+      );
+      
     }
 
     function editStudent(button) {
@@ -1116,25 +1394,36 @@ function editclassselection(select) {
 
     function deleteRow(button) {
       const row = button.closest("tr");
-      const name = row.querySelector("td strong").textContent;
+      const name = button.dataset.name;
       const url = button.dataset.url;
-      if (!confirm(`Are you sure you want to delete ${name}?`)) return;
-      fetch(url, {
-        method: "POST",
-        headers: {
-          "X-CSRFToken": "{{ csrf_token }}",
-        },
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.status == "success") {
-            alert(`Student ${name} deleted successfully!`);
-            window.location.reload();
-          }
-        })
-        .catch((err) => {
-          alert("Error deleting student", err);
-        });
+      
+      showConfirmModal(
+        'Delete Student',
+        `Are you sure you want to delete ${name}? This action cannot be undone.`,
+        '🗑️',
+        function() {
+          fetch(url, {
+            method: "POST",
+            headers: {
+              "X-CSRFToken": "{{ csrf_token }}",
+            },
+          })
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.status == "success") {
+              showNotification('success', 'Success', `Student ${name} deleted successfully!`);
+              setTimeout(() => {
+                window.location.reload();
+              }, 1000);
+            } else {
+              showNotification('error', 'Error', data.message || 'Failed to delete student');
+            }
+          })
+          .catch((err) => {
+            showNotification('error', 'Error', 'An error occurred while deleting student');
+          });
+        }
+      );
     }
 
     function updateTotalStudents() {

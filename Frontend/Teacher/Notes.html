@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Study Material Management - TuitionTeacher</title>
+    <title>Study Materials</title>
     <style>
         * {
             margin: 0;
@@ -12,267 +12,318 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
-            background: white;
-            border-radius: 16px;
-            padding: 40px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
         }
 
         .header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 40px;
-        }
-
-        .logo {
-            width: 50px;
-            height: 50px;
             background: white;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-        }
-
-        .logo-text {
-            font-size: 28px;
-            font-weight: 600;
-            color: #333;
-        }
-
-        .page-title {
-            font-size: 32px;
-            font-weight: 700;
-            color: #333;
-            margin-bottom: 8px;
-        }
-
-        .page-subtitle {
-            color: #666;
-            font-size: 14px;
-        }
-
-        .upload-form {
-            background: #f8f9ff;
             padding: 30px;
-            border-radius: 12px;
-            margin-bottom: 40px;
-            border: 2px solid #e0e7ff;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            margin-bottom: 30px;
         }
 
-        .form-row {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
+        .header h1 {
+            color: #333;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 16px;
             margin-bottom: 20px;
         }
 
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .form-group label {
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 8px;
-            font-size: 14px;
-        }
-
-        .form-group input,
-        .form-group select {
-            padding: 12px 16px;
-            border: 2px solid #e0e7ff;
-            border-radius: 8px;
-            font-size: 14px;
-            transition: all 0.3s;
-            background: white;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus {
-            outline: none;
-            border-color: #6366f1;
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-        }
-
-        .file-upload {
+        .search-container {
             position: relative;
+            max-width: 600px;
+            margin-top: 20px;
         }
 
-        .file-upload input[type="file"] {
-            opacity: 0;
-            position: absolute;
-            z-index: -1;
-        }
-
-        .file-upload-label {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px 16px;
-            background: white;
-            border: 2px dashed #6366f1;
-            border-radius: 8px;
-            cursor: pointer;
+        .search-input {
+            width: 100%;
+            padding: 14px 50px 14px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 15px;
             transition: all 0.3s;
+            background: #f8f9fa;
         }
 
-        .file-upload-label:hover {
-            background: #f8f9ff;
-            border-color: #8b5cf6;
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
         }
 
-        .file-name {
-            color: #666;
-            font-size: 13px;
-            margin-top: 5px;
+        .search-icon {
+            position: absolute;
+            right: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+            font-size: 18px;
+            pointer-events: none;
         }
 
-        .btn-upload {
-            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-            color: white;
+        .search-clear {
+            position: absolute;
+            right: 50px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
             border: none;
-            padding: 12px 32px;
-            border-radius: 8px;
+            color: #999;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 5px;
+            display: none;
+            transition: color 0.3s;
+        }
+
+        .search-clear:hover {
+            color: #667eea;
+        }
+
+        .search-clear.visible {
+            display: block;
+        }
+
+        .search-results-info {
+            margin-top: 10px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .materials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+        }
+
+        .material-card {
+            background: white;
+            border-radius: 10px;
+            padding: 12px;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.12);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .material-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+        }
+
+        .material-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+
+        .card-header {
+            margin-bottom: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+        }
+
+        .material-title {
             font-size: 15px;
             font-weight: 600;
+            color: #333;
+            margin-bottom: 3px;
+            line-height: 1.3;
+            flex: 1;
+        }
+
+        .delete-btn {
+            background: #f44336;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            font-size: 16px;
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             transition: all 0.3s;
-            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+            flex-shrink: 0;
+            margin-left: 8px;
         }
 
-        .btn-upload:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6);
+        .delete-btn:hover {
+            background: #d32f2f;
+            transform: scale(1.1);
         }
 
-        .materials-table {
-            background: white;
-            border-radius: 12px;
+        .subject-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            margin-right: 4px;
+        }
+
+        .document-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            margin-bottom: 8px;
+        }
+
+        .doc-icon {
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+
+        .doc-details {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .doc-name {
+            font-size: 12px;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 2px;
+            white-space: nowrap;
             overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            text-overflow: ellipsis;
         }
 
-        .table-header {
+        .doc-size {
+            font-size: 10px;
+            color: #666;
+        }
+
+        .visibility-section {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 30px;
-            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-            color: white;
+            padding-top: 8px;
+            border-top: 1px solid #e0e0e0;
         }
 
-        .table-header h3 {
-            font-size: 20px;
-        }
-
-        .total-count {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 6px 16px;
-            border-radius: 20px;
-            font-size: 14px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        thead {
-            background: #f8f9ff;
-        }
-
-        th {
-            padding: 16px;
-            text-align: left;
-            font-weight: 600;
-            color: #333;
-            font-size: 13px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        td {
-            padding: 16px;
-            border-bottom: 1px solid #f0f0f0;
-            color: #555;
-            font-size: 14px;
-        }
-
-        tbody tr {
-            transition: all 0.3s;
-        }
-
-        tbody tr:hover {
-            background: #f8f9ff;
-        }
-
-        .btn-action {
-            padding: 8px 16px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: 600;
-            transition: all 0.3s;
-            margin-right: 8px;
-        }
-
-        .btn-edit {
-            background: #10b981;
-            color: white;
-        }
-
-        .btn-edit:hover {
-            background: #059669;
-            transform: translateY(-1px);
-        }
-
-        .btn-delete {
-            background: #ef4444;
-            color: white;
-        }
-
-        .btn-delete:hover {
-            background: #dc2626;
-            transform: translateY(-1px);
-        }
-
-        .file-link {
-            color: #6366f1;
-            text-decoration: none;
+        .visibility-status {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 15px;
             font-weight: 500;
         }
 
-        .file-link:hover {
-            text-decoration: underline;
+        .status-indicator {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            flex-shrink: 0;
         }
 
-        .empty-state {
+        .status-indicator.visible {
+            background: #4caf50;
+            box-shadow: 0 0 8px rgba(76, 175, 80, 0.5);
+        }
+
+        .status-indicator.hidden {
+            background: #f44336;
+            box-shadow: 0 0 8px rgba(244, 67, 54, 0.5);
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 44px;
+            height: 22px;
+            background: #ccc;
+            border-radius: 22px;
+            cursor: pointer;
+            transition: background 0.3s;
+            flex-shrink: 0;
+        }
+
+        .toggle-switch.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 18px;
+            height: 18px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .toggle-switch.active .toggle-slider {
+            transform: translateX(22px);
+        }
+
+        .add-material-btn {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #d65838ff, #e4e66fff);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 28px;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .add-material-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        .no-results {
             text-align: center;
-            padding: 60px 20px;
-            color: #999;
-        }
-
-        .empty-state-icon {
-            font-size: 48px;
-            margin-bottom: 16px;
+            color: white;
+            padding: 40px;
+            font-size: 16px;
         }
 
         /* Modal Styles */
-        .modal {
+        .modal-overlay {
             display: none;
             position: fixed;
             top: 0;
@@ -281,90 +332,406 @@
             height: 100%;
             background: rgba(0, 0, 0, 0.5);
             z-index: 1000;
-            align-items: center;
             justify-content: center;
+            align-items: center;
+            padding: 20px;
         }
 
-        .modal.active {
+        .modal-overlay.active {
             display: flex;
         }
 
-        .modal-content {
+        .modal {
             background: white;
+            border-radius: 15px;
             padding: 30px;
-            border-radius: 12px;
             max-width: 500px;
-            width: 90%;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
 
         .modal-header {
-            font-size: 22px;
-            font-weight: 700;
-            margin-bottom: 20px;
-            color: #333;
-        }
-
-        .modal-buttons {
             display: flex;
-            gap: 12px;
-            justify-content: flex-end;
-            margin-top: 20px;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
         }
 
-        .btn-cancel {
-            background: #e5e7eb;
+        .modal-header h2 {
             color: #333;
-            padding: 10px 24px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
+            font-size: 24px;
         }
 
-        .btn-confirm {
-            background: #ef4444;
-            color: white;
-            padding: 10px 24px;
+        .close-btn {
+            background: none;
             border: none;
-            border-radius: 6px;
+            font-size: 28px;
+            color: #666;
             cursor: pointer;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+
+        .close-btn:hover {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #333;
             font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-group label .optional {
+            color: #999;
+            font-weight: 400;
+            font-size: 12px;
+        }
+
+        .form-group input[type="text"],
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+            font-family: inherit;
+        }
+
+        .form-group input[type="text"]:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .file-upload {
+            border: 2px dashed #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .file-upload:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .file-upload input[type="file"] {
+            display: none;
+        }
+
+        .file-upload-label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .file-icon {
+            font-size: 32px;
+        }
+
+        .file-text {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .file-name {
+            margin-top: 10px;
+            color: #667eea;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .visibility-toggle-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .visibility-toggle-label {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #666;
+        }
+
+        .btn-secondary:hover {
+            background: #d0d0d0;
+        }
+
+        /* Floating Notification Modal Styles */
+        .notification-modal {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            border-radius: 12px;
+            padding: 20px 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            z-index: 2000;
+            min-width: 300px;
+            max-width: 400px;
+            transform: translateX(450px);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .notification-modal.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .notification-content {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .notification-icon {
+            font-size: 24px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .notification-icon.success {
+            color: #4caf50;
+        }
+
+        .notification-icon.error {
+            color: #f44336;
+        }
+
+        .notification-icon.warning {
+            color: #ff9800;
+        }
+
+        .notification-icon.info {
+            color: #2196f3;
+        }
+
+        .notification-text {
+            flex: 1;
+        }
+
+        .notification-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+            font-size: 15px;
+        }
+
+        .notification-message {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .notification-close {
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: #999;
+            cursor: pointer;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s;
+            flex-shrink: 0;
+        }
+
+        .notification-close:hover {
+            background: #f0f0f0;
+            color: #666;
+        }
+
+        /* Confirmation Modal Styles */
+        .confirm-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2500;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .confirm-modal-overlay.active {
+            display: flex;
+        }
+
+        .confirm-modal {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 420px;
+            width: 100%;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        .confirm-modal-icon {
+            font-size: 48px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .confirm-modal-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        .confirm-modal-message {
+            font-size: 15px;
+            color: #666;
+            text-align: center;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .confirm-modal-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .confirm-btn {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .confirm-btn-cancel {
+            background: #e0e0e0;
+            color: #666;
+        }
+
+        .confirm-btn-cancel:hover {
+            background: #d0d0d0;
+        }
+
+        .confirm-btn-confirm {
+            background: #f44336;
+            color: white;
+        }
+
+        .confirm-btn-confirm:hover {
+            background: #d32f2f;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(244, 67, 54, 0.4);
         }
 
         @media (max-width: 768px) {
-            .container {
-                padding: 20px;
+            .materials-grid {
+                grid-template-columns: 1fr;
             }
-
-            .page-title {
+            
+            .header h1 {
                 font-size: 24px;
             }
 
-            .upload-form {
+            .modal {
                 padding: 20px;
             }
 
-            .form-row {
-                grid-template-columns: 1fr;
+            .modal-header h2 {
+                font-size: 20px;
             }
 
-            table {
-                font-size: 12px;
+            .notification-modal {
+                right: 10px;
+                left: 10px;
+                max-width: none;
+                transform: translateY(-150px);
             }
 
-            th, td {
-                padding: 12px 8px;
-            }
-
-            .btn-action {
-                padding: 6px 12px;
-                font-size: 12px;
-            }
-
-            /* Stack table on mobile */
-            .table-wrapper {
-                overflow-x: auto;
+            .notification-modal.show {
+                transform: translateY(0);
             }
         }
     </style>
@@ -372,272 +739,475 @@
 <body>
     <div class="container">
         <div class="header">
-            <div class="logo">🎓</div>
-            <div class="logo-text">TuitionTeacher</div>
-        </div>
-
-        <div>
-            <h1 class="page-title">Study Material Management</h1>
-            <p class="page-subtitle">Upload and manage study materials for your students</p>
-        </div>
-
-        <div class="upload-form">
-            <form id="uploadForm">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="classSelect">Class *</label>
-                        <select id="classSelect" required>
-                            <option value="">Select Class</option>
-                            <option value="X">Class X</option>
-                            <option value="XI">Class XI</option>
-                            <option value="XII">Class XII</option>
-                            <option value="IX">Class IX</option>
-                            <option value="VIII">Class VIII</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="subjectInput">Subject *</label>
-                        <input type="text" id="subjectInput" placeholder="e.g., Mathematics, Physics" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="titleInput">Title *</label>
-                        <input type="text" id="titleInput" placeholder="e.g., Chapter 1 - Algebra" required>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Upload File *</label>
-                    <div class="file-upload">
-                        <div class="file-upload-label">
-                            <span>📎 Choose a file</span>
-                        </div>
-                        <input type="file" id="fileInput" required>
-                    </div>
-                    <div class="file-name" id="fileName">No file chosen</div>
-                </div>
-
-                <button type="submit" class="btn-upload">📤 Upload Material</button>
-            </form>
-        </div>
-
-        <div class="materials-table">
-            <div class="table-header">
-                <h3>Uploaded Materials</h3>
-                <div class="total-count">Total: <span id="totalCount">0</span></div>
-            </div>
+            <h1>📚 Study Materials</h1>
+            <p>Manage and control visibility of study materials for students</p>
             
-            <div class="table-wrapper">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Class</th>
-                            <th>Subject</th>
-                            <th>Title</th>
-                            <th>File</th>
-                            <th>Upload Date</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="materialsBody">
-                        <tr>
-                            <td colspan="6" class="empty-state">
-                                <div class="empty-state-icon">📚</div>
-                                <div>No materials uploaded yet. Start by uploading your first study material!</div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div class="search-container">
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    class="search-input" 
+                    placeholder="Search by title, subject, class, or document name..."
+                    oninput="handleSearch()"
+                >
+                <button class="search-clear" id="searchClear" onclick="clearSearch()">×</button>
+                <span class="search-icon">🔍</span>
             </div>
+            <div class="search-results-info" id="searchResultsInfo"></div>
         </div>
+
+        <div class="materials-grid" id="materialsGrid"></div>
     </div>
 
-    <!-- Delete Confirmation Modal -->
-    <div class="modal" id="deleteModal">
-        <div class="modal-content">
-            <div class="modal-header">Confirm Delete</div>
-            <p>Are you sure you want to delete this study material? This action cannot be undone.</p>
-            <div class="modal-buttons">
-                <button class="btn-cancel" onclick="closeDeleteModal()">Cancel</button>
-                <button class="btn-confirm" onclick="confirmDelete()">Delete</button>
-            </div>
-        </div>
-    </div>
+    <button class="add-material-btn" onclick="addNewMaterial()" style="border:2px solid white;">+</button>
 
-    <!-- Edit Modal -->
-    <div class="modal" id="editModal">
-        <div class="modal-content">
-            <div class="modal-header">Edit Study Material</div>
-            <form id="editForm">
+    <!-- Modal for Adding New Material -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Add New Material</h2>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+
+            <form id="materialForm" onsubmit="handleSubmit(event)">
                 <div class="form-group">
-                    <label for="editClass">Class *</label>
-                    <select id="editClass" required>
-                        <option value="">Select Class</option>
-                        <option value="X">Class X</option>
-                        <option value="XI">Class XI</option>
-                        <option value="XII">Class XII</option>
-                        <option value="IX">Class IX</option>
-                        <option value="VIII">Class VIII</option>
+                    <label>Title</label>
+                    <input type="text" id="title" name="title" required placeholder="Enter material title">
+                </div>
+
+                <div class="form-group">
+                    <label>Class</label>
+                    <select id="className" name="className" required>
+                        <option value="">Select a class</option>
+                        {% for cls in classes %}
+                        <option value="{{cls.class_id}}">{{cls.classname}}</option>
+                        {% endfor %}
                     </select>
                 </div>
+
                 <div class="form-group">
-                    <label for="editSubject">Subject *</label>
-                    <input type="text" id="editSubject" required>
+                    <label>Subject</label>
+                    <input type="text" id="subject" name="subject" required placeholder="e.g., Mathematics, Physics">
                 </div>
+
                 <div class="form-group">
-                    <label for="editTitle">Title *</label>
-                    <input type="text" id="editTitle" required>
+                    <label>Document</label>
+                    <div class="file-upload" onclick="document.getElementById('documentFile').click()">
+                        <input type="file" id="documentFile" accept=".pdf,.doc,.docx,.ppt,.pptx" name="document" onchange="handleFileSelect(event)">
+                        <label class="file-upload-label">
+                            <span class="file-icon">📁</span>
+                            <span class="file-text">Click to upload document</span>
+                            <span class="file-text" style="font-size: 12px; color: #999;">PDF, DOC, DOCX, PPT, PPTX</span>
+                        </label>
+                        <div id="fileName" class="file-name"></div>
+                    </div>
                 </div>
-                <div class="modal-buttons">
-                    <button type="button" class="btn-cancel" onclick="closeEditModal()">Cancel</button>
-                    <button type="submit" class="btn-upload">Save Changes</button>
+
+                <div class="form-group">
+                    <label>Description <span class="optional">(optional)</span></label>
+                    <textarea id="description" placeholder="Add any additional details about this material"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Visibility</label>
+                    <div class="visibility-toggle-group">
+                        <span class="visibility-toggle-label">Make visible to students</span>
+                        <div class="toggle-switch hidden" id="visibilityToggle" onclick="toggleNewMaterialVisibility()">
+                            <div class="toggle-slider"></div>
+                        </div>
+                    </div>
+                </div>
+                    <input type="hidden" name="visible" id="visibleInput" value="false">
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Material</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- Floating Notification Modal -->
+    <div class="notification-modal" id="notificationModal">
+        <div class="notification-content">
+            <span class="notification-icon" id="notificationIcon"></span>
+            <div class="notification-text">
+                <div class="notification-title" id="notificationTitle"></div>
+                <div class="notification-message" id="notificationMessage"></div>
+            </div>
+            <button class="notification-close" onclick="closeNotification()">&times;</button>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div class="confirm-modal-overlay" id="confirmModalOverlay">
+        <div class="confirm-modal">
+            <div class="confirm-modal-icon" id="confirmIcon">⚠️</div>
+            <div class="confirm-modal-title" id="confirmTitle">Confirm Action</div>
+            <div class="confirm-modal-message" id="confirmMessage">Are you sure you want to proceed?</div>
+            <div class="confirm-modal-actions">
+                <button class="confirm-btn confirm-btn-cancel" onclick="cancelConfirm()">Cancel</button>
+                <button class="confirm-btn confirm-btn-confirm" onclick="proceedConfirm()">Confirm</button>
+            </div>
         </div>
     </div>
 
     <script>
         let materials = [];
-        let deleteIndex = null;
-        let editIndex = null;
+        let filteredMaterials = [];
+        let newMaterialVisible = false;
+        let selectedFile = null;
+        let confirmCallback = null;
+        let notificationTimeout = null;
+        let searchQuery = '';
 
-        // File input handling with proper label trigger
-        const fileInput = document.getElementById('fileInput');
-        const fileLabel = document.querySelector('.file-upload-label');
-        
-        fileLabel.addEventListener('click', function(e) {
-            e.preventDefault();
-            fileInput.click();
-        });
+        // Search functionality
+        function handleSearch() {
+            const input = document.getElementById('searchInput');
+            const clearBtn = document.getElementById('searchClear');
+            searchQuery = input.value.toLowerCase().trim();
 
-        fileInput.addEventListener('change', function(e) {
-            const fileName = e.target.files[0] ? e.target.files[0].name : 'No file chosen';
-            document.getElementById('fileName').textContent = fileName;
-        });
-
-        // Upload form submission
-        document.getElementById('uploadForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const classValue = document.getElementById('classSelect').value;
-            const subject = document.getElementById('subjectInput').value;
-            const title = document.getElementById('titleInput').value;
-            const file = document.getElementById('fileInput').files[0];
-
-            if (!file) {
-                alert('Please select a file to upload');
-                return;
+            if (searchQuery) {
+                clearBtn.classList.add('visible');
+                
+                filteredMaterials = materials.filter(material => {
+                    const searchableText = [
+                        material.title,
+                        material.subject,
+                        material.className,
+                        material.documentName,
+                        material.description || ''
+                    ].join(' ').toLowerCase();
+                    
+                    return searchableText.includes(searchQuery);
+                });
+                
+                updateSearchResultsInfo();
+            } else {
+                clearBtn.classList.remove('visible');
+                filteredMaterials = materials;
+                clearSearchResultsInfo();
             }
 
-            const material = {
-                id: Date.now(),
-                class: classValue,
-                subject: subject,
-                title: title,
-                fileName: file.name,
-                date: new Date().toLocaleDateString('en-GB')
+            renderMaterials();
+        }
+
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('searchClear').classList.remove('visible');
+            searchQuery = '';
+            filteredMaterials = materials;
+            clearSearchResultsInfo();
+            renderMaterials();
+        }
+
+        function updateSearchResultsInfo() {
+            const info = document.getElementById('searchResultsInfo');
+            const count = filteredMaterials.length;
+            if (count === 0) {
+                info.textContent = 'No materials found matching your search';
+            } else if (count === 1) {
+                info.textContent = '1 material found';
+            } else {
+                info.textContent = `${count} materials found`;
+            }
+        }
+
+        function clearSearchResultsInfo() {
+            document.getElementById('searchResultsInfo').textContent = '';
+        }
+
+        // Notification System
+        function showNotification(title, message, type = 'info') {
+            const modal = document.getElementById('notificationModal');
+            const icon = document.getElementById('notificationIcon');
+            const titleEl = document.getElementById('notificationTitle');
+            const messageEl = document.getElementById('notificationMessage');
+
+            const icons = {
+                success: '✓',
+                error: '✕',
+                warning: '⚠',
+                info: 'ℹ'
             };
 
-            materials.push(material);
-            renderMaterials();
-            
-            // Reset form
-            this.reset();
-            document.getElementById('fileName').textContent = 'No file chosen';
-            
-            alert('Study material uploaded successfully!');
-        });
+            icon.textContent = icons[type] || icons.info;
+            icon.className = `notification-icon ${type}`;
+            titleEl.textContent = title;
+            messageEl.textContent = message;
+
+            modal.classList.add('show');
+
+            if (notificationTimeout) {
+                clearTimeout(notificationTimeout);
+            }
+
+            notificationTimeout = setTimeout(() => {
+                closeNotification();
+            }, 5000);
+        }
+
+        function closeNotification() {
+            const modal = document.getElementById('notificationModal');
+            modal.classList.remove('show');
+            if (notificationTimeout) {
+                clearTimeout(notificationTimeout);
+            }
+        }
+
+        // Confirmation System
+        function showConfirm(title, message, callback, icon = '⚠️') {
+            return new Promise((resolve) => {
+                const overlay = document.getElementById('confirmModalOverlay');
+                const titleEl = document.getElementById('confirmTitle');
+                const messageEl = document.getElementById('confirmMessage');
+                const iconEl = document.getElementById('confirmIcon');
+
+                titleEl.textContent = title;
+                messageEl.textContent = message;
+                iconEl.textContent = icon;
+
+                confirmCallback = (result) => {
+                    resolve(result);
+                    if (callback) callback(result);
+                };
+
+                overlay.classList.add('active');
+            });
+        }
+
+        function cancelConfirm() {
+            const overlay = document.getElementById('confirmModalOverlay');
+            overlay.classList.remove('active');
+            if (confirmCallback) {
+                confirmCallback(false);
+                confirmCallback = null;
+            }
+        }
+
+        function proceedConfirm() {
+            const overlay = document.getElementById('confirmModalOverlay');
+            overlay.classList.remove('active');
+            if (confirmCallback) {
+                confirmCallback(true);
+                confirmCallback = null;
+            }
+        }
+
+        function toggleNewMaterialVisibility() {
+            newMaterialVisible = !newMaterialVisible;
+            document.getElementById('visibilityToggle').classList.toggle('active');
+            document.getElementById('visibleInput').value = newMaterialVisible;
+        }
+
+        function deleteMaterial(id) {
+            showConfirm(
+                'Delete Material',
+                'Are you sure you want to delete this material? This action cannot be undone.',
+                (confirmed) => {
+                    if (confirmed) {
+                        fetch('/teacher/Notes/', {
+                            method: 'DELETE',
+                            headers: {
+                                'X-CSRFToken': '{{ csrf_token }}',
+                                'Accept': 'application/json'
+                            },
+                            body: JSON.stringify({ material_id: id })
+                        })
+                        .then(response => {
+                            if (response.ok) {
+                                fetchMaterials();
+                            }
+                        })
+                        .catch(error => console.error('Error deleting material:', error));
+                    }
+                },
+                '🗑️'
+            );
+        }
+
+        async function fetchMaterials() {
+            try {
+                const response = await fetch('/teacher/materials_api/', {
+                    method: "GET",
+                    headers: {
+                        "Accept": "application/json"
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error("HTTP error " + response.status);
+                }
+
+                materials = await response.json();
+                filteredMaterials = materials;
+                renderMaterials();
+
+            } catch (error) {
+                console.error("Error fetching materials:", error);
+            }
+        }
+
+        function toggleVisibility(id) {
+            const material = materials.find(m => m.id === id);
+            if (material) {
+                material.visible = !material.visible;
+                renderMaterials();
+                
+                updateMaterialOnServer(material);
+            }
+        }
+
+        async function updateMaterialOnServer(material) {
+            try {
+                const response = await fetch('/teacher/Notes/', {
+                    method: "PATCH",
+                    headers: {
+                        "X-CSRFToken": '{{ csrf_token }}',
+                        "Accept": "application/json"
+                    },
+                    body: JSON.stringify({ visible: material.visible, material_id: material.id })
+                });
+
+                if (!response.ok) {
+                    console.error("Failed to update material on server");
+                }
+            } catch (error) {
+                console.error("Error updating material:", error);
+            }
+        }
 
         function renderMaterials() {
-            const tbody = document.getElementById('materialsBody');
-            const totalCount = document.getElementById('totalCount');
+            const grid = document.getElementById('materialsGrid');
+            const materialsToRender = searchQuery ? filteredMaterials : materials;
 
-            if (materials.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="6" class="empty-state">
-                            <div class="empty-state-icon">📚</div>
-                            <div>No materials uploaded yet. Start by uploading your first study material!</div>
-                        </td>
-                    </tr>
-                `;
-                totalCount.textContent = '0';
+            if (!materialsToRender.length) {
+                if (searchQuery) {
+                    grid.innerHTML = "<div class='no-results'>No materials match your search. Try different keywords.</div>";
+                } else {
+                    grid.innerHTML = "<div class='no-results'>No materials found. Click the + button to add your first material!</div>";
+                }
                 return;
             }
 
-            tbody.innerHTML = materials.map((material, index) => `
-                <tr>
-                    <td>${material.class}</td>
-                    <td>${material.subject}</td>
-                    <td>${material.title}</td>
-                    <td><a href="#" class="file-link">${material.fileName}</a></td>
-                    <td>${material.date}</td>
-                    <td>
-                        <button class="btn-action btn-edit" onclick="openEditModal(${index})">✏️ Edit</button>
-                        <button class="btn-action btn-delete" onclick="openDeleteModal(${index})">🗑️ Delete</button>
-                    </td>
-                </tr>
+            grid.innerHTML = materialsToRender.map(material => `
+                <div class="material-card">
+                    <div class="card-header">
+                        <div class="material-title">${material.title}</div>
+                        <button class="delete-btn" onclick="deleteMaterial(${material.id})" title="Delete material">×</button>
+                    </div>
+
+                    <span class="subject-badge">${material.subject}</span>
+                    <span class="subject-badge">${material.className}</span>
+
+                    <div class="document-info">
+                        <div class="doc-icon">📄</div>
+                        <div class="doc-details" onclick="window.open('${material.documentURL}', '_blank')" style="cursor:pointer;">
+                            <div class="doc-name">${material.documentName}</div>
+                            <div class="doc-size">${material.documentSize}</div>
+                        </div>
+                    </div>
+
+                    <div class="visibility-section">
+                        <div class="visibility-status">
+                            <span class="status-indicator ${material.visible ? 'visible' : 'hidden'}"></span>
+                            <span>${material.visible ? 'Visible' : 'Hidden'}</span>
+                        </div>
+                        <div class="toggle-switch ${material.visible ? 'active' : ''}"
+                            onclick="toggleVisibility(${material.id})">
+                            <div class="toggle-slider"></div>
+                        </div>
+                    </div>
+                </div>
             `).join('');
-
-            totalCount.textContent = materials.length;
         }
 
-        function openDeleteModal(index) {
-            deleteIndex = index;
-            document.getElementById('deleteModal').classList.add('active');
+        function addNewMaterial() {
+            document.getElementById('modalOverlay').classList.add('active');
         }
 
-        function closeDeleteModal() {
-            deleteIndex = null;
-            document.getElementById('deleteModal').classList.remove('active');
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.remove('active');
+            document.getElementById('materialForm').reset();
+            document.getElementById('fileName').textContent = '';
+            selectedFile = null;
+            newMaterialVisible = true;
+            document.getElementById('visibilityToggle').classList.add('active');
         }
 
-        function confirmDelete() {
-            if (deleteIndex !== null) {
-                materials.splice(deleteIndex, 1);
-                renderMaterials();
-                closeDeleteModal();
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                selectedFile = file;
+                document.getElementById('fileName').textContent = file.name;
             }
         }
 
-        function openEditModal(index) {
-            editIndex = index;
-            const material = materials[index];
-            
-            document.getElementById('editClass').value = material.class;
-            document.getElementById('editSubject').value = material.subject;
-            document.getElementById('editTitle').value = material.title;
-            
-            document.getElementById('editModal').classList.add('active');
-        }
+        function handleSubmit(event) {
+            event.preventDefault();
 
-        function closeEditModal() {
-            editIndex = null;
-            document.getElementById('editModal').classList.remove('active');
-        }
-
-        document.getElementById('editForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            if (editIndex !== null) {
-                materials[editIndex].class = document.getElementById('editClass').value;
-                materials[editIndex].subject = document.getElementById('editSubject').value;
-                materials[editIndex].title = document.getElementById('editTitle').value;
-                
-                renderMaterials();
-                closeEditModal();
-                alert('Study material updated successfully!');
+            if (!selectedFile) {
+                showNotification('No Document Selected', 'Please select a document to upload', 'warning');
+                return;
             }
-        });
+
+            const formData = new FormData(event.target);
+            showNotification('Processing', 'Uploading material...', 'info');
+
+            fetch('/teacher/Notes/',{
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status == 'success'){
+                    showNotification('Success', data.message, 'success');
+                    closeModal();
+                    fetchMaterials();
+                } else {
+                    showNotification('Error', 'Error adding material: ' + data.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('Error', 'An error occurred while adding the material.', 'error');
+            });
+
+            const newMaterial = {
+                id: Date.now(),
+                title: document.getElementById('title').value,
+                className: document.getElementById('className').value,
+                subject: document.getElementById('subject').value,
+                documentName: selectedFile.name,
+                documentSize: (selectedFile.size / 1024).toFixed(2) + ' KB',
+                description: document.getElementById('description').value,
+                visible: newMaterialVisible
+            };
+
+            materials.push(newMaterial);
+            renderMaterials();
+            closeModal();
+
+            showNotification('Success', 'Material added successfully!', 'success');
+        }
 
         // Close modal when clicking outside
-        window.addEventListener('click', function(e) {
-            if (e.target.classList.contains('modal')) {
-                closeDeleteModal();
-                closeEditModal();
+        document.getElementById('modalOverlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
             }
         });
+
+        // Close confirmation modal when clicking outside
+        document.getElementById('confirmModalOverlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                cancelConfirm();
+            }
+        });
+
+        document.addEventListener("DOMContentLoaded", fetchMaterials);
     </script>
 </body>
 </html>
