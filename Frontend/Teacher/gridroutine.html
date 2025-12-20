@@ -172,6 +172,46 @@
             font-weight: 500;
         }
 
+        /* Message Toast Styles */
+        .message-toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 16px 24px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 500;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            max-width: 350px;
+        }
+
+        .message-toast.show {
+            transform: translateX(0);
+        }
+
+        .message-toast.success {
+            background: #10b981;
+            color: white;
+        }
+
+        .message-toast.error {
+            background: #ef4444;
+            color: white;
+        }
+
+        .message-toast-icon {
+            font-size: 1.2rem;
+        }
+
+        .message-toast-text {
+            flex: 1;
+        }
+
         /* Modal Styles */
         .modal {
             display: none;
@@ -331,6 +371,12 @@
             .modal-button {
                 width: 100%;
             }
+
+            .message-toast {
+                right: 10px;
+                left: 10px;
+                max-width: none;
+            }
         }
     </style>
 </head>
@@ -342,7 +388,7 @@
         </div>
         <a href="#" onclick="back()" class="back-button">
             <span>←</span>
-            <span>Back to Class Management</span>
+            <span>Back</span>
         </a>
     </div>
 
@@ -401,6 +447,42 @@
         let currentTime = '';
 
         /**
+         * Show message toast
+         */
+        function showMessage(message, type = 'success') {
+            // Remove any existing toast
+            const existingToast = document.querySelector('.message-toast');
+            if (existingToast) {
+                existingToast.remove();
+            }
+
+            // Create new toast
+            const toast = document.createElement('div');
+            toast.className = `message-toast ${type}`;
+            
+            const icon = type === 'success' ? '✓' : '✕';
+            toast.innerHTML = `
+                <span class="message-toast-icon">${icon}</span>
+                <span class="message-toast-text">${message}</span>
+            `;
+            
+            document.body.appendChild(toast);
+            
+            // Trigger animation
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 10);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            }, 3000);
+        }
+
+        /**
          * Open modal for activity input
          */
         function openModal(day, time) {
@@ -443,7 +525,7 @@
             const activity = input.value.trim();
             
             if (!activity) {
-                alert('Please enter an activity name');
+                showMessage('Please enter an activity name', 'error');
                 return;
             }
 
@@ -465,13 +547,13 @@
                     schedule[currentDay][currentTime] = activity;
                     generateGrid();
                     closeModal();
-                    alert(data.message);
+                    showMessage(data.message, 'success');
                 } else {
-                    alert('Error: ' + data.message);
+                    showMessage('Error: ' + data.message, 'error');
                 }
             })
             .catch(err => {
-                alert('Error: ' + err);
+                showMessage('Error: ' + err, 'error');
             });
         }
 
@@ -500,13 +582,13 @@
                     schedule[currentDay][currentTime] = '';
                     generateGrid();
                     closeModal();
-                    alert(data.message);
+                    showMessage(data.message, 'success');
                 } else {
-                    alert('Error: ' + data.message);
+                    showMessage('Error: ' + data.message, 'error');
                 }
             })
             .catch(err => {
-                alert('Error: ' + err);
+                showMessage('Error: ' + err, 'error');
             });
         }
 

@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Login - Tuition Portal</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #fff5f7 0%, #ffe0e6 100%);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .background-shapes {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        z-index: 0;
+      }
+
+      .shape {
+        position: absolute;
+        background: rgba(220, 53, 69, 0.1);
+        border-radius: 50%;
+        animation: float 20s infinite ease-in-out;
+      }
+
+      .shape:nth-child(1) {
+        width: 300px;
+        height: 300px;
+        top: -100px;
+        left: -100px;
+        animation-delay: 0s;
+      }
+
+      .shape:nth-child(2) {
+        width: 200px;
+        height: 200px;
+        bottom: -50px;
+        right: -50px;
+        animation-delay: 3s;
+      }
+
+      .shape:nth-child(3) {
+        width: 150px;
+        height: 150px;
+        top: 50%;
+        right: 10%;
+        animation-delay: 6s;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translate(0, 0) scale(1);
+        }
+        33% {
+          transform: translate(30px, -30px) scale(1.1);
+        }
+        66% {
+          transform: translate(-20px, 20px) scale(0.9);
+        }
+      }
+
+      .login-container {
+        background: white;
+        padding: 50px 40px;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(220, 53, 69, 0.2);
+        width: 420px;
+        max-width: 90%;
+        position: relative;
+        z-index: 1;
+        animation: slideIn 0.6s ease-out;
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .logo-container {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+
+      .logo {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 36px;
+        color: white;
+        margin-bottom: 15px;
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1);
+          box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7);
+        }
+        50% {
+          transform: scale(1.05);
+          box-shadow: 0 0 0 15px rgba(220, 53, 69, 0);
+        }
+      }
+
+      h2 {
+        color: #dc3545;
+        text-align: center;
+        margin-bottom: 10px;
+        font-size: 28px;
+      }
+
+      .subtitle {
+        text-align: center;
+        color: #666;
+        margin-bottom: 30px;
+        font-size: 14px;
+      }
+
+      .input-group {
+        margin-bottom: 25px;
+        position: relative;
+      }
+
+      label {
+        display: block;
+        color: #333;
+        margin-bottom: 8px;
+        font-weight: 500;
+        font-size: 14px;
+      }
+
+      input {
+        width: 100%;
+        padding: 14px 16px;
+        border: 2px solid #f0f0f0;
+        border-radius: 10px;
+        font-size: 15px;
+        transition: all 0.3s ease;
+        background: #fafafa;
+      }
+
+      input:focus {
+        outline: none;
+        border-color: #dc3545;
+        background: white;
+        box-shadow: 0 0 0 4px rgba(220, 53, 69, 0.1);
+      }
+
+      .password-toggle {
+        position: absolute;
+        right: 16px;
+        top: 43px;
+        cursor: pointer;
+        color: #999;
+        font-size: 14px;
+        user-select: none;
+      }
+
+      .remember-forgot {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+        font-size: 14px;
+      }
+
+      .remember {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #666;
+      }
+
+      .remember input[type="checkbox"] {
+        width: auto;
+        cursor: pointer;
+      }
+
+      .forgot-link {
+        color: #dc3545;
+        text-decoration: none;
+        transition: color 0.3s;
+      }
+
+      .forgot-link:hover {
+        color: #c82333;
+        text-decoration: underline;
+      }
+
+      .login-btn {
+        width: 100%;
+        padding: 16px;
+        background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+      }
+
+      .login-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+      }
+
+      .login-btn:active {
+        transform: translateY(0);
+      }
+
+      .signup-link {
+        text-align: center;
+        margin-top: 25px;
+        color: #666;
+        font-size: 14px;
+      }
+
+      .signup-link a {
+        color: #dc3545;
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      .signup-link a:hover {
+        text-decoration: underline;
+      }
+
+      .error-message {
+        background: #ffe0e0;
+        color: #dc3545;
+        padding: 12px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        font-size: 14px;
+        display: none;
+        animation: shake 0.5s;
+      }
+
+      @keyframes shake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        25% {
+          transform: translateX(-10px);
+        }
+        75% {
+          transform: translateX(10px);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="background-shapes">
+      <div class="shape"></div>
+      <div class="shape"></div>
+      <div class="shape"></div>
+    </div>
+
+    <div class="login-container">
+      <div class="logo-container">
+        <div class="logo">📚</div>
+        <h2>Student Portal</h2>
+        <p class="subtitle">Welcome back! Please login to your account</p>
+      </div>
+
+      <div class="error-message" id="errorMessage">
+        Invalid username or password
+      </div>
+
+      <form id="loginForm">
+        {% csrf_token %}
+        <div class="input-group">
+          <label for="username">Username or Student ID</label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            placeholder="Enter your username"
+            required
+          />
+        </div>
+
+        <div class="input-group">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Enter your password"
+            required
+          />
+          <span class="password-toggle" onclick="togglePassword()">👁️</span>
+        </div>
+
+        <div class="remember-forgot">
+          <label class="remember">
+            <input type="checkbox" id="remember" />
+            <span>Remember me</span>
+          </label>
+          <a href="#" class="forgot-link">Forgot Password?</a>
+        </div>
+
+        <button type="submit" class="login-btn">Login</button>
+      </form>
+
+      <div class="signup-link">
+        Don't have an account? <a href="#">Contact Admin</a>
+      </div>
+    </div>
+
+    <script>
+      function togglePassword() {
+        const passwordInput = document.getElementById("password");
+        const toggle = document.querySelector(".password-toggle");
+
+        if (passwordInput.type === "password") {
+          passwordInput.type = "text";
+          toggle.textContent = "🙈";
+        } else {
+          passwordInput.type = "password";
+          toggle.textContent = "👁️";
+        }
+      }
+
+      document
+        .getElementById("loginForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          const formData = new FormData(this);
+
+          fetch("/student/login/", {
+            method: "POST",
+            headers: {
+              "X-CSRFToken": formData.get("csrfmiddlewaretoken"),
+            },
+            body: formData,
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.status === "success") {
+                window.location.href = "/student/dashboard/";
+              } else {
+                const errorMessage = document.getElementById("errorMessage");
+                errorMessage.style.display = "block";
+                errorMessage.textContent = data.message;
+              }
+            })
+            .catch((error) => console.error("Error:", error));
+        });
+
+      // Add floating animation to input fields
+      const inputs = document.querySelectorAll(
+        'input[type="text"], input[type="password"]'
+      );
+      inputs.forEach((input) => {
+        input.addEventListener("focus", function () {
+          this.parentElement.style.transform = "translateY(-2px)";
+        });
+
+        input.addEventListener("blur", function () {
+          this.parentElement.style.transform = "translateY(0)";
+        });
+      });
+    </script>
+  </body>
+</html>

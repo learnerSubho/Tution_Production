@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Study Materials - Student Portal</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        background: linear-gradient(135deg, #fce4ec 0%, #f8bbd0 100%);
+        min-height: 100vh;
+        padding: 20px 40px;
+        position: relative;
+        overflow-x: hidden;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: 
+          radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+          radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+        padding: 0 20px;
+      }
+
+      .back-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        padding: 12px 20px;
+        border-radius: 30px;
+        border: none;
+        color: #d32f2f;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+      }
+
+      .back-button:hover {
+        transform: translateX(-5px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        background: white;
+      }
+
+      .back-button:active {
+        transform: translateX(-3px);
+      }
+
+      .top-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 24px;
+        flex-wrap: wrap;
+      }
+
+      .brand-section {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .logo {
+        width: 52px;
+        height: 52px;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        flex-shrink: 0;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+      }
+
+      .logo:hover {
+        transform: scale(1.05);
+      }
+
+      .logo-text {
+        font-size: 26px;
+        font-weight: 700;
+        color: #d32f2f;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        letter-spacing: -0.5px;
+      }
+
+      .user-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        padding: 10px 18px;
+        border-radius: 30px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+      }
+
+      .user-info:hover {
+        transform: translateY(-2px);
+      }
+
+      .user-avatar {
+        width: 38px;
+        height: 38px;
+        background: linear-gradient(135deg, #d32f2f, #e57373);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 600;
+        font-size: 14px;
+        box-shadow: 0 4px 12px rgba(211, 47, 47, 0.4);
+      }
+
+      .user-name {
+        font-weight: 600;
+        color: #2d3748;
+        font-size: 15px;
+      }
+
+      .header {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        padding: 36px;
+        border-radius: 24px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+        margin-bottom: 28px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+      }
+
+      .header-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 16px;
+        flex-wrap: wrap;
+        gap: 15px;
+      }
+
+      .header h1 {
+        color: #d32f2f;
+        font-size: 32px;
+        font-weight: 800;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        letter-spacing: -0.5px;
+      }
+
+      .stats-badge {
+        background: linear-gradient(135deg, #d32f2f, #e57373);
+        color: white;
+        padding: 10px 20px;
+        border-radius: 30px;
+        font-weight: 600;
+        font-size: 14px;
+        box-shadow: 0 8px 24px rgba(211, 47, 47, 0.4);
+        transition: transform 0.3s ease;
+      }
+
+      .stats-badge:hover {
+        transform: scale(1.05);
+      }
+
+      .header p {
+        color: #64748b;
+        font-size: 16px;
+        margin-bottom: 24px;
+        font-weight: 500;
+      }
+
+      .search-filter-section {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      .search-container {
+        position: relative;
+        flex: 1;
+        min-width: 280px;
+      }
+
+      .search-input {
+        width: 100%;
+        padding: 16px 50px 16px 48px;
+        border: 2px solid #e2e8f0;
+        border-radius: 30px;
+        font-size: 15px;
+        transition: all 0.3s ease;
+        background: #f8fafc;
+        font-weight: 500;
+      }
+
+      .search-input:focus {
+        outline: none;
+        border-color: #d32f2f;
+        background: white;
+        box-shadow: 0 8px 24px rgba(211, 47, 47, 0.15);
+        transform: translateY(-1px);
+      }
+
+      .search-icon {
+        position: absolute;
+        left: 18px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 18px;
+        transition: transform 0.3s ease;
+      }
+
+      .search-input:focus + .search-icon {
+        transform: translateY(-50%) scale(1.1);
+      }
+
+      .search-clear {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: #94a3b8;
+        font-size: 24px;
+        cursor: pointer;
+        padding: 5px;
+        display: none;
+        transition: all 0.3s ease;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+      }
+
+      .search-clear:hover {
+        color: #d32f2f;
+        background: #f1f5f9;
+      }
+
+      .search-clear.visible {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .search-results-info {
+        margin-top: 16px;
+        color: #64748b;
+        font-size: 14px;
+        font-weight: 600;
+        padding: 8px 16px;
+        background: #f8fafc;
+        border-radius: 20px;
+        display: inline-block;
+      }
+
+      .materials-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 24px;
+        margin-bottom: 30px;
+      }
+
+      .material-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 20px;
+        padding: 24px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+      }
+
+      .material-card:hover {
+        transform: translateY(-12px);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+      }
+
+      .material-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: linear-gradient(90deg, #d32f2f, #e57373);
+        transition: height 0.3s ease;
+      }
+
+      .material-card:hover::before {
+        height: 8px;
+      }
+
+      .new-badge {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: linear-gradient(135deg, #4caf50, #66bb6a);
+        color: white;
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+        letter-spacing: 0.5px;
+      }
+
+      .material-title {
+        font-size: 19px;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 12px;
+        line-height: 1.4;
+        letter-spacing: -0.3px;
+      }
+
+      .material-meta {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 14px;
+        flex-wrap: wrap;
+      }
+
+      .meta-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 14px;
+        background: #f1f5f9;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 600;
+        color: #475569;
+        transition: all 0.3s ease;
+      }
+
+      .meta-badge.subject {
+        background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+        color: #e65100;
+      }
+
+      .material-card:hover .meta-badge {
+        transform: scale(1.05);
+      }
+
+      .material-description {
+        color: #64748b;
+        font-size: 14px;
+        line-height: 1.7;
+        margin-bottom: 16px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        font-weight: 500;
+      }
+
+      .document-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px;
+        background: #f8fafc;
+        border-radius: 14px;
+        margin-bottom: 16px;
+        transition: all 0.3s ease;
+      }
+
+      .material-card:hover .document-info {
+        background: #f1f5f9;
+      }
+
+      .doc-icon {
+        width: 44px;
+        height: 44px;
+        background: linear-gradient(135deg, #d32f2f, #e57373);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 20px;
+        flex-shrink: 0;
+        box-shadow: 0 4px 12px rgba(211, 47, 47, 0.3);
+      }
+
+      .doc-details {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .doc-name {
+        font-size: 13px;
+        font-weight: 600;
+        color: #1e293b;
+        margin-bottom: 4px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .doc-size {
+        font-size: 12px;
+        color: #64748b;
+        font-weight: 500;
+      }
+
+      .card-actions {
+        display: flex;
+        gap: 10px;
+      }
+
+      .action-btn {
+        flex: 1;
+        padding: 12px;
+        border: none;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        letter-spacing: 0.2px;
+      }
+
+      .btn-view {
+        background: linear-gradient(135deg, #d32f2f, #e57373);
+        color: white;
+        box-shadow: 0 4px 12px rgba(211, 47, 47, 0.3);
+      }
+
+      .btn-view:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(211, 47, 47, 0.4);
+      }
+
+      .btn-view:active {
+        transform: translateY(0);
+      }
+
+      .no-results {
+        text-align: center;
+        padding: 80px 20px;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 24px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+        grid-column: 1 / -1;
+      }
+
+      .no-results-icon {
+        font-size: 72px;
+        margin-bottom: 24px;
+        animation: float 3s ease-in-out infinite;
+      }
+
+      @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+      }
+
+      .no-results-text {
+        color: #64748b;
+        font-size: 18px;
+        font-weight: 600;
+        line-height: 1.6;
+      }
+
+      .loading {
+        text-align: center;
+        padding: 60px;
+        color: #d32f2f;
+      }
+
+      .spinner {
+        border: 4px solid #fce4ec;
+        border-top: 4px solid #d32f2f;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        animation: spin 0.8s linear infinite;
+        margin: 0 auto 24px;
+      }
+
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+
+      @media (max-width: 1024px) {
+        body {
+          padding: 20px 30px;
+        }
+
+        .container {
+          padding: 0 15px;
+        }
+
+        .materials-grid {
+          grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        }
+      }
+
+      @media (max-width: 768px) {
+        body {
+          padding: 12px 20px;
+        }
+
+        .container {
+          width: 100%;
+          padding: 0 10px;
+        }
+
+        .back-button {
+          padding: 10px 16px;
+          font-size: 14px;
+          margin-bottom: 16px;
+        }
+
+        .top-header {
+          margin-bottom: 16px;
+        }
+
+        .logo {
+          width: 44px;
+          height: 44px;
+          font-size: 20px;
+        }
+
+        .logo-text {
+          font-size: 20px;
+        }
+
+        .user-info {
+          padding: 8px 14px;
+        }
+
+        .user-avatar {
+          width: 32px;
+          height: 32px;
+          font-size: 12px;
+        }
+
+        .user-name {
+          font-size: 14px;
+        }
+
+        .header {
+          padding: 20px;
+        }
+
+        .header-top {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 12px;
+        }
+
+        .header h1 {
+          font-size: 24px;
+        }
+
+        .stats-badge {
+          padding: 8px 16px;
+          font-size: 12px;
+        }
+
+        .header p {
+          font-size: 14px;
+          margin-bottom: 18px;
+        }
+
+        .search-filter-section {
+          width: 100%;
+        }
+
+        .search-container {
+          width: 100%;
+          min-width: 100%;
+        }
+
+        .search-input {
+          padding: 12px 40px 12px 40px;
+          font-size: 14px;
+        }
+
+        .search-icon {
+          left: 14px;
+          font-size: 16px;
+        }
+
+        .search-results-info {
+          font-size: 13px;
+          margin-top: 12px;
+        }
+
+        .materials-grid {
+          grid-template-columns: 1fr;
+          gap: 16px;
+        }
+
+        .material-card {
+          padding: 18px;
+        }
+
+        .new-badge {
+          top: 15px;
+          right: 15px;
+          padding: 5px 10px;
+          font-size: 10px;
+        }
+
+        .material-title {
+          font-size: 17px;
+          margin-bottom: 10px;
+        }
+
+        .material-meta {
+          margin-bottom: 12px;
+        }
+
+        .meta-badge {
+          padding: 5px 10px;
+          font-size: 12px;
+        }
+
+        .material-description {
+          font-size: 13px;
+          margin-bottom: 12px;
+        }
+
+        .document-info {
+          padding: 12px;
+          margin-bottom: 12px;
+        }
+
+        .doc-icon {
+          width: 40px;
+          height: 40px;
+          font-size: 18px;
+        }
+
+        .doc-name {
+          font-size: 12px;
+        }
+
+        .doc-size {
+          font-size: 11px;
+        }
+
+        .action-btn {
+          padding: 10px;
+          font-size: 13px;
+        }
+
+        .no-results {
+          padding: 60px 20px;
+        }
+
+        .no-results-icon {
+          font-size: 56px;
+          margin-bottom: 16px;
+        }
+
+        .no-results-text {
+          font-size: 16px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        body {
+          padding: 8px 12px;
+        }
+
+        .container {
+          padding: 0 5px;
+        }
+
+        .back-button {
+          padding: 8px 14px;
+          font-size: 13px;
+          margin-bottom: 12px;
+        }
+
+        .top-header {
+          gap: 8px;
+          margin-bottom: 12px;
+        }
+
+        .brand-section {
+          gap: 8px;
+        }
+
+        .logo {
+          width: 40px;
+          height: 40px;
+          font-size: 18px;
+        }
+
+        .logo-text {
+          font-size: 18px;
+        }
+
+        .header {
+          padding: 16px;
+          border-radius: 16px;
+          margin-bottom: 16px;
+        }
+
+        .header h1 {
+          font-size: 20px;
+          gap: 6px;
+        }
+
+        .stats-badge {
+          padding: 6px 12px;
+          font-size: 11px;
+          border-radius: 20px;
+        }
+
+        .header p {
+          font-size: 13px;
+          margin-bottom: 16px;
+        }
+
+        .search-input {
+          padding: 10px 36px 10px 36px;
+          font-size: 13px;
+          border-radius: 20px;
+        }
+
+        .search-icon {
+          left: 12px;
+          font-size: 14px;
+        }
+
+        .search-clear {
+          right: 10px;
+          width: 28px;
+          height: 28px;
+          font-size: 20px;
+        }
+
+        .search-results-info {
+          font-size: 12px;
+          padding: 6px 12px;
+        }
+
+        .materials-grid {
+          gap: 12px;
+        }
+
+        .material-card {
+          padding: 16px;
+          border-radius: 16px;
+        }
+
+        .material-title {
+          font-size: 16px;
+        }
+
+        .material-description {
+          font-size: 12px;
+        }
+
+        .document-info {
+          padding: 10px;
+          border-radius: 10px;
+        }
+
+        .doc-icon {
+          width: 36px;
+          height: 36px;
+          font-size: 16px;
+          border-radius: 8px;
+        }
+
+        .action-btn {
+          padding: 9px;
+          font-size: 12px;
+          border-radius: 10px;
+        }
+
+        .no-results {
+          padding: 40px 16px;
+          border-radius: 16px;
+        }
+
+        .no-results-icon {
+          font-size: 48px;
+        }
+
+        .no-results-text {
+          font-size: 14px;
+        }
+      }
+      /* Quick Access */
+        .quick-access {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 150;
+        }
+
+        .quick-access-btn {
+            width: 65px;
+            height: 65px;
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 28px;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(220, 53, 69, 0.4);
+            transition: all 0.3s;
+        }
+
+        .quick-access-btn:hover {
+            transform: rotate(90deg) scale(1.1);
+        }
+
+        .quick-access-menu {
+            position: absolute;
+            bottom: 80px;
+            right: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .quick-access-menu.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .quick-access-item {
+            background: white;
+            padding: 15px 25px;
+            border-radius: 50px;
+            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+            transform: translateX(100px);
+        }
+
+        .quick-access-menu.active .quick-access-item:nth-child(1) {
+            animation: slideIn 0.3s forwards;
+            animation-delay: 0.1s;
+        }
+
+        .quick-access-menu.active .quick-access-item:nth-child(2) {
+            animation: slideIn 0.3s forwards;
+            animation-delay: 0.2s;
+        }
+
+        .quick-access-menu.active .quick-access-item:nth-child(3) {
+            animation: slideIn 0.3s forwards;
+            animation-delay: 0.3s;
+        }
+
+        @keyframes slideIn {
+            to {
+                transform: translateX(0);
+            }
+        }
+
+        .quick-access-item:hover {
+            background: #dc3545;
+            color: white;
+            transform: translateX(-5px);
+        }
+
+        .quick-access-item span {
+            font-size: 20px;
+        }
+
+        .quick-access-item:hover span {
+            animation: bounce 0.5s;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <button class="back-button" onclick="goBack()">
+        ← Go Back
+      </button>
+
+      <div class="top-header">
+        <div class="brand-section">
+        {% if info.website_logo %}
+            <img src="{{info.website_logo.url}}" class="logo" alt="{{info.website_name}}">
+        {% else %}
+            <div class="logo">🎓</div>
+        {% endif %}
+          
+          <span class="logo-text">{{info.website_name}}</span>
+        </div>
+      </div>
+
+      <div class="header">
+        <div class="header-top">
+          <h1>📚 Study Materials</h1>
+        </div>
+        <p>
+          Access all your study materials, notes, and resources in one place
+        </p>
+
+        <div class="search-filter-section">
+          <div class="search-container">
+            <input
+              type="text"
+              id="searchInput"
+              class="search-input"
+              placeholder="Search materials by title, subject, or topic..."
+              oninput="handleSearch()"
+            />
+            <span class="search-icon">🔍</span>
+            <button
+              class="search-clear"
+              id="searchClear"
+              onclick="clearSearch()"
+            >
+              ×
+            </button>
+          </div>
+        </div>
+        <div class="search-results-info" id="searchResultsInfo"></div>
+      </div>
+
+      <div id="loadingState" class="loading" style="display: none">
+        <div class="spinner"></div>
+        <p>Loading materials...</p>
+      </div>
+      <div class="materials-grid" id="materialsGrid"></div>
+    </div>
+    <div class="quick-access">
+        <div class="quick-access-menu" id="quickMenu">
+            <div class="quick-access-item" onclick="navigateTo('salarycard')">
+                <span>💳</span>
+                <span>Salary Card</span>
+            </div>
+            <div class="quick-access-item" onclick="navigateTo('routine')">
+                <span>🕐</span>
+                <span>Routine</span>
+            </div>
+            <div class="quick-access-item" onclick="navigateTo('changepassword')">
+                <span>🔒</span>
+                <span>Change Password</span>
+            </div>
+        </div>
+        <div class="quick-access-btn" onclick="toggleQuickMenu()">⚡</div>
+    </div>
+
+    <script>
+      let materials = [];
+      let filteredMaterials = [];
+      let searchQuery = "";
+      let selectedSubject = "";
+      let selectedClass = "";
+
+      function goBack() {
+        window.history.back();
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        fetch("/student/notes_api/", {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+          },
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Failed to fetch notes");
+            }
+            return response.json();
+          })
+          .then((data) => {
+            materials = data.notes.map((note) => {
+              const uploadDate = new Date(note.upload_date);
+              const isNew =
+                (Date.now() - uploadDate.getTime()) / (1000 * 60 * 60 * 24) <=
+                7;
+
+              return {
+                id: note.id,
+                title: note.title,
+                subject: note.subject,
+                className: note.class_name,
+                description: note.description,
+                documentName: note.file_name,
+                documentSize: note.file_size || "",
+                documentURL: note.file_url,
+                uploadDate: uploadDate,
+                isNew: isNew,
+              };
+            });
+
+            filteredMaterials = [...materials];
+            renderMaterials();
+            updateSearchResultsInfo();
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      });
+
+      function handleSearch() {
+        const input = document.getElementById("searchInput");
+        const clearBtn = document.getElementById("searchClear");
+        searchQuery = input.value.toLowerCase().trim();
+
+        clearBtn.classList.toggle("visible", searchQuery !== "");
+        applyFilters();
+      }
+
+      function clearSearch() {
+        document.getElementById("searchInput").value = "";
+        document.getElementById("searchClear").classList.remove("visible");
+        searchQuery = "";
+        applyFilters();
+      }
+
+      function applyFilters() {
+        filteredMaterials = materials.filter((material) => {
+          const matchesSearch =
+            !searchQuery ||
+            material.title.toLowerCase().includes(searchQuery) ||
+            material.subject.toLowerCase().includes(searchQuery) ||
+            material.description.toLowerCase().includes(searchQuery);
+
+          return matchesSearch;
+        });
+
+        renderMaterials();
+        updateSearchResultsInfo();
+      }
+
+      function updateSearchResultsInfo() {
+        const info = document.getElementById("searchResultsInfo");
+        if (searchQuery || selectedSubject || selectedClass) {
+          info.textContent = `Found ${filteredMaterials.length} material${filteredMaterials.length !== 1 ? 's' : ''}`;
+          info.style.display = "inline-block";
+        } else {
+          info.style.display = "none";
+        }
+      }
+
+      function renderMaterials() {
+        const grid = document.getElementById("materialsGrid");
+
+        if (!filteredMaterials.length) {
+          grid.innerHTML = `
+                    <div class="no-results">
+                        <div class="no-results-icon">📭</div>
+                        <div class="no-results-text">
+                            ${
+                              searchQuery || selectedSubject || selectedClass
+                                ? "No materials match your search criteria. Try adjusting your filters."
+                                : "No study materials available yet."
+                            }
+                        </div>
+                    </div>
+                `;
+          return;
+        }
+
+        grid.innerHTML = filteredMaterials
+          .map(
+            (material) => `
+                <div class="material-card" onclick="viewMaterial(${
+                  material.id
+                })">
+                    ${material.isNew ? '<div class="new-badge">New</div>' : ""}
+                    
+                    <div class="material-title">${material.title}</div>
+                    
+                    <div class="material-meta">
+                        <span class="meta-badge subject">📖 ${
+                          material.subject
+                        }</span>
+                    </div>
+                    
+                    ${
+                      material.description
+                        ? `
+                        <div class="material-description">${material.description}</div>
+                    `
+                        : ""
+                    }
+                    
+                    <div class="document-info">
+                        <div class="doc-icon">📄</div>
+                        <div class="doc-details">
+                            <div class="doc-name">${material.documentName}</div>
+                            <div class="doc-size">${material.documentSize}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-actions">
+                        <button class="action-btn btn-view" onclick="event.stopPropagation(); viewMaterial(${
+                          material.id
+                        })">
+                            👁️ View
+                        </button>
+                    </div>
+                </div>
+            `
+          )
+          .join("");
+      }
+
+      // Toggle Quick Access Menu
+        let quickMenuOpen = false;
+        function toggleQuickMenu() {
+            const menu = document.getElementById('quickMenu');
+            const btn = document.querySelector('.quick-access-btn');
+            
+            quickMenuOpen = !quickMenuOpen;
+            menu.classList.toggle('active');
+            
+            if (quickMenuOpen) {
+                btn.style.transform = 'rotate(45deg)';
+            } else {
+                btn.style.transform = 'rotate(0deg)';
+            }
+        }
+
+      function viewMaterial(id) {
+        const material = materials.find((m) => m.id === id);
+        if (material) {
+          window.open(material.documentURL, "_blank");
+        }
+      }
+    </script>
+  </body>
+</html>

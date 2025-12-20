@@ -3,6 +3,11 @@ from django.db.models import Sum
 from datetime import timedelta,date
 from decimal import Decimal
 import os
+import uuid
+from django.contrib.auth.hashers import make_password
+from django.core.mail import send_mail
+from django.conf import settings
+
 class Classname(models.Model):
     class_id = models.AutoField(primary_key=True)
     classname = models.CharField(max_length=50,unique=True)
@@ -32,6 +37,8 @@ class Batch(models.Model):
 
 class Student(models.Model):
     student_id = models.AutoField(primary_key=True)
+    username = models.CharField(max_length=100,unique=True,editable=False)
+    password = models.CharField(max_length=256)
     studentname = models.CharField(max_length=100)
     fathername = models.CharField(max_length=100)
     email = models.EmailField()
@@ -52,6 +59,60 @@ class Student(models.Model):
         if self.photo and os.path.isfile(self.photo.path):
             os.remove(self.photo.path)
         super().delete(*args, **kwargs)
+    def save(self, *args, **kwargs):
+        is_new = self.pk is None
+        raw_password = None
+
+        if not self.username:
+            firstname = self.studentname.strip().split(' ')[0]
+            self.username = f'{firstname}-{uuid.uuid4().hex[:4].upper()}'
+
+        if is_new and not self.password:
+            raw_password = uuid.uuid4().hex[:6]
+            self.password = make_password(raw_password)
+
+        super().save(*args, **kwargs)
+
+        # Send credentials email ONLY when student is created
+        if is_new and raw_password:
+            send_mail(
+                subject='Your Student Login Credentials',
+                message=(
+                    f"Dear {self.studentname},\n\n"
+                    f"Your student account has been created successfully.\n\n"
+                    f"Username: {self.username}\n"
+                    f"Password: {raw_password}\n\n"
+                    f"Please change your password after login.\n\n"
+                    f"Regards,\nSchool Administration"
+                ),
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[self.email],
+                fail_silently=False,
+            )
+   
+    @property
+    def due_amount(self):
+        today = date.today()
+
+        total_months = (today - self.admission_date).days // 30
+
+        total_paid = self.fees.aggregate(
+            total=Sum('fees')
+        )['total'] or 0
+
+        # Remove year outstanding first
+        paid_after_outstanding = max(total_paid - self.year_outstanding, 0)
+
+        paid_months = paid_after_outstanding // self.classname.fees
+
+        due_months = max(total_months - paid_months, 0)
+
+        saved_money = paid_after_outstanding % self.classname.fees
+
+        due_amount = max(due_months * self.classname.fees - saved_money, 0)
+
+        return due_amount
+
     
     def __str__(self):
         return self.studentname

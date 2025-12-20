@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse,JsonResponse
 from . import models
 from datetime import date
-from django.db.models import When, Case, IntegerField, F
+from django.db.models import When, Case, IntegerField, F, Count, Sum, Min
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout, authenticate, get_user_model
 import random
@@ -14,6 +14,8 @@ import numpy as np
 from PIL import Image
 import io
 from django.core.files.base import ContentFile
+from firebase_admin import messaging
+from django.shortcuts import get_object_or_404
 
 # Compressing Image
 def compressed_image(image, max_width=800, quality=30):
@@ -126,7 +128,7 @@ def ChangePassword(request):
 @login_required(login_url='/teacher/loginpage/')
 def dashboard(request):
     '''Renders the dashboard page for teachers.'''
-    return render(request,'Teacher/dashboard.html',{'info':models.Website_Details_For_Easy_Access.objects.first()})
+    return render(request,'Teacher/dashboard.html',{'info':models.Website_Details_For_Easy_Access.objects.first(),'std_count':models.Student.objects.all().count()})
 
 @login_required(login_url='/teacher/loginpage/')
 def StudentManagment(request):
@@ -378,7 +380,8 @@ def PromoteStudent(request):
     context={
         'students':students,
         'count':students.count(),
-        'ordered_class':ordered_class 
+        'ordered_class':ordered_class,
+        'info':models.Website_Details_For_Easy_Access.objects.first()
     }
     return render(request,'Teacher/PromoteStudent.html',context)
 
@@ -428,8 +431,15 @@ def promote(request,id):
 @login_required(login_url='/teacher/loginpage/')
 def Fees(request):
     '''Renders the fees page for teachers.'''
+    classes = ['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII']
+    cases = [When(classname = name, then=idx+1) for idx,name in enumerate(classes)]
+    Ordered_Classes = models.Classname.objects.all().annotate(
+        class_order = Case(*cases,default=99,output_field=IntegerField())
+    ).order_by('class_order')
     context = {
-        'students':models.Student.objects.all()
+        'classes': Ordered_Classes,
+        'students':models.Student.objects.all().order_by('studentname'),
+        'info':models.Website_Details_For_Easy_Access.objects.first()
     }
     return render(request,'Teacher/Fees.html',context)
 
@@ -472,21 +482,49 @@ def transactions(request,student_id):
     return render(request,'Teacher/transactions.html',context)
 
 @login_required(login_url='/teacher/loginpage/')
-def salarycard(request,student_id):
-    student = models.Student.objects.get(student_id=student_id)
-    full_month_paid_id = models.FeesRecord.objects.filter(student=student,paying_month=True).values_list('fees_id',flat=True)
-    months = [calendar.month_name[month] for month in range(student.admission_date.month,date.today().month)]
+def salarycard(request, student_id):
+    # 1. Fetch student safely (same logic, safer failure)
+    student = get_object_or_404(models.Student, student_id=student_id)
+    records = models.FeesRecord.objects.filter(
+        student=student,
+        paying_month=True
+    )
+    months = [
+        calendar.month_name[m]
+        for m in range(student.admission_date.month, date.today().month)
+    ]
     paid_month = []
     signatures = []
-    for id in full_month_paid_id:
-        record = models.FeesRecord.objects.get(fees_id=id)
+
+    for record in records:
         paid_month.append(record.paid_at.strftime("%d-%m-%Y"))
-        signatures.append(1)
-    combined = zip_longest(months,paid_month,signatures,fillvalue='Due')
-    context={'combined':combined,
-             'info':models.Website_Details_For_Easy_Access.objects.first(),
-             'student':student}
-    return render(request,'Teacher/salary_card.html',context)
+        signatures.append("Paid")
+        
+    combined = zip_longest(months, paid_month, signatures, fillvalue='Due')
+
+    context = {
+        'combined': combined,
+        'student': student,
+        'info': models.Website_Details_For_Easy_Access.objects.first(),
+    }
+
+    return render(request, 'Teacher/salary_card.html', context)
+
+# def salarycard(request,student_id):
+#     student = models.Student.objects.get(student_id=student_id)
+#     full_month_paid_id = models.FeesRecord.objects.filter(student=student,paying_month=True).values_list('fees_id',flat=True)
+#     months = [calendar.month_name[month] for month in range(student.admission_date.month,date.today().month)]
+#     paid_month = []
+#     signatures = []
+#     for id in full_month_paid_id:
+#         record = models.FeesRecord.objects.get(fees_id=id)
+#         paid_month.append(record.paid_at.strftime("%d-%m-%Y"))
+#         signatures.append(1)
+#     combined = zip_longest(months,paid_month,signatures,fillvalue='Due')
+#     context={'combined':combined,
+#              'info':models.Website_Details_For_Easy_Access.objects.first(),
+#              'student':student}
+#     return render(request,'Teacher/salary_card.html',context)
 # End of the Fees Management
 
 @login_required(login_url='/teacher/loginpage/')
@@ -520,11 +558,15 @@ def Notes(request):
         try:
             data = json.loads(request.body)
             material_id = data.get('material_id')
+            print(material_id)
+
             material = models.Study_Materials.objects.get(material_id=material_id)
             material.delete()
-            return JsonResponse({'status':'success','message':'Material deleted successfully'})
+
+            return JsonResponse({'status': 'success', 'message': 'Material deleted successfully'})
         except Exception as e:
-            return JsonResponse({'status':'error','message': str(e)})
+            return JsonResponse({'status': 'error', 'message': str(e)})
+
     elif request.method == 'PATCH':
         try:
             data = json.loads(request.body)
@@ -543,10 +585,10 @@ def Notes(request):
     models_list = models.Classname.objects.all().annotate(
             class_order = Case(*cases, default=99, output_field=IntegerField())
         ).order_by('class_order')
-    return render(request,'Teacher/Notes.html',{'classes':models_list})
+    return render(request,'Teacher/Notes.html',{'classes':models_list,'info':models.Website_Details_For_Easy_Access.objects.first()})
 
 def materials_api(request):
-    materials = models.Study_Materials.objects.all()
+    materials = models.Study_Materials.objects.all().order_by('upload_date')
 
     data = []
     for m in materials:
@@ -843,6 +885,73 @@ def grid_routine(request):
     return render(request,'Teacher/gridroutine.html',{'grid_record':grid_record,'info':models.Website_Details_For_Easy_Access.objects.first()})
 
 @login_required(login_url='/teacher/loginpage/')
+def chart_collection(request):
+    min_admission_date = models.Student.objects.aggregate(
+        earliest=Min('admission_date')
+    )['earliest']
+
+    if not min_admission_date:
+        return JsonResponse({'months': [], 'month_wise_collection': []})
+
+    start_month = min_admission_date.month
+    end_month = date.today().month
+
+    if start_month > end_month:
+        start_month = 1   # prevent empty range
+
+    months = []
+    collections = []
+
+    for month in range(start_month, end_month + 1):
+        months.append(calendar.month_abbr[month])
+
+        total = models.FeesRecord.objects.filter(
+            paid_at__month=month
+        ).aggregate(sum_fees=Sum('fees'))['sum_fees'] or 0
+        collections.append(total)
+    print(months, collections)
+    return JsonResponse({
+        'months': months,
+        'month_wise_collection': collections
+    })
+@login_required(login_url='/teacher/loginpage/') 
+def doughnut_chart(request):
+    try:
+        class_names = ['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII']
+        cases = [When(classname=name , then = idx+1) for idx,name in enumerate(class_names)]
+        classes = models.Classname.objects.annotate(
+            class_order=Case(*cases, default=99, output_field=IntegerField())
+        ).order_by('class_order')
+
+        class_names = [cls.classname for cls in classes]
+        
+        expected_fees = []
+        for cls in classes:
+            expected = 0
+            for std in cls.students.all():
+                expected+= (date.today().month - std.admission_date.month)*std.classname.fees + std.year_outstanding
+            expected_fees.append(expected)
+        
+        fees_by_class = (
+            models.FeesRecord.objects
+            .values('student__classname')
+            .annotate(total_collected=Sum('fees'))
+        )
+        collected_dict = {item['student__classname']: float(item['total_collected']) for item in fees_by_class}
+        collected_fees = [collected_dict.get(cls.class_id, 0) for cls in classes]
+        print(class_names, expected_fees, collected_fees)
+        return JsonResponse({
+            'status': 'success',
+            'class_names': class_names,
+            'expected_fees':expected_fees,
+            'collected_fees': collected_fees
+        })
+
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)})
+
+
+@login_required(login_url='/teacher/loginpage/')
 def Done(request):
     '''Renders the done page for teachers.'''
     return render(request,'Teacher/Done.html')
@@ -900,3 +1009,39 @@ def name_and_logo_modifier_for_easy_access(request):
 
     # For GET requests, just show the page
     return render(request, 'Teacher/supersecret.html')
+
+def noti(request):
+    return render(request,'Teacher/noti.html')
+
+@csrf_exempt
+def save_fcm_token(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            token = data.get("token")
+
+            if not token:
+                return JsonResponse({"error": "Token missing"}, status=400)
+
+            # TODO: Save token to DB here
+            print("FCM Token saved:", token)
+
+            return JsonResponse({"success": True})
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+
+    return JsonResponse({"error": "Invalid request"}, status=405)
+
+def send_data_message(token, title, body, image_url=None):
+     data = {
+          "title":title,
+          "body":body,
+          "icon": 'TeacherWeb\media\website_details_metadata\port6.jpg'
+     }
+     if image_url:
+          data["image"]=image_url
+     
+     message = messaging.Message(data=data, token=token)
+
+     response = messaging.send(message)
+     print("Data message sent: ", response)

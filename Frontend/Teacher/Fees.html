@@ -1,14 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
     <title>Fees Management - TuitionTeacher</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
         }
 
         body {
@@ -23,6 +30,7 @@
             align-items: center;
             gap: 15px;
             margin-bottom: 30px;
+            flex-wrap: wrap;
         }
 
         .logo {
@@ -33,22 +41,51 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
+            font-size: 22px;
+            flex-shrink: 0;
+        }
+
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: fit;
+            border-radius: 12px;
         }
 
         .logo-text {
             color: white;
             font-size: 28px;
-            font-weight: 600;
+            font-weight: 700;
+            word-break: break-word;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: white;
+            text-decoration: none;
+            margin-bottom: 20px;
+            font-size: 15px;
+            transition: all 0.2s ease;
+            flex-wrap: wrap;
+        }
+
+        .back-link:hover {
+            gap: 10px;
         }
 
         .container {
             max-width: 1400px;
             margin: 0 auto;
+        }
+
+        .main-content {
             background: white;
             border-radius: 20px;
             padding: 40px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            width: 100%;
         }
 
         .page-header {
@@ -56,79 +93,82 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
         }
 
         .page-title h1 {
             font-size: 32px;
             color: #2d3748;
+            font-weight: 700;
             margin-bottom: 5px;
+            line-height: 1.2;
         }
 
         .page-title p {
             color: #718096;
-            font-size: 14px;
+            font-size: 15px;
+            line-height: 1.4;
         }
 
         .header-actions {
             display: flex;
             gap: 15px;
+            flex-wrap: wrap;
         }
 
         .btn {
             padding: 12px 24px;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 14px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
         }
 
-        .btn-primary {
-            background: #5a67d8;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #4c51bf;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(90, 103, 216, 0.4);
-        }
-
         .btn-success {
             background: #48bb78;
             color: white;
+            box-shadow: 0 4px 12px rgba(72, 187, 120, 0.4);
         }
 
         .btn-success:hover {
             background: #38a169;
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(72, 187, 120, 0.4);
         }
 
         .search-filter {
             display: flex;
             gap: 15px;
             margin-bottom: 30px;
+            flex-wrap: wrap;
         }
 
         .search-box {
             flex: 1;
             position: relative;
+            min-width: 200px;
         }
 
         .search-box input {
             width: 100%;
-            padding: 12px 40px 12px 15px;
+            padding: 14px 40px 14px 16px;
             border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            font-size: 14px;
+            border-radius: 10px;
+            font-size: 15px;
             outline: none;
-            transition: border-color 0.3s;
+            transition: all 0.3s ease;
+            font-family: inherit;
         }
 
         .search-box input:focus {
-            border-color: #5a67d8;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .search-box input::placeholder {
+            color: #a0aec0;
         }
 
         .search-icon {
@@ -137,21 +177,30 @@
             top: 50%;
             transform: translateY(-50%);
             color: #cbd5e0;
+            font-size: 18px;
         }
 
         .filter-select {
-            padding: 12px 15px;
+            padding: 14px 16px;
             border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            font-size: 14px;
+            border-radius: 10px;
+            font-size: 15px;
             outline: none;
             cursor: pointer;
             background: white;
+            min-width: 180px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .filter-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
 
         .cards-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             gap: 25px;
             margin-bottom: 30px;
         }
@@ -167,7 +216,11 @@
         .student-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
-            border-color: #5a67d8;
+            border-color: #667eea;
+        }
+
+        .student-card.hidden {
+            display: none;
         }
 
         .card-header {
@@ -201,6 +254,7 @@
 
         .student-info {
             flex: 1;
+            min-width: 0;
         }
 
         .student-name {
@@ -208,6 +262,7 @@
             font-weight: 600;
             color: #2d3748;
             margin-bottom: 8px;
+            word-wrap: break-word;
         }
 
         .student-detail {
@@ -217,10 +272,12 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            word-wrap: break-word;
         }
 
         .detail-icon {
-            font-size: 12px;
+            font-size: 14px;
+            flex-shrink: 0;
         }
 
         .fees-details {
@@ -241,12 +298,14 @@
             margin-bottom: 5px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            font-weight: 600;
         }
 
         .fee-value {
             font-size: 18px;
             font-weight: 700;
             color: #2d3748;
+            word-wrap: break-word;
         }
 
         .fee-item.due .fee-value {
@@ -258,18 +317,20 @@
         }
 
         .fee-item.saved .fee-value {
-            color: #5a67d8;
+            color: #667eea;
         }
 
         .card-footer {
             margin-top: 20px;
             display: flex;
             gap: 10px;
+            flex-wrap: wrap;
         }
 
         .btn-small {
             flex: 1;
-            padding: 10px;
+            min-width: 100px;
+            padding: 10px 16px;
             border: none;
             border-radius: 8px;
             font-size: 13px;
@@ -282,12 +343,13 @@
         }
 
         .btn-record {
-            background: #5a67d8;
+            background: #667eea;
             color: white;
         }
 
         .btn-record:hover {
-            background: #4c51bf;
+            background: #5a67d8;
+            transform: translateY(-2px);
         }
 
         .btn-details {
@@ -297,20 +359,23 @@
 
         .btn-details:hover {
             background: #e2e8f0;
+            transform: translateY(-2px);
         }
 
         .total-summary {
-            background: linear-gradient(135deg, #5a67d8 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             padding: 30px;
             border-radius: 16px;
             text-align: center;
             color: white;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
         }
 
         .total-summary h2 {
             font-size: 18px;
             margin-bottom: 10px;
             opacity: 0.9;
+            font-weight: 600;
         }
 
         .total-summary .count {
@@ -318,121 +383,384 @@
             font-weight: 700;
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 1024px) {
             .cards-grid {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
             }
 
-            .container {
-                padding: 20px;
+            .header {
+                margin-bottom: 20px;
+            }
+
+            .logo {
+                width: 45px;
+                height: 45px;
+                font-size: 20px;
+            }
+
+            .logo-text {
+                font-size: 22px;
+            }
+
+            .main-content {
+                padding: 28px 20px;
+                border-radius: 15px;
             }
 
             .page-header {
                 flex-direction: column;
                 align-items: flex-start;
-                gap: 20px;
+                gap: 15px;
+            }
+
+            .page-title h1 {
+                font-size: 26px;
+            }
+
+            .page-title p {
+                font-size: 14px;
+            }
+
+            .header-actions {
+                width: 100%;
+            }
+
+            .btn {
+                padding: 10px 20px;
+                font-size: 13px;
+                width: 100%;
             }
 
             .search-filter {
                 flex-direction: column;
+                gap: 12px;
+            }
+
+            .search-box,
+            .filter-select {
+                width: 100%;
+                min-width: auto;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .student-card {
+                padding: 20px;
+            }
+
+            .card-header {
+                gap: 15px;
+            }
+
+            .student-photo {
+                width: 70px;
+                height: 70px;
+                font-size: 28px;
+            }
+
+            .student-name {
+                font-size: 18px;
+            }
+
+            .student-detail {
+                font-size: 12px;
+            }
+
+            .fees-details {
+                gap: 12px;
+            }
+
+            .fee-item {
+                padding: 12px;
+            }
+
+            .fee-value {
+                font-size: 16px;
+            }
+
+            .card-footer {
+                gap: 8px;
+            }
+
+            .btn-small {
+                font-size: 12px;
+                padding: 9px 12px;
+                min-width: 90px;
+            }
+
+            .total-summary {
+                padding: 25px;
+            }
+
+            .total-summary h2 {
+                font-size: 16px;
+            }
+
+            .total-summary .count {
+                font-size: 40px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+
+            .header {
+                gap: 12px;
+            }
+
+            .logo {
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
+            }
+
+            .logo-text {
+                font-size: 20px;
+            }
+
+            .main-content {
+                padding: 24px 16px;
+                border-radius: 12px;
+            }
+
+            .page-title h1 {
+                font-size: 24px;
+            }
+
+            .student-card {
+                padding: 18px;
+            }
+
+            .card-header {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .student-photo {
+                width: 80px;
+                height: 80px;
+            }
+
+            .student-info {
+                width: 100%;
+            }
+
+            .student-detail {
+                justify-content: center;
+            }
+
+            .fees-details {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .card-footer {
+                flex-direction: column;
+            }
+
+            .btn-small {
+                width: 100%;
+                min-width: auto;
+            }
+
+            .total-summary {
+                padding: 20px;
+            }
+
+            .total-summary .count {
+                font-size: 36px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .logo-text {
+                font-size: 18px;
+            }
+
+            .page-title h1 {
+                font-size: 22px;
+            }
+
+            .student-name {
+                font-size: 16px;
+            }
+
+            .fee-value {
+                font-size: 15px;
             }
         }
     </style>
 </head>
+
 <body>
-    <div class="header">
-        <div class="logo">🎓</div>
-        <div class="logo-text">TuitionTeacher</div>
-    </div>
-
     <div class="container">
-        <div class="page-header">
-            <div class="page-title">
-                <h1>Fees Management</h1>
-                <p>Track and manage student fee payments</p>
+        <div class="header">
+            <div class="logo">
+                <img src="{{info.website_logo.url}}" alt="Logo">
             </div>
-            <div class="header-actions">
-                <button class="btn btn-success">💬 Collect Fees</button>
-            </div>
+            <span class="logo-text">{{info.website_name}}</span>
         </div>
 
-        <div class="search-filter">
-            <div class="search-box">
-                <input type="text" placeholder="Search students..." id="searchInput">
-                <span class="search-icon">🔍</span>
-            </div>
-            <select class="filter-select" id="filterSelect">
-                <option value="all">All Students</option>
-                <option value="due">Pending Dues</option>
-                <option value="paid">Fully Paid</option>
-            </select>
-        </div>
+        <a href="#" class="back-link" onclick="goBack()">← Back</a>
 
-        <div class="cards-grid" id="cardsGrid">
-            {% for student in students %}     
-            <div class="student-card">
-                <div class="card-header">
-                    <div class="student-photo">
-                        <img src="{{student.photo.url}}" alt="{{student.studentname}}">
-                    </div>
-                    <div class="student-info">
-                        <div class="student-name">
-                            {{student.studentname}}
-                        </div>
-                        <div class="student-detail">
-                            <span class="detail-icon">📱</span>
-                            {{student.phone}}
-                        </div>
-                        <div class="student-detail">
-                            <span class="detail-icon">📍</span>
-                            {{student.address}}
-                        </div>
-                    </div>
+        <div class="main-content">
+            <div class="page-header">
+                <div class="page-title">
+                    <h1>Fees Management</h1>
+                    <p>Track and manage student fee payments</p>
                 </div>
-                <div class="fees-details">
-                    <div class="fee-item due">
-                        <div class="fee-label">Due Months</div>
-                        
+                <div class="header-actions">
+                    <button class="btn btn-success">💬 Collect Fees</button>
+                </div>
+            </div>
+
+            <div class="search-filter">
+                <div class="search-box">
+                    <input type="text" placeholder="Search students..." id="searchInput">
+                    <span class="search-icon">🔍</span>
+                </div>
+                <select class="filter-select" id="filterSelect">
+                    <option value="">All Classes</option>
+                    {% for clas in classes %}
+                    <option value="{{clas.class_id}}">{{clas.classname}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="cards-grid" id="cardsGrid">
+                {% for student in students %}
+                <div class="student-card" 
+                     data-student-name="{{student.studentname}}" 
+                     data-phone="{{student.phone}}"
+                     data-address="{{student.address}}"
+                     data-class-id="{{student.classname.class_id}}">
+                    <div class="card-header">
+                        <div class="student-photo">
+                            <img src="{{student.photo.url}}" alt="{{student.studentname}}">
+                        </div>
+                        <div class="student-info">
+                            <div class="student-name">
+                                {{student.studentname}}
+                            </div>
+                            <div class="student-detail">
+                                <span class="detail-icon">📱</span>
+                                {{student.phone}}
+                            </div>
+                            <div class="student-detail">
+                                <span class="detail-icon">🎒</span>
+                                {{student.classname.classname}}
+                            </div>
+                            <div class="student-detail">
+                                <span class="detail-icon">📍</span>
+                                {{student.address}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fees-details">
+                        <div class="fee-item due">
+                            <div class="fee-label">Due Months</div>
                             {% if student.fees.last.due_months.0 <= 0 %}
-                            <div class="fee-value" style="color: green">{{student.fees.last.due_months.0}} Extra Paid</div>
+                            <div class="fee-value" style="color: green">
+                                {{student.fees.last.due_months.0}} Extra Paid
+                            </div>
                             {% else %}
                             <div class="fee-value" style="color: red">{{student.fees.last.due_months.0}}</div>
                             {% endif %}
-                    </div>
-                    <div class="fee-item paid">
-                        <div class="fee-label">Total Paid</div>
-                        <div class="fee-value">
-                            {{student.fees.last.total_fees}}
+                        </div>
+                        <div class="fee-item paid">
+                            <div class="fee-label">Total Paid</div>
+                            <div class="fee-value">
+                                {{student.fees.last.total_fees}}
+                            </div>
+                        </div>
+                        <div class="fee-item due">
+                            <div class="fee-label">Due Amount</div>
+                            <div class="fee-value">
+                                ₹{{student.fees.last.due_months.2}}
+                            </div>
+                        </div>
+                        <div class="fee-item saved">
+                            <div class="fee-label">Saved Money</div>
+                            <div class="fee-value">
+                                ₹{{student.fees.last.due_months.1}}
+                            </div>
                         </div>
                     </div>
-                    <div class="fee-item due">
-                        <div class="fee-label">Due Amount</div>
-                        <div class="fee-value">
-                            ₹{{student.fees.last.due_months.2}}
-                        </div>
-                    </div>
-                    <div class="fee-item saved">
-                        <div class="fee-label">Saved Money</div>
-                        <div class="fee-value">
-                            ₹{{student.fees.last.due_months.1}}
-                        </div>
+                    <div class="card-footer">
+                        <a href="{% url 'RecordPayment' student.student_id %}" class="btn-small btn-record">Record
+                            Payment</a>
+                        <a href="{% url 'salarycard' student.student_id %}" class="btn-small btn-record">Fees Card</a>
+                        <a href="{% url 'transactions' student.student_id %}" class="btn-small btn-details">View
+                            Details</a>
                     </div>
                 </div>
-                <div class="card-footer">
-                    <a href="{% url "RecordPayment" student.student_id %}" class="btn-small btn-record">Record Payment</a>
-                    <a href="{% url "salarycard" student.student_id %}" class="btn-small btn-record">Fees Card</a>
-                    <a href="{% url "transactions" student.student_id %}" class="btn-small btn-details">View Details</a>
-                </div>
+                {% endfor %}
             </div>
-            {% endfor %}
-        </div>
 
-        <div class="total-summary">
-            <h2>Total Students</h2>
-            <div class="count">
-                {{students|length}}
-            </div>
+            
         </div>
     </div>
+
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+
+        // Search and Filter functionality
+        const searchInput = document.getElementById('searchInput');
+        const filterSelect = document.getElementById('filterSelect');
+        const cardsGrid = document.getElementById('cardsGrid');
+        const totalCount = document.getElementById('totalCount');
+        const studentCards = cardsGrid.querySelectorAll('.student-card');
+
+        function filterCards() {
+            const searchTerm = searchInput.value.toLowerCase().trim();
+            const filterValue = filterSelect.value;
+            let visibleCount = 0;
+
+            studentCards.forEach(card => {
+                const studentName = card.getAttribute('data-student-name').toLowerCase();
+                const phone = card.getAttribute('data-phone').toLowerCase();
+                const address = card.getAttribute('data-address').toLowerCase();
+                const classId = card.getAttribute('data-class-id');
+
+                // Check if card matches search term
+                const matchesSearch = studentName.includes(searchTerm) ||
+                    phone.includes(searchTerm) ||
+                    address.includes(searchTerm);
+
+                // Check if card matches class filter
+                const matchesFilter = !filterValue || classId === filterValue;
+
+                // Show/hide card based on both search and filter
+                if (matchesSearch && matchesFilter) {
+                    card.classList.remove('hidden');
+                    visibleCount++;
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+
+            // Update total count
+            totalCount.textContent = visibleCount;
+        }
+
+        // Add event listeners
+        searchInput.addEventListener('input', filterCards);
+        filterSelect.addEventListener('change', filterCards);
+    </script>
 </body>
+
 </html>

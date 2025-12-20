@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
     <title>Notice Board - TuitionTeacher</title>
     <style>
       * {
@@ -11,28 +11,26 @@
         box-sizing: border-box;
       }
 
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+      }
+
       body {
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
           Oxygen, Ubuntu, Cantarell, sans-serif;
-        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         min-height: 100vh;
         padding: 20px;
-      }
-
-      .container {
-        max-width: 1200px;
-        margin: 0 auto;
-        background: white;
-        border-radius: 16px;
-        padding: 40px;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
       }
 
       .header {
         display: flex;
         align-items: center;
         gap: 15px;
-        margin-bottom: 40px;
+        margin-bottom: 30px;
+        flex-wrap: wrap;
       }
 
       .logo {
@@ -43,64 +41,203 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 24px;
+        font-size: 22px;
+        flex-shrink: 0;
+      }
+
+      .logo img {
+        width: 100%;
+        height: 100%;
+        object-fit: fit;
+        border-radius: 12px;
       }
 
       .logo-text {
+        color: white;
         font-size: 28px;
-        font-weight: 600;
-        color: #333;
+        font-weight: 700;
+        word-break: break-word;
+      }
+
+      /* Back Link */
+      .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: white;
+        text-decoration: none;
+        margin-bottom: 20px;
+        font-size: 15px;
+        transition: all 0.2s ease;
+        flex-wrap: wrap;
+      }
+
+      .back-link:hover {
+        gap: 10px;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .main-content {
+        background: white;
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        width: 100%;
+      }
+
+      .page-header {
+        margin-bottom: 30px;
       }
 
       .page-title {
         font-size: 32px;
         font-weight: 700;
-        color: #333;
+        color: #2d3748;
         margin-bottom: 8px;
+        line-height: 1.2;
       }
 
       .page-subtitle {
-        color: #666;
+        color: #718096;
+        font-size: 15px;
+        line-height: 1.4;
+      }
+
+      /* Message Container */
+      .message-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+        max-width: 400px;
+        width: 90%;
+      }
+
+      .message {
+        background: white;
+        padding: 16px 20px;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        animation: slideInRight 0.3s ease, fadeOut 0.3s ease 2.7s;
+        border-left: 4px solid;
+      }
+
+      .message.success {
+        border-left-color: #48bb78;
+      }
+
+      .message.error {
+        border-left-color: #f56565;
+      }
+
+      .message-icon {
+        font-size: 24px;
+        flex-shrink: 0;
+      }
+
+      .message-content {
+        flex: 1;
+      }
+
+      .message-title {
+        font-weight: 600;
+        font-size: 15px;
+        margin-bottom: 4px;
+      }
+
+      .message.success .message-title {
+        color: #48bb78;
+      }
+
+      .message.error .message-title {
+        color: #f56565;
+      }
+
+      .message-text {
+        color: #4a5568;
         font-size: 14px;
+        line-height: 1.4;
+      }
+
+      .message-close {
+        cursor: pointer;
+        color: #a0aec0;
+        font-size: 20px;
+        line-height: 1;
+        transition: color 0.2s ease;
+        flex-shrink: 0;
+      }
+
+      .message-close:hover {
+        color: #4a5568;
+      }
+
+      @keyframes slideInRight {
+        from {
+          transform: translateX(400px);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+
+      @keyframes fadeOut {
+        to {
+          opacity: 0;
+          transform: translateX(400px);
+        }
       }
 
       .notice-form {
-        background: #f8f9ff;
+        background: #f7fafc;
         padding: 30px;
         border-radius: 12px;
         margin-bottom: 40px;
-        border: 2px solid #e0e7ff;
+        border: 2px solid #e2e8f0;
       }
 
       .form-group {
-        margin-bottom: 20px;
+        margin-bottom: 24px;
       }
 
       .form-group label {
-        font-weight: 600;
-        color: #333;
-        margin-bottom: 8px;
-        font-size: 14px;
         display: block;
+        color: #2d3748;
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 8px;
       }
 
       .form-group textarea {
         width: 100%;
-        padding: 12px 16px;
-        border: 2px solid #e0e7ff;
-        border-radius: 8px;
-        font-size: 14px;
-        transition: all 0.3s;
-        background: white;
+        padding: 14px 16px;
+        border: 2px solid #e2e8f0;
+        border-radius: 10px;
+        font-size: 15px;
+        transition: all 0.3s ease;
+        outline: none;
         font-family: inherit;
         resize: vertical;
         min-height: 120px;
       }
 
       .form-group textarea:focus {
-        outline: none;
-        border-color: #6366f1;
-        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      }
+
+      .form-group textarea::placeholder {
+        color: #a0aec0;
       }
 
       .image-upload {
@@ -117,18 +254,20 @@
         display: flex;
         align-items: center;
         gap: 10px;
-        padding: 12px 16px;
+        padding: 14px 16px;
         background: white;
-        border: 2px dashed #6366f1;
-        border-radius: 8px;
+        border: 2px dashed #667eea;
+        border-radius: 10px;
         cursor: pointer;
-        transition: all 0.3s;
+        transition: all 0.3s ease;
         justify-content: center;
+        font-weight: 600;
+        color: #667eea;
       }
 
       .image-upload-label:hover {
-        background: #f8f9ff;
-        border-color: #8b5cf6;
+        background: #f7fafc;
+        border-color: #5a67d8;
       }
 
       .image-preview {
@@ -139,185 +278,194 @@
       .image-preview img {
         max-width: 200px;
         max-height: 200px;
-        border-radius: 8px;
-        border: 2px solid #e0e7ff;
+        border-radius: 10px;
+        border: 2px solid #e2e8f0;
       }
 
       .image-name {
-        color: #666;
+        color: #718096;
         font-size: 13px;
-        margin-top: 5px;
+        margin-top: 8px;
       }
 
       .btn-post {
-        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        background: #667eea;
         color: white;
         border: none;
-        padding: 12px 32px;
-        border-radius: 8px;
+        padding: 14px 32px;
+        border-radius: 10px;
         font-size: 15px;
         font-weight: 600;
         cursor: pointer;
-        transition: all 0.3s;
-        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
       }
 
       .btn-post:hover {
+        background: #5a67d8;
         transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6);
       }
 
-      .notices-table {
-        background: white;
-        border-radius: 12px;
-        overflow: hidden;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      .notices-section {
+        margin-top: 40px;
       }
 
-      .table-header {
+      .section-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 20px 30px;
-        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-        color: white;
+        padding: 20px 0;
+        margin-bottom: 20px;
+        border-bottom: 2px solid #e2e8f0;
+        flex-wrap: wrap;
+        gap: 15px;
       }
 
-      .table-header h3 {
-        font-size: 20px;
+      .section-header h2 {
+        font-size: 22px;
+        color: #2d3748;
+        font-weight: 700;
       }
 
       .total-count {
-        background: rgba(255, 255, 255, 0.2);
-        padding: 6px 16px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 8px 20px;
         border-radius: 20px;
         font-size: 14px;
+        font-weight: 600;
+      }
+
+      .table-container {
+        overflow-x: auto;
+        border-radius: 10px;
+        border: 2px solid #e2e8f0;
       }
 
       table {
         width: 100%;
         border-collapse: collapse;
+        background: white;
       }
 
       thead {
-        background: #f8f9ff;
+        background: #667eea;
+        color: white;
       }
 
       th {
         padding: 16px;
         text-align: left;
         font-weight: 600;
-        color: #333;
-        font-size: 13px;
+        font-size: 14px;
         text-transform: uppercase;
         letter-spacing: 0.5px;
       }
 
-      td {
-        padding: 16px;
-        border-bottom: 1px solid #f0f0f0;
-        color: #555;
-        font-size: 14px;
-      }
-
       tbody tr {
-        transition: all 0.3s;
+        border-bottom: 1px solid #e2e8f0;
+        transition: background-color 0.2s ease;
       }
 
       tbody tr:hover {
-        background: #f8f9ff;
+        background-color: #f7fafc;
       }
 
-      .notice-image {
-        width: 80px;
-        height: 80px;
-        object-fit: cover;
-        border-radius: 8px;
-        border: 2px solid #e0e7ff;
+      tbody tr:last-child {
+        border-bottom: none;
       }
 
-      .no-image {
-        width: 80px;
-        height: 80px;
-        background: #f0f0f0;
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #999;
-        font-size: 12px;
+      td {
+        padding: 16px;
+        color: #2d3748;
+        font-size: 15px;
       }
 
       .notice-instruction {
         max-width: 400px;
         line-height: 1.5;
-        color: #555;
+        color: #2d3748;
+        word-wrap: break-word;
       }
 
       .btn-action {
         padding: 8px 16px;
         border: none;
-        border-radius: 6px;
+        border-radius: 8px;
         cursor: pointer;
         font-size: 13px;
         font-weight: 600;
-        transition: all 0.3s;
+        transition: all 0.3s ease;
         margin-right: 8px;
       }
 
       .btn-edit {
-        background: #10b981;
+        background: #48bb78;
         color: white;
       }
 
       .btn-edit:hover {
-        background: #059669;
-        transform: translateY(-1px);
+        background: #38a169;
+        transform: translateY(-2px);
       }
 
       .btn-delete {
-        background: #ef4444;
+        background: #f56565;
         color: white;
       }
 
       .btn-delete:hover {
-        background: #dc2626;
-        transform: translateY(-1px);
+        background: #e53e3e;
+        transform: translateY(-2px);
       }
 
       .btn-view {
-        background: #6366f1;
+        background: #667eea;
         color: white;
       }
 
       .btn-view:hover {
-        background: #4f46e5;
-        transform: translateY(-1px);
+        background: #5a67d8;
+        transform: translateY(-2px);
+      }
+
+      .no-image {
+        width: 80px;
+        height: 80px;
+        background: #f7fafc;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #a0aec0;
+        font-size: 12px;
+        border: 2px solid #e2e8f0;
       }
 
       .empty-state {
+        padding: 40px 20px;
         text-align: center;
-        padding: 60px 20px;
-        color: #999;
+        color: #718096;
+        font-size: 15px;
       }
 
       .empty-state-icon {
         font-size: 48px;
-        margin-bottom: 16px;
+        margin-bottom: 12px;
+        opacity: 0.5;
       }
 
       /* Modal Styles */
       .modal {
         display: none;
         position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
+        inset: 0;
         background: rgba(0, 0, 0, 0.5);
-        z-index: 1000;
-        align-items: center;
+        backdrop-filter: blur(2px);
         justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        animation: fadeIn 0.3s ease;
       }
 
       .modal.active {
@@ -326,88 +474,190 @@
 
       .modal-content {
         background: white;
-        padding: 30px;
-        border-radius: 12px;
-        max-width: 500px;
+        border-radius: 16px;
+        padding: 30px 28px;
         width: 90%;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-        max-height: 80vh;
+        max-width: 600px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        position: relative;
+        animation: slideUp 0.3s ease;
+        max-height: 85vh;
         overflow-y: auto;
       }
 
-      .modal-header {
+      .modal-content h2 {
+        margin-bottom: 20px;
+        color: #2d3748;
         font-size: 22px;
         font-weight: 700;
+      }
+
+      .modal-content h3 {
         margin-bottom: 20px;
-        color: #333;
+        color: #2d3748;
+        font-size: 22px;
+        font-weight: 700;
+      }
+
+      .close-btn {
+        position: absolute;
+        top: 14px;
+        right: 18px;
+        font-size: 26px;
+        color: #718096;
+        cursor: pointer;
+        transition: color 0.2s ease;
+        line-height: 1;
+      }
+
+      .close-btn:hover {
+        color: #2d3748;
       }
 
       .modal-buttons {
         display: flex;
         gap: 12px;
         justify-content: flex-end;
-        margin-top: 20px;
+        margin-top: 32px;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        padding: 12px 28px;
+        border: none;
+        border-radius: 10px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        min-width: 120px;
       }
 
       .btn-cancel {
-        background: #e5e7eb;
-        color: #333;
-        padding: 10px 24px;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-        font-weight: 600;
+        background: #e2e8f0;
+        color: #2d3748;
+      }
+
+      .btn-cancel:hover {
+        background: #cbd5e0;
+      }
+
+      /* Confirmation Modal Styles */
+      .confirmation-content {
+        max-width: 500px;
+        text-align: center;
+      }
+
+      .confirmation-icon {
+        font-size: 64px;
+        margin-bottom: 20px;
+      }
+
+      .confirmation-icon.warning {
+        color: #f56565;
+      }
+
+      .confirmation-icon.success {
+        color: #48bb78;
+      }
+
+      .confirmation-title {
+        font-size: 24px;
+        font-weight: 700;
+        color: #2d3748;
+        margin-bottom: 12px;
+      }
+
+      .confirmation-message {
+        color: #718096;
+        font-size: 15px;
+        line-height: 1.6;
+        margin-bottom: 28px;
       }
 
       .btn-confirm {
-        background: #ef4444;
+        background: #f56565;
         color: white;
-        padding: 10px 24px;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-        font-weight: 600;
       }
 
-      .close-btn {
-        float: right;
-        font-size: 24px;
-        cursor: pointer;
-        font-weight: bold;
-        color: #666;
-        line-height: 1;
+      .btn-confirm:hover {
+        background: #e53e3e;
       }
 
-      .close-btn:hover {
-        color: #333;
+      .btn-confirm-edit {
+        background: #48bb78;
+        color: white;
       }
 
+      .btn-confirm-edit:hover {
+        background: #38a169;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      @keyframes slideUp {
+        from {
+          transform: translateY(40px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      /* Responsive Adjustments */
       @media (max-width: 768px) {
-        .container {
-          padding: 20px;
+        body {
+          padding: 15px;
+        }
+
+        .header {
+          margin-bottom: 20px;
+        }
+
+        .logo {
+          width: 45px;
+          height: 45px;
+          font-size: 20px;
+        }
+
+        .logo-text {
+          font-size: 22px;
+        }
+
+        .main-content {
+          padding: 28px 20px;
+          border-radius: 15px;
         }
 
         .page-title {
-          font-size: 24px;
+          font-size: 26px;
+        }
+
+        .page-subtitle {
+          font-size: 14px;
         }
 
         .notice-form {
           padding: 20px;
         }
 
-        table {
-          font-size: 12px;
+        .section-header h2 {
+          font-size: 20px;
         }
 
         th,
         td {
-          padding: 12px 8px;
-        }
-
-        .notice-image,
-        .no-image {
-          width: 60px;
-          height: 60px;
+          padding: 12px 10px;
+          font-size: 14px;
         }
 
         .btn-action {
@@ -415,143 +665,237 @@
           font-size: 12px;
           display: block;
           margin-bottom: 5px;
+          margin-right: 0;
         }
 
-        .table-wrapper {
-          overflow-x: auto;
+        .modal-content {
+          padding: 24px;
+        }
+
+        .modal-buttons {
+          flex-direction: column;
+        }
+
+        .btn {
+          width: 100%;
+        }
+
+        .confirmation-icon {
+          font-size: 48px;
+        }
+
+        .confirmation-title {
+          font-size: 20px;
+        }
+
+        .message-container {
+          top: 10px;
+          right: 10px;
+          left: 10px;
+          max-width: none;
+        }
+      }
+
+      @media (max-width: 480px) {
+        body {
+          padding: 10px;
+        }
+
+        .header {
+          gap: 12px;
+        }
+
+        .logo {
+          width: 40px;
+          height: 40px;
+          font-size: 18px;
+        }
+
+        .logo-text {
+          font-size: 20px;
+        }
+
+        .main-content {
+          padding: 24px 16px;
+          border-radius: 12px;
+        }
+
+        .page-title {
+          font-size: 24px;
+        }
+
+        .page-subtitle {
+          font-size: 13px;
+        }
+
+        .notice-form {
+          padding: 18px;
+        }
+
+        .section-header {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .notice-instruction {
+          max-width: 100%;
+        }
+
+        .no-image {
+          width: 60px;
+          height: 60px;
+        }
+      }
+
+      @media (max-width: 360px) {
+        .logo-text {
+          font-size: 18px;
+        }
+
+        .page-title {
+          font-size: 22px;
         }
       }
     </style>
   </head>
 
   <body>
+    <!-- Message Container -->
+    <div class="message-container" id="messageContainer"></div>
+
     <div class="container">
       <div class="header">
-        <img src="{{info.website_logo.url}}" alt="" class="logo">
-        <div class="logo-text">{{info.website_name}}</div>
+        <div class="logo">
+          <img src="{{info.website_logo.url}}" alt="Logo">
+        </div>
+        <span class="logo-text">{{info.website_name}}</span>
       </div>
 
-      <div>
-        <h1 class="page-title">Notice Board</h1>
-        <p class="page-subtitle">
-          Post and manage important notices for students
-        </p>
-      </div>
+      <a href="#" class="back-link" onclick="goBack()">← Back</a>
 
-      <div class="notice-form">
-        <form
-          method="POST"
-          onsubmit="AddNotice(this,event)"
-          enctype="multipart/form-data"
-        >
-          {% csrf_token %}
-          <div class="form-group">
-            <label for="instructionInput">Notice Instructions *</label>
-            <textarea
-              name="notice_instraction"
-              id="instructionInput"
-              placeholder="Enter important instructions or announcements..."
-              required
-            ></textarea>
-          </div>
-
-          <div class="form-group">
-            <label>Attach Image (Optional)</label>
-            <div class="image-upload">
-              <label class="image-upload-label" for="imageInput">
-                🖼️ Choose Image
-              </label>
-              <input
-                type="file"
-                id="imageInput"
-                name="notice_photo"
-                accept="image/*"
-              />
-            </div>
-            <div class="image-preview" id="imagePreview">
-              <img id="previewImg" src="" alt="Preview" />
-            </div>
-            <div class="image-name" id="imageName"></div>
-          </div>
-
-          <button type="submit" class="btn-post">📢 Post Notice</button>
-        </form>
-      </div>
-
-      <div class="notices-table">
-        <div class="table-header">
-          <h3>Posted Notices</h3>
-          <div class="total-count">
-            Total: <span id="totalCount">{{ count }}</span>
-          </div>
+      <div class="main-content">
+        <div class="page-header">
+          <h1 class="page-title">Notice Board</h1>
+          <p class="page-subtitle">
+            Post and manage important notices for students
+          </p>
         </div>
 
-        <div class="table-wrapper">
-          <table>
-            <thead>
-              <tr>
-                <th>Image</th>
-                <th>Instructions</th>
-                <th>Posted Date</th>
-                <th>Edit</th>
-                <th>Delete</th>
-              </tr>
-            </thead>
-            <tbody id="noticesBody">
-              {% if notices %} {% for notice in notices %}
-              <tr>
-                {% if notice.notice_photo %}
-                <td>
-                  <button
-                    class="btn-action btn-view"
-                    onclick="openImageModal('{{ notice.notice_photo.url }}')"
-                  >
-                    🖼️ View Notice
-                  </button>
-                </td>
-                {% else %}
-                <td>
-                  <div class="no-image">No Image</div>
-                </td>
+        <div class="notice-form">
+          <form
+            method="POST"
+            onsubmit="AddNotice(this,event)"
+            enctype="multipart/form-data"
+          >
+            {% csrf_token %}
+            <div class="form-group">
+              <label for="instructionInput">Notice Instructions <span style="color: #e53e3e;">*</span></label>
+              <textarea
+                name="notice_instraction"
+                id="instructionInput"
+                placeholder="Enter important instructions or announcements..."
+                required
+              ></textarea>
+            </div>
+
+            <div class="form-group">
+              <label>Attach Image (Optional)</label>
+              <div class="image-upload">
+                <label class="image-upload-label" for="imageInput">
+                  🖼️ Choose Image
+                </label>
+                <input
+                  type="file"
+                  id="imageInput"
+                  name="notice_photo"
+                  accept="image/*"
+                />
+              </div>
+              <div class="image-preview" id="imagePreview">
+                <img id="previewImg" src="" alt="Preview" />
+              </div>
+              <div class="image-name" id="imageName"></div>
+            </div>
+
+            <button type="submit" class="btn-post">📢 Post Notice</button>
+          </form>
+        </div>
+
+        <div class="notices-section">
+          <div class="section-header">
+            <h2>Posted Notices</h2>
+            <div class="total-count">
+              Total: <span id="totalCount">{{ count }}</span>
+            </div>
+          </div>
+
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Image</th>
+                  <th>Instructions</th>
+                  <th>Posted Date</th>
+                  <th>Edit</th>
+                  <th>Delete</th>
+                </tr>
+              </thead>
+              <tbody id="noticesBody">
+                {% if notices %} {% for notice in notices %}
+                <tr>
+                  {% if notice.notice_photo %}
+                  <td>
+                    <button
+                      class="btn-action btn-view"
+                      onclick="openImageModal('{{ notice.notice_photo.url }}')"
+                    >
+                      🖼️ View
+                    </button>
+                  </td>
+                  {% else %}
+                  <td>
+                    <div class="no-image">No Image</div>
+                  </td>
+                  {% endif %}
+
+                  <td class="notice-instruction">
+                    {{ notice.notice_instraction }}
+                  </td>
+                  <td>{{ notice.notice_date|date:"Y-m-d H:i" }}</td>
+
+                  <td>
+                    <button
+                      class="btn-action btn-edit"
+                      onclick="openEditConfirmationModal(
+              '{{ notice.notice_id }}', 
+              '{{ notice.notice_instraction|escapejs }}', 
+              '{% if notice.notice_photo %}{{ notice.notice_photo.url }}{% endif %}'
+          )"
+                    >
+                      📝 Edit
+                    </button>
+                  </td>
+                  <td>
+                    <button
+                      data-url="{% url "DeleteNotice" notice.notice_id %}"
+                      class="btn-action btn-delete"
+                      onclick="openDeleteConfirmationModal(this)"
+                    >
+                      🗑️ Delete
+                    </button>
+                  </td>
+                </tr>
+                {% endfor %} {% else %}
+                <tr>
+                  <td colspan="5" class="empty-state">
+                    <div class="empty-state-icon">📋</div>
+                    <div>No notices posted yet. Create your first notice!</div>
+                  </td>
+                </tr>
                 {% endif %}
-
-                <td class="notice-instruction">
-                  {{ notice.notice_instraction }}
-                </td>
-                <td>{{ notice.notice_date|date:"Y-m-d H:i" }}</td>
-
-                <td>
-                  <button
-                    class="btn-action btn-edit"
-                    onclick="openEditNoticeModal(
-            '{{ notice.notice_id }}', 
-            '{{ notice.notice_instraction|escapejs }}', 
-            '{% if notice.notice_photo %}{{ notice.notice_photo.url }}{% endif %}'
-        )"
-                  >
-                    📝 Edit
-                  </button>
-                </td>
-                <td>
-                  <button
-                    data-url="{% url "DeleteNotice" notice.notice_id %}"
-                    class="btn-action btn-delete"
-                    onclick="DeleteNotice(this)"
-                  >
-                    🗑️ Delete
-                  </button>
-                </td>
-              </tr>
-              {% endfor %} {% else %}
-              <tr>
-                <td colspan="5" class="empty-state">
-                  <div class="empty-state-icon">📋</div>
-                  <div>No notices posted yet. Create your first notice!</div>
-                </td>
-              </tr>
-              {% endif %}
-            </tbody>
-          </table>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
@@ -568,27 +912,54 @@
           style="
             max-width: 100%;
             border-radius: 12px;
-            border: 2px solid #e0e7ff;
+            border: 2px solid #e2e8f0;
           "
         />
       </div>
     </div>
 
+    <!-- Edit Confirmation Modal -->
+    <div class="modal" id="editConfirmationModal">
+      <div class="modal-content confirmation-content">
+        <span class="close-btn" onclick="closeEditConfirmationModal()">&times;</span>
+        <div class="confirmation-icon success">📝</div>
+        <h2 class="confirmation-title">Edit Notice?</h2>
+        <p class="confirmation-message">
+          Are you sure you want to edit this notice? You'll be able to modify the instructions and image.
+        </p>
+        <div class="modal-buttons">
+          <button
+            type="button"
+            class="btn btn-cancel"
+            onclick="closeEditConfirmationModal()"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            class="btn btn-confirm-edit"
+            onclick="proceedToEdit()"
+          >
+            Yes, Edit
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- Edit Notice Modal -->
     <div class="modal" id="editNoticeModal">
-      <div class="modal-content" style="max-width: 600px">
+      <div class="modal-content">
         <span class="close-btn" onclick="closeEditNoticeModal()">&times;</span>
-        <div class="modal-header">Edit Notice</div>
+        <h2>Edit Notice</h2>
         <form id="editNoticeForm" data-base-url="{% url "EditNotice" 0 %}" enctype="multipart/form-data" onsubmit="EditNotice(this,event)">
             {% csrf_token %}
           <!-- Instructions -->
           <div class="form-group">
-            <label for="editInstruction">Notice Instructions *</label>
+            <label for="editInstruction">Notice Instructions <span style="color: #e53e3e;">*</span></label>
             <textarea
               id="editInstruction"
               name="notice_instraction"
               required
-              style="width: 100%; padding: 10px; border-radius: 8px; border: 2px solid #e0e7ff; min-height: 120px"
             ></textarea>
           </div>
 
@@ -600,14 +971,9 @@
                 id="editModalImage"
                 src=""
                 alt="Notice Image"
-                style="
-                  max-width: 100%;
-                  border-radius: 8px;
-                  border: 2px solid #e0e7ff;
-                "
               />
             </div>
-            <div id="noImageText" style="color: #999; font-size: 14px; display: none">No current image</div>
+            <div id="noImageText" style="color: #a0aec0; font-size: 14px; display: none">No current image</div>
           </div>
 
           <!-- Change Image (optional) -->
@@ -635,19 +1001,77 @@
           <div class="modal-buttons">
             <button
               type="button"
-              class="btn-cancel"
+              class="btn btn-cancel"
               onclick="closeEditNoticeModal()"
             >
               Cancel
             </button>
-            <button type="submit" class="btn-post">Save Changes</button>
+            <button type="submit" class="btn btn-post">Save Changes</button>
           </div>
         </form>
       </div>
     </div>
 
+    <!-- Delete Confirmation Modal -->
+    <div class="modal" id="deleteConfirmationModal">
+      <div class="modal-content confirmation-content">
+        <span class="close-btn" onclick="closeDeleteConfirmationModal()">&times;</span>
+        <div class="confirmation-icon warning">⚠️</div>
+        <h2 class="confirmation-title">Delete Notice?</h2>
+        <p class="confirmation-message">
+          Are you sure you want to delete this notice? This action cannot be undone and the notice will be permanently removed.
+        </p>
+        <div class="modal-buttons">
+          <button
+            type="button"
+            class="btn btn-cancel"
+            onclick="closeDeleteConfirmationModal()"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            class="btn btn-confirm"
+            onclick="confirmDelete()"
+          >
+            Yes, Delete
+          </button>
+        </div>
+      </div>
+    </div>
+
     <script>
-      
+      // Message Display Function
+      function showMessage(type, title, text) {
+        const messageContainer = document.getElementById('messageContainer');
+        const message = document.createElement('div');
+        message.className = `message ${type}`;
+        
+        const icon = type === 'success' ? '✓' : '✕';
+        
+        message.innerHTML = `
+          <div class="message-icon">${icon}</div>
+          <div class="message-content">
+            <div class="message-title">${title}</div>
+            <div class="message-text">${text}</div>
+          </div>
+          <div class="message-close" onclick="this.parentElement.remove()">×</div>
+        `;
+        
+        messageContainer.appendChild(message);
+        
+        // Auto remove after 3 seconds
+        setTimeout(() => {
+          if (message.parentElement) {
+            message.remove();
+          }
+        }, 3000);
+      }
+
+      function goBack(){
+        window.history.back()
+      }
+
       // Add Notice Function
       function AddNotice(form, e) {
         e.preventDefault();
@@ -666,26 +1090,28 @@
           .then((res) => res.json())
           .then((data) => {
             if (data.status == "success") {
-              alert("Notice updated successfully");
-              window.location.reload();
+              showMessage('success', 'Success!', 'Notice updated successfully');
+              setTimeout(() => {
+                window.location.reload();
+              }, 1000);
             } else {
-              alert(data.message);
+              showMessage('error', 'Error!', data.message);
               submitbtn.disabled = false;
               submitbtn.innerText = "📢 Post Notice";
             }
           })
           .catch((err) => {
-            alert("Error: " + err);
+            showMessage('error', 'Error!', 'Error: ' + err);
             submitbtn.disabled = false;
             submitbtn.innerText = "📢 Post Notice";
           });
       }
 
-      // Delete Notice Function
-      
-
-      // Global variable to track current notice ID
+      // Global variables
       let editNoticeId = null;
+      let editNoticeInstructions = null;
+      let editNoticeImageUrl = null;
+      let deleteButton = null;
 
       // Image upload handling for main form
       const imageInput = document.getElementById("imageInput");
@@ -724,7 +1150,6 @@
 
       // Function to open image modal
       function openImageModal(imageUrl) {
-        console.log("Opening image modal:", imageUrl);
         const modal = document.getElementById("imageModal");
         const modalImage = document.getElementById("modalImage");
         modalImage.src = imageUrl;
@@ -737,11 +1162,29 @@
         modal.classList.remove("active");
       }
 
+      // Open Edit Confirmation Modal
+      function openEditConfirmationModal(noticeId, instructions, imageUrl) {
+        editNoticeId = noticeId;
+        editNoticeInstructions = instructions;
+        editNoticeImageUrl = imageUrl;
+        
+        const modal = document.getElementById("editConfirmationModal");
+        modal.classList.add("active");
+      }
+
+      // Close Edit Confirmation Modal
+      function closeEditConfirmationModal() {
+        document.getElementById("editConfirmationModal").classList.remove("active");
+      }
+
+      // Proceed to Edit after confirmation
+      function proceedToEdit() {
+        closeEditConfirmationModal();
+        openEditNoticeModal(editNoticeId, editNoticeInstructions, editNoticeImageUrl);
+      }
+
       // Open Edit Notice Modal
       function openEditNoticeModal(noticeId, instructions, imageUrl) {
-        console.log("Opening edit modal", noticeId, instructions, imageUrl);
-        editNoticeId = noticeId;
-
         // Fill the instructions field
         document.getElementById("editInstruction").value = instructions;
         
@@ -766,13 +1209,11 @@
 
         const form = document.getElementById('editNoticeForm')
         const baseURL = form.dataset.baseUrl
-        form.action = baseURL.replace('0',noticeId)
-        alert(form.action)
+        form.action = baseURL.replace('0', noticeId)
 
         // Show modal
         const modal = document.getElementById("editNoticeModal");
         modal.classList.add("active");
-        console.log("Modal classList:", modal.classList);
       }
 
       // Close Edit Notice Modal
@@ -780,10 +1221,33 @@
         document.getElementById("editNoticeModal").classList.remove("active");
       }
 
+      // Open Delete Confirmation Modal
+      function openDeleteConfirmationModal(button) {
+        deleteButton = button;
+        const modal = document.getElementById("deleteConfirmationModal");
+        modal.classList.add("active");
+      }
+
+      // Close Delete Confirmation Modal
+      function closeDeleteConfirmationModal() {
+        document.getElementById("deleteConfirmationModal").classList.remove("active");
+        
+      }
+
+      // Confirm Delete
+      function confirmDelete() {
+        if (deleteButton) {
+          closeDeleteConfirmationModal();
+          DeleteNotice(deleteButton);
+        }
+      }
+
       // Close modal when clicking outside
       window.addEventListener('click', function(event) {
         const imageModal = document.getElementById('imageModal');
         const editModal = document.getElementById('editNoticeModal');
+        const editConfirmModal = document.getElementById('editConfirmationModal');
+        const deleteConfirmModal = document.getElementById('deleteConfirmationModal');
         
         if (event.target === imageModal) {
           closeImageModal();
@@ -791,70 +1255,87 @@
         if (event.target === editModal) {
           closeEditNoticeModal();
         }
+        if (event.target === editConfirmModal) {
+          closeEditConfirmationModal();
+        }
+        if (event.target === deleteConfirmModal) {
+          closeDeleteConfirmationModal();
+        }
       });
-      function EditNotice(form,e){
+
+      function EditNotice(form, e) {
         e.preventDefault()
         const submitbtn = form.querySelector('button[type="submit"]')
         const url = form.action
         submitbtn.disabled = true
         submitbtn.innerText = 'Saving...'
         const formdata = new FormData(form)
-        fetch(url,{
-            method:'POST',
-            body:formdata,
-            headers:{
-                'X-CSRFToken':formdata.get('csrfmiddlewaretoken')
+        fetch(url, {
+            method: 'POST',
+            body: formdata,
+            headers: {
+                'X-CSRFToken': formdata.get('csrfmiddlewaretoken')
             }
         })
         .then(res => res.json())
-        .then(data=>{
-            if(data.status=='success'){
-                alert(data.message)
-                window.location.href = `/teacher/AddNotice/`
+        .then(data => {
+            if(data.status == 'success') {
+                showMessage('success', 'Success!', data.message)
+                setTimeout(() => {
+                  window.location.href = `/teacher/AddNotice/`
+                }, 1000);
             }
-            else{
-                alert(data.message)
+            else {
+                showMessage('error', 'Error!', data.message)
+                submitbtn.disabled = false
+                submitbtn.innerText = 'Save Changes'
             }
         })
         .catch(err => {
-            alert(err)
+            showMessage('error', 'Error!', 'Error: ' + err)
+            submitbtn.disabled = false
+            submitbtn.innerText = 'Save Changes'
         })
       }
+
       function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
             }
         }
-    }
-    return cookieValue;
-}
-      function DeleteNotice(button){
+        return cookieValue;
+      }
+
+      function DeleteNotice(button) {
         const url = button.dataset.url
         const row = button.closest('tr')
-        fetch(url,{
-          method:'POST',
-          headers:{
-            'X-CSRFToken':getCookie('csrftoken')
+        fetch(url, {
+          method: 'POST',
+          headers: {
+            'X-CSRFToken': getCookie('csrftoken')
           }
         })
         .then(res => res.json())
         .then(data => {
-          if(data.status == 'success'){
-            alert(data.message)
-            window.location.reload()
+          if(data.status == 'success') {
+            showMessage('success', 'Success!', data.message)
+            setTimeout(() => {
+              window.location.reload()
+            }, 1000);
           }
-          else{
-            alert(data.message)
+          else {
+            showMessage('error', 'Error!', data.message)
           }
         })
         .catch(err => {
-          alert(err)
+          showMessage('error', 'Error!', 'Error: ' + err)
         })
       }
     </script>

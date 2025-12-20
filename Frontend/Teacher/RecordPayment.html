@@ -247,15 +247,35 @@
             background: #cbd5e1;
         }
 
-        .success-message {
-            background: #10b981;
-            color: white;
+        .message {
             padding: 15px 20px;
             border-radius: 8px;
             margin-bottom: 20px;
             display: none;
             align-items: center;
             gap: 10px;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        .success-message {
+            background: #10b981;
+            color: white;
+        }
+
+        .error-message {
+            background: #ef4444;
+            color: white;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         @media (max-width: 768px) {
@@ -314,8 +334,12 @@
     </div>
 
     <div class="container">
-        <div class="success-message" id="successMessage">
+        <div class="message success-message" id="successMessage">
             ✓ Payment record saved successfully!
+        </div>
+
+        <div class="message error-message" id="errorMessage">
+            ✗ <span id="errorText">An error occurred. Please try again.</span>
         </div>
 
         <h1 class="form-title">Student Payment Record</h1>
@@ -384,6 +408,34 @@
         function goback(){
             window.history.back()
         }
+
+        function showSuccessMessage(message) {
+            const successMsg = document.getElementById('successMessage');
+            const errorMsg = document.getElementById('errorMessage');
+            
+            errorMsg.style.display = 'none';
+            successMsg.textContent = '✓ ' + message;
+            successMsg.style.display = 'flex';
+            
+            setTimeout(() => {
+                successMsg.style.display = 'none';
+            }, 5000);
+        }
+
+        function showErrorMessage(message) {
+            const successMsg = document.getElementById('successMessage');
+            const errorMsg = document.getElementById('errorMessage');
+            const errorText = document.getElementById('errorText');
+            
+            successMsg.style.display = 'none';
+            errorText.textContent = message;
+            errorMsg.style.display = 'flex';
+            
+            setTimeout(() => {
+                errorMsg.style.display = 'none';
+            }, 5000);
+        }
+
         function submission(form,e){
             e.preventDefault()
             const formdata = new FormData(form)
@@ -399,17 +451,30 @@
             })
             .then(res => res.json())
             .then(data => {
+                submitbtn.disabled = false
+                submitbtn.innerText = 'Record Payment'
+                
                 if(data.status == 'success'){
-                    alert(data.message)
-                    window.history.back()
+                    showSuccessMessage(data.message)
+                    setTimeout(() => {
+                        window.history.back()
+                    }, 1500);
                 }
                 else{
-                    alert(data.message)
+                    showErrorMessage(data.message)
                 }
             })
             .catch(err => {
-                alert(err)
+                submitbtn.disabled = false
+                submitbtn.innerText = 'Record Payment'
+                showErrorMessage('An error occurred: ' + err.message)
             })
+        }
+
+        function resetForm() {
+            document.getElementById('paymentForm').reset();
+            document.getElementById('successMessage').style.display = 'none';
+            document.getElementById('errorMessage').style.display = 'none';
         }
     </script>
 </body>

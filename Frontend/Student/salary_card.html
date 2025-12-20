@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monthly Fees Card</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            padding-bottom: 100px;
+        }
+
+        .container {
+            perspective: 1000px;
+            margin-bottom: 30px;
+            width: 100%;
+            max-width: 380px;
+        }
+
+        .card {
+            width: 100%;
+            height: 540px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.8s;
+            cursor: pointer;
+        }
+
+        .card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+            padding: 30px;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .card-face::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .card-face::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 10px;
+        }
+
+        .card-face::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+        }
+
+        .card-front {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .card-back {
+            transform: rotateY(180deg);
+            background: white;
+            padding: 0;
+        }
+
+        /* Front Card Styles */
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .logo {
+            width: 70px;
+            height: 70px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 35px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .institute-name {
+            color: white;
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .institute-subtitle {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 15px;
+            margin-bottom: 5px;
+        }
+
+        .teacher-section {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .teacher-name {
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .qualification {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 13px;
+        }
+
+        .contact-section {
+            background: white;
+            color: #1e3c72;
+            padding: 12px 20px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 600;
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .contact-section::before {
+            content: "📱";
+            font-size: 22px;
+        }
+
+        .description {
+            color: rgba(255, 255, 255, 0.95);
+            font-size: 12px;
+            line-height: 1.7;
+            margin: 20px 0;
+            text-align: justify;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 12px;
+            border-radius: 6px;
+        }
+
+        .form-section {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .form-field {
+            margin: 12px 0;
+            font-size: 13px;
+            color: #333;
+            display: flex;
+            align-items: center;
+        }
+
+        .form-field label {
+            font-weight: 600;
+            min-width: 120px;
+            color: #1a2847;
+        }
+
+        .form-field-line {
+            flex: 1;
+            border-bottom: 1px solid #ddd;
+            margin-left: 10px;
+            height: 20px;
+        }
+
+        .note {
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 11px;
+            margin-top: 15px;
+            text-align: center;
+            font-style: italic;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 4px;
+        }
+
+        /* Back Card Styles */
+        .table-container {
+            width: 100%;
+            height: 100%;
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .table-header {
+            background: #1a2847;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .table-wrapper {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 14px 12px;
+            text-align: center;
+            color: #333;
+            font-size: 13px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #1e3c72;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .month-cell {
+            font-weight: 600;
+            text-align: left;
+            padding-left: 20px;
+            color: #1e3c72;
+        }
+
+        .due-text {
+            color: #dc3545;
+            font-weight: 600;
+        }
+
+        .paid-text {
+            color: #28a745;
+            font-weight: 500;
+        }
+
+        button {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            border: none;
+            padding: 14px 45px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(30, 60, 114, 0.3);
+            transition: all 0.3s;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(30, 60, 114, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        /* Quick Access */
+        .quick-access {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 150;
+        }
+
+        .quick-access-btn {
+            width: 65px;
+            height: 65px;
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 28px;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(220, 53, 69, 0.4);
+            transition: all 0.3s;
+        }
+
+        .quick-access-btn:hover {
+            transform: rotate(90deg) scale(1.1);
+        }
+
+        .quick-access-menu {
+            position: absolute;
+            bottom: 80px;
+            right: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .quick-access-menu.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .quick-access-item {
+            background: white;
+            padding: 15px 25px;
+            border-radius: 50px;
+            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+            transform: translateX(100px);
+        }
+
+        .quick-access-menu.active .quick-access-item:nth-child(1) {
+            animation: slideIn 0.3s forwards;
+            animation-delay: 0.1s;
+        }
+
+        .quick-access-menu.active .quick-access-item:nth-child(2) {
+            animation: slideIn 0.3s forwards;
+            animation-delay: 0.2s;
+        }
+
+        .quick-access-menu.active .quick-access-item:nth-child(3) {
+            animation: slideIn 0.3s forwards;
+            animation-delay: 0.3s;
+        }
+
+        @keyframes slideIn {
+            to {
+                transform: translateX(0);
+            }
+        }
+
+        .quick-access-item:hover {
+            background: #dc3545;
+            color: white;
+            transform: translateX(-5px);
+        }
+
+        .quick-access-item span {
+            font-size: 20px;
+        }
+
+        .quick-access-item:hover span {
+            animation: bounce 0.5s;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-5px);
+            }
+        }
+
+        /* Mobile Responsive Styles */
+        @media (max-width: 480px) {
+            body {
+                padding: 15px;
+                padding-bottom: 90px;
+            }
+
+            .container {
+                max-width: 100%;
+            }
+
+            .card {
+                height: 520px;
+            }
+
+            .card-face {
+                padding: 20px;
+            }
+
+            .logo {
+                width: 60px;
+                height: 60px;
+                font-size: 30px;
+            }
+
+            .institute-name {
+                font-size: 20px;
+            }
+
+            .institute-subtitle {
+                font-size: 14px;
+            }
+
+            .teacher-name {
+                font-size: 15px;
+            }
+
+            .qualification {
+                font-size: 12px;
+            }
+
+            .contact-section {
+                font-size: 16px;
+                padding: 10px 15px;
+            }
+
+            .contact-section::before {
+                font-size: 20px;
+            }
+
+            .description {
+                font-size: 11px;
+                padding: 10px;
+            }
+
+            .form-section {
+                padding: 15px;
+            }
+
+            .form-field {
+                font-size: 12px;
+                flex-wrap: wrap;
+            }
+
+            .form-field label {
+                min-width: 100px;
+                font-size: 12px;
+            }
+
+            .note {
+                font-size: 10px;
+            }
+
+            .table-header {
+                font-size: 16px;
+                padding: 15px 10px;
+            }
+
+            th,
+            td {
+                padding: 12px 8px;
+                font-size: 12px;
+            }
+
+            th {
+                font-size: 11px;
+            }
+
+            .month-cell {
+                padding-left: 10px;
+            }
+
+            button {
+                padding: 12px 35px;
+                font-size: 15px;
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .quick-access {
+                bottom: 20px;
+                right: 20px;
+            }
+
+            .quick-access-btn {
+                width: 55px;
+                height: 55px;
+                font-size: 24px;
+            }
+
+            .quick-access-menu {
+                bottom: 70px;
+            }
+
+            .quick-access-item {
+                padding: 12px 20px;
+                font-size: 14px;
+            }
+
+            .quick-access-item span:first-child {
+                font-size: 18px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .card {
+                height: 500px;
+            }
+
+            .card-face {
+                padding: 15px;
+            }
+
+            .header {
+                margin-bottom: 15px;
+                padding-bottom: 15px;
+            }
+
+            .logo {
+                width: 55px;
+                height: 55px;
+                font-size: 28px;
+                margin-bottom: 10px;
+            }
+
+            .institute-name {
+                font-size: 18px;
+            }
+
+            .institute-subtitle {
+                font-size: 13px;
+            }
+
+            .teacher-section {
+                padding: 12px;
+                margin-bottom: 15px;
+            }
+
+            .teacher-name {
+                font-size: 14px;
+            }
+
+            .contact-section {
+                font-size: 15px;
+                margin: 15px 0;
+            }
+
+            .description {
+                font-size: 10px;
+                margin: 15px 0;
+            }
+
+            .form-section {
+                padding: 12px;
+                margin-top: 15px;
+            }
+
+            .form-field {
+                margin: 10px 0;
+            }
+
+            .table-header {
+                font-size: 15px;
+                padding: 12px 8px;
+            }
+
+            th,
+            td {
+                padding: 10px 6px;
+                font-size: 11px;
+            }
+
+            button {
+                padding: 10px 30px;
+                font-size: 14px;
+            }
+
+            .quick-access-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 22px;
+            }
+        }
+
+        /* Landscape mode adjustments */
+        @media (max-height: 600px) and (orientation: landscape) {
+            body {
+                padding: 10px;
+                padding-bottom: 70px;
+            }
+
+            .card {
+                height: 450px;
+            }
+
+            button {
+                padding: 10px 30px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <button onclick="goBack()" style="
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    width: 50px;
+    height: 50px;
+    background: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    transition: all 0.3s;
+    padding: 0;
+">
+    <img src="https://cdn-icons-png.flaticon.com/512/271/271220.png" alt="Back" style="width: 28px; height: 28px;">
+</button>
+    <div class="container">
+        <div class="card" id="feeCard">
+            <!-- Front Face -->
+            <div class="card-face card-front">
+                <div class="header">
+                    <div class="logo">M</div>
+                    <div class="institute-name">Meghnad Da's</div>
+                    <div class="institute-subtitle">প্রাইভেট কোচিং সেন্টার</div>
+                </div>
+
+                <div class="teacher-section">
+                    <div class="teacher-name">শিক্ষক : মেঘনাদ ঘোষাল</div>
+                    <div class="qualification">B.A. English (Hons.)</div>
+                </div>
+
+                <div class="contact-section">8001083009</div>
+
+                <div class="description">
+                    এখানে পঞ্চম শ্রেণি থেকে নবম শ্রেণি পর্যন্ত English (Special),
+                    বাংলা, ইতিহাস ও ভূগোল ইত্যাদি
+                    বিষয়সহ ও পাশাপাশি জুনিয়র শ্রেণির English (Special) ও
+                    আর্টসের সমস্ত বিষয় নোট ভিত্তিকভাবে পড়ানো হয়ে থাকে।
+                </div>
+
+                <div class="form-section">
+                    <div class="form-field">
+                        <label>Name:</label>
+                        <div class="form-field-line">John Doe</div>
+                    </div>
+                    <div class="form-field">
+                        <label>Address:</label>
+                        <div class="form-field-line">Kolkata</div>
+                    </div>
+                    <div class="form-field">
+                        <label>Parent's Mob.:</label>
+                        <div class="form-field-line">9876543210</div>
+                    </div>
+                    <div class="form-field">
+                        <label>Session:</label>
+                        <div class="form-field-line">2024-2025</div>
+                    </div>
+                </div>
+
+                <div class="note">
+                    বিঃদ্রঃ- B.A. (Multidisciplinary) -এর সময় বিশয় পডানো হয়।
+                </div>
+            </div>
+
+            <!-- Back Face -->
+            <div class="card-face card-back">
+                <div class="table-container">
+                    <div class="table-header">Monthly Fee Payment Record</div>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>মাস</th>
+                                    <th>তারিখ</th>
+                                    <th>স্বাক্ষর</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for month,p_month,sign in combined %}
+                                <tr>
+                                    <td class="month-cell">{{month}}</td>
+                                    {% if p_month == 'Due' %}
+                                    <td class="due-text">{{p_month}}</td>
+                                    {% else %}
+                                    <td class="paid-text">{{p_month}}</td>
+                                    {% endif %}
+                                    <td>
+                                        {% if sign == 'Due' %}
+                                        <img src="https://cdn-icons-png.flaticon.com/512/4457/4457164.png"
+                                            alt="Not Verified" width="18" height="18">
+                                        {% else %}
+                                        <img src="https://cdn-icons-png.flaticon.com/512/5962/5962703.png"
+                                            alt="Verified" width="22" height="22">
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button id="flipBtn">View Payment Record</button>
+
+    <div class="quick-access">
+        <div class="quick-access-menu" id="quickMenu">
+            <div class="quick-access-item" onclick="navigateTo('salarycard')">
+                <span>💳</span>
+                <span>Salary Card</span>
+            </div>
+            <div class="quick-access-item" onclick="navigateTo('routine')">
+                <span>🕐</span>
+                <span>Routine</span>
+            </div>
+            <div class="quick-access-item" onclick="navigateTo('changepassword')">
+                <span>🔒</span>
+                <span>Change Password</span>
+            </div>
+        </div>
+        <div class="quick-access-btn" onclick="toggleQuickMenu()">⚡</div>
+    </div>
+
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+        const card = document.getElementById('feeCard');
+        const flipBtn = document.getElementById('flipBtn');
+
+        flipBtn.addEventListener('click', function () {
+            card.classList.toggle('flipped');
+
+            if (card.classList.contains('flipped')) {
+                flipBtn.textContent = 'View Details';
+            } else {
+                flipBtn.textContent = 'View Payment Record';
+            }
+        });
+
+        card.addEventListener('click', function () {
+            card.classList.toggle('flipped');
+
+            if (card.classList.contains('flipped')) {
+                flipBtn.textContent = 'View Details';
+            } else {
+                flipBtn.textContent = 'View Payment Record';
+            }
+        });
+
+        // Toggle Quick Access Menu
+        let quickMenuOpen = false;
+        function toggleQuickMenu() {
+            const menu = document.getElementById('quickMenu');
+            const btn = document.querySelector('.quick-access-btn');
+
+            quickMenuOpen = !quickMenuOpen;
+            menu.classList.toggle('active');
+
+            if (quickMenuOpen) {
+                btn.style.transform = 'rotate(45deg)';
+            } else {
+                btn.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        // Navigation function placeholder
+        function navigateTo(page) {
+            console.log('Navigating to:', page);
+            // Add your navigation logic here
+        }
+    </script>
+</body>
+
+</html>

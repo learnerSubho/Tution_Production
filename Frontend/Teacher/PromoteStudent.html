@@ -45,7 +45,21 @@
       font-size: 24px; 
       font-weight: 700;
     }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: white;
+      text-decoration: none;
+      margin-bottom: 20px;
+      font-size: 15px;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
 
+    .back-link:hover {
+      gap: 10px;
+    }
     .main-content {
       background: white; 
       border-radius: 16px; 
@@ -425,7 +439,7 @@
       }
 
       .main-content {
-        padding: 16px 12px;
+        padding: 16px;
       }
 
       .title-section h1 {
@@ -480,10 +494,15 @@
 <body>
   <div class="container">
     <div class="header">
+      {% if info.website_logo %}
+      <img src="{{info.website_logo.url}}" alt="Logo" class="logo">
+      {% else %}
       <div class="logo">🎓</div>
-      <span class="logo-text">TuitionTeacher</span>
+      {% endif %}
+      
+      <span class="logo-text">{{info.website_name}}</span>
     </div>
-
+    <a class="back-link" onclick="goBack()">← Back</a>
     <div class="main-content">
       <div class="top-section">
         <div class="title-section">
@@ -491,7 +510,7 @@
           <p>Promote all studentes to next class</p>
         </div>
       </div>
-
+      
       <div class="search-section">
         <div class="search-container">
           <input type="text" class="search-input" id="searchInput"
@@ -706,6 +725,9 @@
       if (emptyState) {
         emptyState.remove();
       }
+    }
+    function goBack() {
+      window.history.back();
     }
   </script>
 </body>

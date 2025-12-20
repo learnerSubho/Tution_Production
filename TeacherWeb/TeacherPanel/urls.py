@@ -42,7 +42,12 @@ urlpatterns = [
 
     path('grid_routine/', views.grid_routine, name='grid_routine'),
     
+    path('chart_collection/',views.chart_collection, name='chart_collection'),
+    path('doughnut_chart/',views.doughnut_chart, name='doughnut_chart'),
+    
     path('Done/', views.Done, name='Done'),
     path('name_and_logo_modifier_for_easy_access/',views.name_and_logo_modifier_for_easy_access,name='name_and_logo_modifier_for_easy_access'),
-    path('subhojit/',views.subhojit,name='subhojit')
+    path('subhojit/',views.subhojit,name='subhojit'),
+    path('noti/',views.noti,name='noti'),
+    path('save-fcm-token/',views.save_fcm_token,name='save_fcm_token'),
 ]

@@ -48,23 +48,6 @@
         font-weight: 700;
       }
 
-      .back-link {
-        color: white;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-        margin-bottom: 20px;
-        font-size: 14px;
-        max-width: 1200px;
-        margin-left: auto;
-        margin-right: auto;
-      }
-
-      .back-link:hover {
-        text-decoration: underline;
-      }
-
       .container {
         background: white;
         border-radius: 16px;
@@ -405,6 +388,79 @@
         color: #4a5568;
       }
 
+      /* Delete Confirmation Modal Styles */
+      .delete-modal-content {
+        background: white;
+        border-radius: 16px;
+        padding: 32px;
+        max-width: 450px;
+        width: 95%;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        animation: scaleIn 0.2s ease-out;
+      }
+
+      .delete-modal-icon {
+        width: 60px;
+        height: 60px;
+        background: #fee;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        font-size: 32px;
+      }
+
+      .delete-modal-title {
+        font-size: 22px;
+        font-weight: 700;
+        color: #2d3748;
+        text-align: center;
+        margin-bottom: 12px;
+      }
+
+      .delete-modal-message {
+        color: #718096;
+        text-align: center;
+        margin-bottom: 24px;
+        line-height: 1.6;
+      }
+
+      .delete-modal-buttons {
+        display: flex;
+        gap: 12px;
+      }
+
+      .delete-modal-btn {
+        flex: 1;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .delete-modal-btn.cancel {
+        background: #e2e8f0;
+        color: #2d3748;
+      }
+
+      .delete-modal-btn.cancel:hover {
+        background: #cbd5e0;
+      }
+
+      .delete-modal-btn.confirm {
+        background: #f56565;
+        color: white;
+      }
+
+      .delete-modal-btn.confirm:hover {
+        background: #e53e3e;
+        transform: translateY(-2px);
+      }
+
       @keyframes slideIn {
         from {
           transform: translateX(400px);
@@ -496,6 +552,10 @@
         .button-group {
           flex-direction: column;
         }
+
+        .delete-modal-buttons {
+          flex-direction: column;
+        }
       }
 
       @media (max-width: 480px) {
@@ -513,19 +573,47 @@
           font-size: 10px;
         }
       }
+      .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: white;
+      text-decoration: none;
+      margin-bottom: 20px;
+      font-size: 15px;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .back-link:hover {
+      gap: 10px;
+    }
     </style>
   </head>
   <body>
     <!-- Notification Container -->
     <div class="notification-container" id="notificationContainer"></div>
 
+    <!-- Delete Confirmation Modal -->
+    <div class="modal" id="deleteModal">
+      <div class="delete-modal-content">
+        <div class="delete-modal-icon">🗑️</div>
+        <div class="delete-modal-title">Delete Class</div>
+        <div class="delete-modal-message" id="deleteModalMessage">
+          Are you sure you want to delete this class? This action cannot be undone.
+        </div>
+        <div class="delete-modal-buttons">
+          <button class="delete-modal-btn cancel" onclick="closeDeleteModal()">Cancel</button>
+          <button class="delete-modal-btn confirm" onclick="confirmDelete()">Delete</button>
+        </div>
+      </div>
+    </div>
+
     <div class="header">
       <img src="{{info.website_logo.url}}" alt="" class="logo" />
       <h1>{{info.website_name}}</h1>
     </div>
-
-    <a href="javascript:void(0)" onclick="goback()" class="back-link">← Back to Dashboard</a>
-
+    <a class="back-link" onclick="goback()">← Back</a>
     <div class="container">
       <h2>Add Online Class</h2>
       <p class="subtitle">
@@ -657,6 +745,10 @@
     </div>
 
     <script>
+      // Delete Modal Variables
+      let deleteClassId = null;
+      let deleteButton = null;
+
       function goback() {
         window.history.back();
       }
@@ -696,6 +788,64 @@
         setTimeout(() => {
           notification.remove();
         }, 300);
+      }
+
+      // Delete Modal Functions
+      function openDeleteModal(classId, button) {
+        deleteClassId = classId;
+        deleteButton = button;
+        const modal = document.getElementById("deleteModal");
+        modal.classList.add("active");
+      }
+
+      function closeDeleteModal() {
+        const modal = document.getElementById("deleteModal");
+        modal.classList.remove("active");
+        deleteClassId = null;
+        deleteButton = null;
+      }
+
+      function confirmDelete() {
+        if (!deleteClassId) return;
+
+        const url = "/teacher/OnlineClass/";
+
+        fetch(url, {
+          method: "DELETE",
+          headers: {
+            "X-CSRFToken": "{{ csrf_token }}",
+          },
+          body: JSON.stringify({ class_link_id: deleteClassId }),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.status === "success") {
+              closeDeleteModal();
+              showNotification(
+                "success",
+                "Success",
+                "Class deleted successfully!"
+              );
+              setTimeout(() => {
+                window.location.reload();
+              }, 1000);
+            } else {
+              closeDeleteModal();
+              showNotification(
+                "error",
+                "Error",
+                data.message || "Failed to delete class"
+              );
+            }
+          })
+          .catch((err) => {
+            closeDeleteModal();
+            showNotification(
+              "error",
+              "Error",
+              "An error occurred while deleting class"
+            );
+          });
       }
 
       // Class selection for Add form
@@ -813,47 +963,8 @@
 
       // Delete Class
       function deleteClass(button) {
-        const url = "/teacher/OnlineClass/";
-
-        if (
-          confirm(
-            `Are you sure you want to delete ${name} class? This action cannot be undone.`
-          )
-        ) {
-          fetch(url, {
-            method: "DELETE",
-            headers: {
-              "X-CSRFToken": "{{ csrf_token }}",
-            },
-            body: JSON.stringify({ class_link_id: button.dataset.name }),
-          })
-            .then((res) => res.json())
-            .then((data) => {
-              if (data.status === "success") {
-                showNotification(
-                  "success",
-                  "Success",
-                  `Class ${name} deleted successfully!`
-                );
-                setTimeout(() => {
-                  window.location.reload();
-                }, 1000);
-              } else {
-                showNotification(
-                  "error",
-                  "Error",
-                  data.message || "Failed to delete class"
-                );
-              }
-            })
-            .catch((err) => {
-              showNotification(
-                "error",
-                "Error",
-                "An error occurred while deleting class"
-              );
-            });
-        }
+        const classId = button.dataset.name;
+        openDeleteModal(classId, button);
       }
 
       // Reset Form
@@ -865,17 +976,16 @@
 
       // Close modal when clicking outside
       document
-        .getElementById("editModal")
+        .getElementById("deleteModal")
         .addEventListener("click", function (e) {
           if (e.target === this) {
-            closeEditModal();
+            closeDeleteModal();
           }
         });
 
       // Set minimum date to today
       const today = new Date().toISOString().split("T")[0];
       document.getElementById("classDate").setAttribute("min", today);
-      document.getElementById("editClassDate").setAttribute("min", today);
     </script>
   </body>
 </html>
