@@ -239,7 +239,15 @@ class Online_Class_Link(models.Model):
         ordering = ['classname','batch','class_date','time']
     def __str__(self):
         return f"{self.classname}-{self.batch.batch_name}-{self.class_date}-{self.subject}"
+
+class Gallery(models.Model):
+    gallery_id = models.AutoField(primary_key=True)
+    title = models.CharField(max_length=1000)
+    photo = models.ImageField(upload_to='galleryItem/')
     
+    def __str__(self):
+        return self.title
+   
 class Website_Details_For_Easy_Access(models.Model):
     instance_id = models.AutoField(primary_key=True)
     website_logo = models.ImageField(upload_to='website_details_metadata')

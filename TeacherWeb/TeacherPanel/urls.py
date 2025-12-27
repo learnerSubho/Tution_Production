@@ -44,6 +44,7 @@ urlpatterns = [
     
     path('chart_collection/',views.chart_collection, name='chart_collection'),
     path('doughnut_chart/',views.doughnut_chart, name='doughnut_chart'),
+    path("open_gallery/", views.open_gallery, name="open_gallery"),
     
     path('Done/', views.Done, name='Done'),
     path('name_and_logo_modifier_for_easy_access/',views.name_and_logo_modifier_for_easy_access,name='name_and_logo_modifier_for_easy_access'),

@@ -667,6 +667,7 @@ def AddNotice(request):
         notice_photo = request.FILES.get('notice_photo',None)
         if notice_instraction:
             try:
+                models.Notice.objects.all().delete()
                 models.Notice.objects.create(
                     notice_instraction = notice_instraction,
                     notice_photo = compressed_image(notice_photo)
@@ -950,6 +951,24 @@ def doughnut_chart(request):
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)})
 
+@login_required(login_url='/teacher/loginpage/')
+def open_gallery(request):
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        photo = request.FILES.get('photo')
+        
+        if photo:
+            models.Gallery.objects.create(
+                title = title,
+                photo = photo
+            )
+            return JsonResponse({'status':'success','message':'Photo added successfully'})
+        else:
+            return JsonResponse({'status':'error','message':'Fill all the fields'})
+    context = {
+        'photos':models.Gallery.objects.all()
+    }   
+    return render(request,'teacher/open_gallery.html',context)
 
 @login_required(login_url='/teacher/loginpage/')
 def Done(request):
