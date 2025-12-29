@@ -1003,6 +1003,10 @@
     </div>
 
     <script>
+      function navigateTo(section) {
+            window.location.href = `/student/${section}`;
+            closeSideNav();
+        }
       let materials = [];
       let filteredMaterials = [];
       let searchQuery = "";

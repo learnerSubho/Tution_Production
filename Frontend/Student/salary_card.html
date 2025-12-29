@@ -761,6 +761,10 @@
     </div>
 
     <script>
+        function navigateTo(section) {
+            window.location.href = `/student/${section}`;
+            closeSideNav();
+        }
         function goBack() {
             window.history.back();
         }

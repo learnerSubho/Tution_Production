@@ -49,6 +49,7 @@ urlpatterns = [
     path('Done/', views.Done, name='Done'),
     path('name_and_logo_modifier_for_easy_access/',views.name_and_logo_modifier_for_easy_access,name='name_and_logo_modifier_for_easy_access'),
     path('subhojit/',views.subhojit,name='subhojit'),
+    path("id_card/<int:id>", views.id_card, name="id_card"),
     path('noti/',views.noti,name='noti'),
     path('save-fcm-token/',views.save_fcm_token,name='save_fcm_token'),
 ]

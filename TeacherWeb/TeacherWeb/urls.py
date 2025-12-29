@@ -18,7 +18,9 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('teacher/', include('TeacherPanel.urls')),
     path('student/', include('StudentPanel.urls')),
-    path('',views.home,name='home')
+    path('',views.home,name='home'),
+    path('technical_support/',views.technical_support,name='technical_support'),
+    path('faq/',views.faq,name='faq'),
 ]
 
 if settings.DEBUG:

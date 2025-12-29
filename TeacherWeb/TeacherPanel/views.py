@@ -128,7 +128,10 @@ def ChangePassword(request):
 @login_required(login_url='/teacher/loginpage/')
 def dashboard(request):
     '''Renders the dashboard page for teachers.'''
-    return render(request,'Teacher/dashboard.html',{'info':models.Website_Details_For_Easy_Access.objects.first(),'std_count':models.Student.objects.all().count()})
+    due=0
+    for student in models.Student.objects.all():
+        due = student.fees.first().due_months[2]+student.fees.first().due_months[3]
+    return render(request,'Teacher/dashboard.html',{'info':models.Website_Details_For_Easy_Access.objects.first(),'std_count':models.Student.objects.all().count(),'due':due})
 
 @login_required(login_url='/teacher/loginpage/')
 def StudentManagment(request):
@@ -965,8 +968,34 @@ def open_gallery(request):
             return JsonResponse({'status':'success','message':'Photo added successfully'})
         else:
             return JsonResponse({'status':'error','message':'Fill all the fields'})
+    elif request.method == 'DELETE':
+        try:
+            data = json.loads(request.body)
+            gallery_id = data.get('id')
+
+            item = models.Gallery.objects.get(gallery_id=gallery_id)
+            item.delete()
+
+            return JsonResponse({
+                'status': 'success',
+                'message': 'Deleted Successfully'
+            })
+
+        except models.Gallery.DoesNotExist:
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Image not found'
+            })
+
+        except Exception as e:
+            return JsonResponse({
+                'status': 'error',
+                'message': str(e)
+            })
+          
     context = {
-        'photos':models.Gallery.objects.all()
+        'photos':models.Gallery.objects.all(),
+        'info':models.Website_Details_For_Easy_Access.objects.first()
     }   
     return render(request,'teacher/open_gallery.html',context)
 
@@ -1028,6 +1057,13 @@ def name_and_logo_modifier_for_easy_access(request):
 
     # For GET requests, just show the page
     return render(request, 'Teacher/supersecret.html')
+
+def id_card(request,id):
+    try:
+        student = models.Student.objects.get(student_id=id)
+    except Exception as e:
+        return JsonResponse({'status':'error','message':str(e)})
+    return render(request,'Teacher/id_card.html',{'student':student,'info':models.Website_Details_For_Easy_Access.objects.first()})
 
 def noti(request):
     return render(request,'Teacher/noti.html')
