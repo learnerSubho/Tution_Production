@@ -1,9 +1,51 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Basic Meta -->
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Responsive -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Dashboard - Tuition Portal</title>
+
+    <!-- SEO Title -->
+    <title>Student Dashboard | {{ info.website_name }} – Student Portal</title>
+
+    <!-- Meta Description -->
+    <meta name="description"
+          content="Student dashboard of {{ info.website_name }} where students can view fees status, notices, study materials, routines, and manage their academic profile securely.">
+
+    <!-- SEO Keywords -->
+    <meta name="keywords"
+          content="student dashboard, student portal, tuition management system, {{ info.website_name }}, student account">
+
+    <!-- Author -->
+    <meta name="author" content="{{ info.website_name }}">
+
+    <!-- Robots (CRITICAL – private student page) -->
+    <meta name="robots" content="noindex, nofollow, noarchive">
+
+    <!-- Open Graph (Safe Internal Preview Only) -->
+    <meta property="og:title" content="Student Dashboard | {{ info.website_name }}">
+    <meta property="og:description"
+          content="Secure student portal dashboard for managing academic and fee-related information in {{ info.website_name }}.">
+    <meta property="og:image" content="{{ info.website_logo.url }}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="{{ info.website_name }}">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Student Dashboard | {{ info.website_name }}">
+    <meta name="twitter:description"
+          content="Private student dashboard for {{ info.website_name }}.">
+    <meta name="twitter:image" content="{{ info.website_logo.url }}">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{{ request.build_absolute_uri }}">
+
+    <!-- Favicon -->
+    <link rel="icon" href="{% static 'images/favicon.ico' %}?v=3" type="image/x-icon">
     <style>
         * {
             margin: 0;

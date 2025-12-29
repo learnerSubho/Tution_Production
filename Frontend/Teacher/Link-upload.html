@@ -1,9 +1,51 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Online Class Manager - {{info.website_name}}</title>
+    <!-- Basic Meta -->
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Responsive -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- SEO Title -->
+    <title>Online Class Manager | {{ info.website_name }} – Teacher Panel</title>
+
+    <!-- Meta Description -->
+    <meta name="description"
+        content="Online class management page of {{ info.website_name }} for teachers to schedule, manage, and conduct virtual classes with meeting links, subjects, dates, and batches.">
+
+    <!-- SEO Keywords -->
+    <meta name="keywords"
+        content="online class manager, virtual class scheduling, teacher panel, {{ info.website_name }}, online tuition system, class meeting management">
+
+    <!-- Author -->
+    <meta name="author" content="{{ info.website_name }}">
+
+    <!-- Robots (CRITICAL – internal & sensitive page) -->
+    <meta name="robots" content="noindex, nofollow, noarchive">
+
+    <!-- Open Graph (Safe internal preview) -->
+    <meta property="og:title" content="Online Class Manager | {{ info.website_name }}">
+    <meta property="og:description"
+        content="Internal teacher dashboard page for scheduling and managing online classes in {{ info.website_name }}.">
+    <meta property="og:image" content="{{ info.website_logo.url }}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="{{ info.website_name }}">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Online Class Manager | {{ info.website_name }}">
+    <meta name="twitter:description"
+        content="Teacher panel online class scheduling and management page of {{ info.website_name }}.">
+    <meta name="twitter:image" content="{{ info.website_logo.url }}">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{{ request.build_absolute_uri }}">
+
+    <!-- Favicon -->
+    <link rel="icon" href="{% static 'images/favicon.ico' %}?v=3" type="image/x-icon">
     <style>
       * {
         margin: 0;

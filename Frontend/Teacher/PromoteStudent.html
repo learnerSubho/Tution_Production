@@ -1,9 +1,51 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
-  <title>Student Management - TuitionTeacher</title>
+  <!-- Basic Meta -->
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- Responsive -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <!-- SEO Title -->
+  <title>Student Promotion | {{ info.website_name }} – Teacher Panel</title>
+
+  <!-- Meta Description -->
+  <meta name="description"
+        content="Student promotion management page of {{ info.website_name }} where teachers can promote students to the next class or mark them as passed out securely.">
+
+  <!-- SEO Keywords -->
+  <meta name="keywords"
+        content="student promotion, pass out students, teacher panel, {{ info.website_name }}, class promotion system, student management">
+
+  <!-- Author -->
+  <meta name="author" content="{{ info.website_name }}">
+
+  <!-- Robots (CRITICAL – internal student data page) -->
+  <meta name="robots" content="noindex, nofollow, noarchive">
+
+  <!-- Open Graph (Safe internal preview) -->
+  <meta property="og:title" content="Student Promotion | {{ info.website_name }}">
+  <meta property="og:description"
+        content="Internal teacher dashboard page for promoting students and managing academic progression in {{ info.website_name }}.">
+  <meta property="og:image" content="{{ info.website_logo.url }}">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="{{ info.website_name }}">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Student Promotion | {{ info.website_name }}">
+  <meta name="twitter:description"
+        content="Teacher panel page for student promotion and pass-out management in {{ info.website_name }}.">
+  <meta name="twitter:image" content="{{ info.website_logo.url }}">
+
+  <!-- Canonical URL -->
+  <link rel="canonical" href="{{ request.build_absolute_uri }}">
+
+  <!-- Favicon -->
+  <link rel="icon" href="{% static 'images/favicon.ico' %}?v=3" type="image/x-icon">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 

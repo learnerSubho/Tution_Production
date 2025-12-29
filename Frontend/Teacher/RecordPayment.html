@@ -1,9 +1,51 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Basic Meta -->
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Responsive -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Payment Record - TuitionTeacher</title>
+
+    <!-- SEO Title -->
+    <title>Student Payment Record | {{ info.website_name }} – Teacher Panel</title>
+
+    <!-- Meta Description -->
+    <meta name="description"
+          content="Student payment record page of {{ info.website_name }} where teachers can securely record and manage fee payments for individual students.">
+
+    <!-- SEO Keywords -->
+    <meta name="keywords"
+          content="student payment record, fees payment, teacher panel, {{ info.website_name }}, tuition fee entry, student finance management">
+
+    <!-- Author -->
+    <meta name="author" content="{{ info.website_name }}">
+
+    <!-- Robots (CRITICAL – financial & personal data page) -->
+    <meta name="robots" content="noindex, nofollow, noarchive">
+
+    <!-- Open Graph (Safe internal preview) -->
+    <meta property="og:title" content="Student Payment Record | {{ info.website_name }}">
+    <meta property="og:description"
+          content="Internal teacher dashboard page for recording student fee payments in {{ info.website_name }}.">
+    <meta property="og:image" content="{{ info.website_logo.url }}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="{{ info.website_name }}">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Student Payment Record | {{ info.website_name }}">
+    <meta name="twitter:description"
+          content="Teacher panel page for securely recording student fee payments in {{ info.website_name }}.">
+    <meta name="twitter:image" content="{{ info.website_logo.url }}">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{{ request.build_absolute_uri }}">
+
+    <!-- Favicon -->
+    <link rel="icon" href="{% static 'images/favicon.ico' %}?v=3" type="image/x-icon">
     <style>
         * {
             margin: 0;

@@ -1,10 +1,52 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
+     <!-- Basic Meta -->
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Responsive -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TuitionTeacher - Dashboard</title>
+
+    <!-- SEO Title -->
+    <title>Dashboard | {{ info.website_name }} – Teacher Panel</title>
+
+    <!-- Meta Description -->
+    <meta name="description"
+        content="Teacher dashboard of {{ info.website_name }} to manage students, classes, fees, batches, notices, routines, and view analytics on fees collection and student performance.">
+
+    <!-- SEO Keywords -->
+    <meta name="keywords"
+        content="teacher dashboard, tuition management system, {{ info.website_name }}, student management, fees dashboard, class analytics">
+
+    <!-- Author -->
+    <meta name="author" content="{{ info.website_name }}">
+
+    <!-- Robots (IMPORTANT: internal dashboard page) -->
+    <meta name="robots" content="noindex, nofollow">
+
+    <!-- Open Graph (Safe internal preview) -->
+    <meta property="og:title" content="Teacher Dashboard | {{ info.website_name }}">
+    <meta property="og:description"
+        content="Internal teacher dashboard for managing classes, students, fees, and analytics in {{ info.website_name }}.">
+    <meta property="og:image" content="{{ info.website_logo.url }}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="{{ info.website_name }}">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Teacher Dashboard | {{ info.website_name }}">
+    <meta name="twitter:description"
+        content="Manage tuition center operations through the teacher dashboard of {{ info.website_name }}.">
+    <meta name="twitter:image" content="{{ info.website_logo.url }}">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{{ request.build_absolute_uri }}">
+
+    <!-- Favicon -->
+    <link rel="icon" href="{% static 'images/favicon.ico' %}?v=3" type="image/x-icon">
     <style>
         * {
             margin: 0;
@@ -475,9 +517,7 @@
         <!-- Sidebar -->
         <div class="sidebar">
             <div class="logo">
-                <div class="logo-icon">
-                    📚
-                </div>
+                <img class="logo-icon" src="{{info.website_logo.url}}" alt="{{info.website_name}}">
                 <div class="logo-text">
                     <h3>Teacher Panel</h3>
                 </div>
@@ -531,6 +571,12 @@
 
                 <div class="menu-section">
                     <div class="menu-title">MANAGEMENT</div>
+                    <a href="{% url "open_gallery" %}">
+                        <div class="menu-item">
+                            <i>🎞️</i>
+                            <span>Gallery</span>
+                        </div>
+                    </a>
                     <a href="{% url "grid_routine" %}">
                         <div class="menu-item">
                             <i>📅</i>
@@ -563,7 +609,7 @@
         <!-- Main Content -->
         <div class="main-content">
             <div class="header">
-                <h1>TuitionTeacher Dashboard</h1>
+                <h1>{{info.website_name}}</h1>
                 <p>Welcome back! Here's what's happening with your tuition center today.</p>
             </div>
 
@@ -582,7 +628,7 @@
                 <div class="stat-card">
                     <div class="stat-header">
                         <div>
-                            <div class="stat-value">₹45,200</div>
+                            <div class="stat-value">{{due}}</div>
                             <div class="stat-label">Due Fees</div>
                         </div>
                         <div class="stat-icon orange">⚠️</div>

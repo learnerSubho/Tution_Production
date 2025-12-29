@@ -1,9 +1,51 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Study Materials - Student Portal</title>
+     <!-- Basic Meta -->
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Responsive -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- SEO Title -->
+    <title>Study Materials | {{ info.website_name }} – Student Portal</title>
+
+    <!-- Meta Description -->
+    <meta name="description"
+          content="Access class-wise study materials, notes, and learning resources securely through the student portal of {{ info.website_name }}.">
+
+    <!-- SEO Keywords -->
+    <meta name="keywords"
+          content="study materials, student portal, class notes, learning resources, {{ info.website_name }}, online study materials">
+
+    <!-- Author -->
+    <meta name="author" content="{{ info.website_name }}">
+
+    <!-- Robots (CRITICAL – authenticated student page) -->
+    <meta name="robots" content="noindex, nofollow, noarchive">
+
+    <!-- Open Graph (Safe internal preview) -->
+    <meta property="og:title" content="Study Materials | {{ info.website_name }}">
+    <meta property="og:description"
+          content="Student portal page for accessing study materials and notes in {{ info.website_name }}.">
+    <meta property="og:image" content="{{ info.website_logo.url }}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="{{ info.website_name }}">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Study Materials | {{ info.website_name }}">
+    <meta name="twitter:description"
+          content="Secure student portal for accessing study materials in {{ info.website_name }}.">
+    <meta name="twitter:image" content="{{ info.website_logo.url }}">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{{ request.build_absolute_uri }}">
+
+    <!-- Favicon -->
+    <link rel="icon" href="{% static 'images/favicon.ico' %}?v=3" type="image/x-icon">
     <style>
       * {
         margin: 0;

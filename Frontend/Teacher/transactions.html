@@ -1,9 +1,50 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Responsive -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Payment Record - Student Management</title>
+
+    <!-- SEO Title -->
+    <title>Student Payment History | {{ info.website_name }} – Teacher Panel</title>
+
+    <!-- Meta Description -->
+    <meta name="description"
+          content="Detailed student payment history page of {{ info.website_name }} showing fee payments, outstanding dues, and year-wise financial records securely for academic administration.">
+
+    <!-- SEO Keywords -->
+    <meta name="keywords"
+          content="student payment history, fees record, payment history, teacher panel, {{ info.website_name }}, tuition fee tracking">
+
+    <!-- Author -->
+    <meta name="author" content="{{ info.website_name }}">
+
+    <!-- Robots (CRITICAL – financial & personal data page) -->
+    <meta name="robots" content="noindex, nofollow, noarchive">
+
+    <!-- Open Graph (Safe internal preview) -->
+    <meta property="og:title" content="Student Payment History | {{ info.website_name }}">
+    <meta property="og:description"
+          content="Internal teacher dashboard page for viewing detailed student payment and fee history in {{ info.website_name }}.">
+    <meta property="og:image" content="{{ info.website_logo.url }}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="{{ info.website_name }}">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Student Payment History | {{ info.website_name }}">
+    <meta name="twitter:description"
+          content="Teacher panel page for reviewing student fee payment history in {{ info.website_name }}.">
+    <meta name="twitter:image" content="{{ info.website_logo.url }}">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{{ request.build_absolute_uri }}">
+
+    <!-- Favicon -->
+    <link rel="icon" href="{% static 'images/favicon.ico' %}?v=3" type="image/x-icon">
     <style>
         * {
             margin: 0;

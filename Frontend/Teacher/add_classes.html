@@ -1,10 +1,52 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
-    <title>Add Student - TuitionTeacher</title>
+    <!-- Basic Meta -->
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Responsive -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+    <!-- SEO Title -->
+    <title>Add Class | {{ info.website_name }} – Class Management</title>
+
+    <!-- Meta Description -->
+    <meta name="description"
+        content="Add and manage classes in {{ info.website_name }}. Teachers can define class names, set monthly fees, edit or delete classes, and organize students efficiently using the teacher dashboard.">
+
+    <!-- SEO Keywords -->
+    <meta name="keywords"
+        content="add class, class management system, teacher dashboard, {{ info.website_name }}, tuition management, school ERP, class fees management">
+
+    <!-- Author -->
+    <meta name="author" content="{{ info.website_name }}">
+
+    <!-- Robots (internal dashboard page – IMPORTANT) -->
+    <meta name="robots" content="noindex, nofollow">
+
+    <!-- Open Graph (WhatsApp / Facebook / LinkedIn) -->
+    <meta property="og:title" content="Add Class | {{ info.website_name }}">
+    <meta property="og:description"
+        content="Teacher panel page to add, edit, and manage classes with monthly fees in {{ info.website_name }}.">
+    <meta property="og:image" content="{{ info.website_logo.url }}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="{{ info.website_name }}">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Add Class | {{ info.website_name }}">
+    <meta name="twitter:description"
+        content="Manage classes and monthly fees efficiently using the teacher dashboard of {{ info.website_name }}.">
+    <meta name="twitter:image" content="{{ info.website_logo.url }}">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{{ request.build_absolute_uri }}">
+
+    <!-- Favicon -->
+    <link rel="icon" href="{% static 'images/favicon.ico' %}?v=3" type="image/x-icon">
     <style>
         * {
             margin: 0;

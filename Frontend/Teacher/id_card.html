@@ -1,0 +1,215 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <!-- Responsive -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- SEO Title -->
+    <title>{{ info.website_name }} | Student Identity Card</title>
+
+    <!-- SEO Meta Description -->
+    <meta name="description" content="Official student identity card of {{ info.website_name }} including student details, class, and contact information.">
+
+    <!-- SEO Keywords -->
+    <meta name="keywords" content="student id card, {{ info.website_name }}, school identity card, student information system">
+
+    <!-- Author -->
+    <meta name="author" content="{{ info.website_name }}">
+
+    <!-- Open Graph (WhatsApp / Facebook) -->
+    <meta property="og:title" content="{{ info.website_name }} - Student Identity Card">
+    <meta property="og:description" content="Digital student identity card for {{ student.studentname }} from {{ info.website_name }}">
+    <meta property="og:image" content="{{ info.website_logo.url }}">
+    <meta property="og:type" content="website">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}?v=3">
+    <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}?v=3">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .id-card {
+            width: 400px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 25px;
+            text-align: center;
+            color: white;
+        }
+
+        .school-logo {
+            width: 60px;
+            height: 60px;
+            background: white;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .school-name {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .card-title {
+            font-size: 14px;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .photo-section {
+            text-align: center;
+            padding: 30px 0 20px 0;
+            background: #f8f9fa;
+        }
+
+        .student-photo {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid #667eea;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .student-name {
+            font-size: 26px;
+            font-weight: bold;
+            color: #333;
+            margin-top: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .details-section {
+            padding: 30px 35px;
+        }
+
+        .detail-row {
+            display: flex;
+            margin-bottom: 18px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed #e0e0e0;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .detail-label {
+            flex: 0 0 140px;
+            font-weight: 600;
+            color: #666;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .detail-value {
+            flex: 1;
+            color: #333;
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        .card-footer {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            text-align: center;
+            color: white;
+        }
+
+        .batch-info {
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .card-id {
+            font-size: 11px;
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+            .id-card {
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="id-card">
+        <div class="card-header">
+            <img src="{{info.website_logo.url}}" class="school-logo" alt="{{info.website_name}}">
+            <div class="school-name">{{info.website_name}}</div>
+            <div class="card-title">Student Identity Card</div>
+        </div>
+
+        <div class="photo-section">
+            <img src="{{student.photo.url}}" alt="Student Photo" class="student-photo">
+            <div class="student-name">{{student.studentname}}</div>
+        </div>
+
+        <div class="details-section">
+            <div class="detail-row">
+                <div class="detail-label">Father's Name</div>
+                <div class="detail-value">{{student.fathername}}</div>
+            </div>
+
+            <div class="detail-row">
+                <div class="detail-label">Mobile Number</div>
+                <div class="detail-value">{{student.phone}}</div>
+            </div>
+
+            <div class="detail-row">
+                <div class="detail-label">Class</div>
+                <div class="detail-value">{{student.classname.classname}} - {{student.batch.batch_name}}</div>
+            </div>
+        </div>
+
+        <div class="card-footer">
+            <div class="batch-info">Username: {{student.username}}</div>
+            <div class="card-id">Password: {{student.password}}</div>
+        </div>
+    </div>
+</body>
+</html>

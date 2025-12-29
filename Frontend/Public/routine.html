@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class Routine</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .routine-grid {
+            display: grid;
+            grid-template-columns: 100px repeat(7, 1fr);
+            gap: 0;
+            margin: 30px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .grid-cell {
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .header-cell {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+
+        .time-cell {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #495057;
+            font-size: 0.9em;
+        }
+
+        .subject-cell {
+            background: white;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .subject-cell:hover {
+            background: #f0f4ff;
+            transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+        }
+
+        .subject-name {
+            font-weight: 500;
+            color: #333;
+            font-size: 0.95em;
+        }
+
+        .empty-cell {
+            background: #fafafa;
+            color: #999;
+            font-style: italic;
+            font-size: 0.85em;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 50px;
+            font-size: 1.2em;
+            color: #667eea;
+        }
+
+        @media (max-width: 1200px) {
+            .routine-grid {
+                font-size: 0.9em;
+            }
+            
+            .grid-cell {
+                padding: 10px;
+                min-height: 60px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .routine-grid {
+                grid-template-columns: 80px repeat(7, 1fr);
+                font-size: 0.8em;
+                margin: 15px;
+            }
+            
+            .grid-cell {
+                padding: 8px;
+                min-height: 50px;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Class Routine</h1>
+            <p>Weekly Schedule</p>
+        </div>
+        <div id="routineContent" class="loading">Loading routine...</div>
+    </div>
+
+    <script>
+        // Sample data - replace with your actual API endpoint
+        const routineData = [
+            { entry_id: 1, day_name: "Monday", subject: "Mathematics", start_time: "09:00:00" },
+            { entry_id: 2, day_name: "Monday", subject: "Physics", start_time: "10:00:00" },
+            { entry_id: 3, day_name: "Monday", subject: "Chemistry", start_time: "11:00:00" },
+            { entry_id: 4, day_name: "Tuesday", subject: "English", start_time: "09:00:00" },
+            { entry_id: 5, day_name: "Tuesday", subject: "Biology", start_time: "10:00:00" },
+            { entry_id: 6, day_name: "Wednesday", subject: "Computer Science", start_time: "09:00:00" },
+            { entry_id: 7, day_name: "Wednesday", subject: "Mathematics", start_time: "10:00:00" },
+            { entry_id: 8, day_name: "Thursday", subject: "Physics", start_time: "09:00:00" },
+            { entry_id: 9, day_name: "Thursday", subject: "Physical Education", start_time: "11:00:00" },
+            { entry_id: 10, day_name: "Friday", subject: "History", start_time: "09:00:00" },
+            { entry_id: 11, day_name: "Friday", subject: "Geography", start_time: "10:00:00" },
+            { entry_id: 12, day_name: "Saturday", subject: "Art", start_time: "09:00:00" }
+        ];
+
+        function formatTime(timeString) {
+            const [hours, minutes] = timeString.split(':');
+            const hour = parseInt(hours);
+            const ampm = hour >= 12 ? 'PM' : 'AM';
+            const displayHour = hour % 12 || 12;
+            return `${displayHour}:${minutes} ${ampm}`;
+        }
+
+        function generateRoutineGrid(data) {
+            const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+            
+            // Extract unique time slots and sort them
+            const timeSlots = [...new Set(data.map(entry => entry.start_time))].sort();
+            
+            // Organize data by day and time
+            const schedule = {};
+            days.forEach(day => {
+                schedule[day] = {};
+                timeSlots.forEach(time => {
+                    schedule[day][time] = null;
+                });
+            });
+            
+            data.forEach(entry => {
+                schedule[entry.day_name][entry.start_time] = entry.subject;
+            });
+
+            // Build HTML
+            let html = '<div class="routine-grid">';
+            
+            // Header row
+            html += '<div class="grid-cell header-cell">Time</div>';
+            days.forEach(day => {
+                html += `<div class="grid-cell header-cell">${day}</div>`;
+            });
+            
+            // Time slot rows
+            timeSlots.forEach(time => {
+                html += `<div class="grid-cell time-cell">${formatTime(time)}</div>`;
+                days.forEach(day => {
+                    const subject = schedule[day][time];
+                    if (subject) {
+                        html += `<div class="grid-cell subject-cell">
+                                    <span class="subject-name">${subject}</span>
+                                 </div>`;
+                    } else {
+                        html += `<div class="grid-cell empty-cell">-</div>`;
+                    }
+                });
+            });
+            
+            html += '</div>';
+            return html;
+        }
+
+        // Initialize routine
+        document.addEventListener('DOMContentLoaded', function() {
+            // Replace this with your actual API call
+            // fetch('/api/routine/')
+            //     .then(response => response.json())
+            //     .then(data => {
+            //         document.getElementById('routineContent').innerHTML = generateRoutineGrid(data);
+            //     })
+            //     .catch(error => {
+            //         document.getElementById('routineContent').innerHTML = 
+            //             '<p style="color: red;">Error loading routine data</p>';
+            //     });
+
+            // Using sample data for demonstration
+            setTimeout(() => {
+                document.getElementById('routineContent').innerHTML = generateRoutineGrid(routineData);
+            }, 500);
+        });
+    </script>
+</body>
+</html>

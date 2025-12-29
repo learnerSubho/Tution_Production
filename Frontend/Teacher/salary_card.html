@@ -1,10 +1,52 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
+    <!-- Basic Meta -->
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Responsive -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Monthly Fees Card</title>
+
+    <!-- SEO Title -->
+    <title>Monthly Fees Card | {{ info.website_name }} – Student Record</title>
+
+    <!-- Meta Description -->
+    <meta name="description"
+          content="Monthly fees card of {{ info.website_name }} displaying student details and month-wise fee payment records securely for academic and administrative use.">
+
+    <!-- SEO Keywords -->
+    <meta name="keywords"
+          content="monthly fees card, fee receipt, student fee record, {{ info.website_name }}, tuition fee tracking">
+
+    <!-- Author -->
+    <meta name="author" content="{{ info.website_name }}">
+
+    <!-- Robots (CRITICAL – student & financial data page) -->
+    <meta name="robots" content="noindex, nofollow, noarchive">
+
+    <!-- Open Graph (Safe internal preview only) -->
+    <meta property="og:title" content="Monthly Fees Card | {{ info.website_name }}">
+    <meta property="og:description"
+          content="Internal monthly fee record card for students in {{ info.website_name }}.">
+    <meta property="og:image" content="{{ info.website_logo.url }}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="{{ info.website_name }}">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Monthly Fees Card | {{ info.website_name }}">
+    <meta name="twitter:description"
+          content="Student monthly fee record card for {{ info.website_name }}.">
+    <meta name="twitter:image" content="{{ info.website_logo.url }}">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{{ request.build_absolute_uri }}">
+
+    <!-- Favicon -->
+    <link rel="icon" href="{% static 'images/favicon.ico' %}?v=3" type="image/x-icon">
     <style>
         * {
             margin: 0;

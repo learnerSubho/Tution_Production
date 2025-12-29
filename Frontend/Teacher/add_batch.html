@@ -1,10 +1,53 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
+    <!-- Basic -->
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Responsive -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Batch - TuitionTeacher</title>
+
+    <!-- SEO Title (Very Important) -->
+    <title>Add Batch | {{ info.website_name }} – Class & Batch Management</title>
+
+    <!-- Meta Description (Google uses this) -->
+    <meta name="description"
+        content="Add and manage class batches easily using {{ info.website_name }}. Assign batch names to classes, edit or delete batches, and organize students efficiently through the teacher panel.">
+
+    <!-- SEO Keywords -->
+    <meta name="keywords"
+        content="add batch, class batch management, teacher panel, {{ info.website_name }}, tuition management system, school ERP, class batch system">
+
+    <!-- Author -->
+    <meta name="author" content="{{ info.website_name }}">
+
+    <!-- Robots (This is an internal page) -->
+    <meta name="robots" content="noindex, nofollow">
+
+    <!-- Open Graph (WhatsApp / Facebook / LinkedIn) -->
+    <meta property="og:title" content="Add Batch | {{ info.website_name }}">
+    <meta property="og:description"
+        content="Teacher dashboard page to add, edit and manage batches assigned to classes in {{ info.website_name }}.">
+    <meta property="og:image" content="{{ info.website_logo.url }}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="{{ info.website_name }}">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Add Batch | {{ info.website_name }}">
+    <meta name="twitter:description"
+        content="Manage class batches efficiently using the teacher panel of {{ info.website_name }}.">
+    <meta name="twitter:image" content="{{ info.website_logo.url }}">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{{ request.build_absolute_uri }}">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}?v=3">
+    <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}?v=3">
     <style>
         * {
             margin: 0;
