@@ -14,3 +14,6 @@ def technical_support(request):
 
 def faq(request):
     return render(request, 'Public/faq.html',{'info': Website_Details_For_Easy_Access.objects.first()})
+
+def routine(request):
+    return render(request, 'Public/routine.html',{'info': Website_Details_For_Easy_Access.objects.first()})
