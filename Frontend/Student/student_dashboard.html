@@ -699,15 +699,6 @@
         <div class="dashboard-grid">
             <div class="dashboard-card">
                 <div class="card-header">
-                    <div class="card-icon">📅</div>
-                    <span class="card-title">Due Month</span>
-                </div>
-                <div class="card-amount">December</div>
-                <div class="card-subtitle">Current billing month</div>
-            </div>
-
-            <div class="dashboard-card">
-                <div class="card-header">
                     <div class="card-icon">💰</div>
                     <span class="card-title">Due Amount</span>
                 </div>
@@ -731,21 +722,19 @@
                 <div class="notice-icon">📢</div>
                 <h2 style="color: #dc3545; font-size: 22px;">Important Notices</h2>
             </div>
+            {% for note in notes %}
             <div class="notice-item">
-                <div class="notice-date">Dec 10, 2025</div>
-                <div class="notice-text">Winter break starts from December 24th. Classes will resume on January 3rd, 2026.</div>
+                <div class="notice-date">Recent Notes: {{note.enable_date.date}}</div>
+                <div class="notice-text">{{note.title}}-{{note.description}} {{note.enable_date}}</div>
+            </div>
+            {% endfor %}
+            <div class="notice-item">
+                <div class="notice-date">Recent Notice: {{notice.notice_date.date}}</div>
+                <div class="notice-text">{{notice.notice_instruction}}</div>
             </div>
             <div class="notice-item">
-                <div class="notice-date">Dec 8, 2025</div>
-                <div class="notice-text">Monthly test scheduled for December 15th. Topics: Mathematics (Chapters 5-7), Science (Chapters 3-4).</div>
-            </div>
-            <div class="notice-item">
-                <div class="notice-date">Dec 5, 2025</div>
-                <div class="notice-text">Please submit your pending assignments by December 12th to avoid penalties.</div>
-            </div>
-            <div class="notice-item">
-                <div class="notice-date">Dec 1, 2025</div>
-                <div class="notice-text">New study materials for Physics have been uploaded. Check the Study Material section.</div>
+                <div class="notice-date">Recent Payment: {{feescard.paid_at}}</div>
+                <div class="notice-text">Paid Amount: {{feescard.fees}}</div>
             </div>
         </div>
     </div>

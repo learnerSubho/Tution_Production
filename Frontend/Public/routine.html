@@ -1,8 +1,75 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- SEO TITLE -->
+    <title>Class Routine | {{info.website_name}} - Class Routine</title>
+
+    <!-- SEO DESCRIPTION -->
+    <meta name="description"
+          content="View the updated class routine for {{info.website_name}}. Weekly schedule with subject-wise and time-wise breakdown for students.">
+    <!-- INDEXING CONTROL -->
+    <meta name="robots" content="index, follow">
+
+    <!-- CANONICAL URL -->
+    <link rel="canonical" href="{{ request.build_absolute_uri }}">
+
+    <!-- PERFORMANCE -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <!-- FAVICON -->
+    <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
+    <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
+
+
+    <!-- STRUCTURED DATA -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "EducationalOrganization",
+          "@id": "{{ request.build_absolute_uri }}#organization",
+          "name": "Meghnad Da's Coaching Center",
+          "url": "{{ request.build_absolute_uri }}",
+          "logo": "https://via.placeholder.com/70",
+          "sameAs": [
+            "https://www.redalphas.com/"
+          ]
+        },
+        {
+          "@type": "WebPage",
+          "@id": "{{ request.build_absolute_uri }}#webpage",
+          "url": "{{ request.build_absolute_uri }}",
+          "name": "Class Routine",
+          "description": "Weekly class routine for Meghnad Da's Coaching Center",
+          "isPartOf": {
+            "@id": "{{ request.build_absolute_uri }}#organization"
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Class Routine",
+              "item": "{{ request.build_absolute_uri }}"
+            }
+          ]
+        }
+      ]
+    }
+    </script>
     <title>Class Routine</title>
     <style>
         * {
@@ -12,158 +79,358 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f8fafc;
             min-height: 100vh;
-            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .page-content {
+            flex: 1;
+            padding: 1rem;
+        }
+
+        .back-link-top {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            margin-bottom: 1.5rem;
+            background: white;
+            color: #1e40af;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e2e8f0;
+        }
+
+        .back-link-top:hover {
+            background: #f8fafc;
+            color: #1e3a8a;
+            transform: translateX(-3px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-link-top::before {
+            content: '←';
+            font-size: 1.2em;
         }
 
         .container {
             max-width: 1400px;
             margin: 0 auto;
             background: white;
-            border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            border-radius: 16px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
             overflow: hidden;
         }
 
         .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
             color: white;
-            padding: 30px;
-            text-align: center;
+            padding: 2rem 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
         }
 
-        .header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-        }
-
-        .header p {
-            font-size: 1.1em;
-            opacity: 0.9;
-        }
-
-        .routine-grid {
-            display: grid;
-            grid-template-columns: 100px repeat(7, 1fr);
-            gap: 0;
-            margin: 30px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        .grid-cell {
-            padding: 15px;
-            border: 1px solid #e0e0e0;
-            min-height: 80px;
+        .logo {
+            width: 70px;
+            height: 70px;
+            background: white;
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
-            text-align: center;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
-        .header-cell {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 8px;
+        }
+
+        .logo-text {
+            font-size: 1.75rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .routine-wrapper {
+            padding: 2rem;
+            background: #f8fafc;
+        }
+
+        .scroll-hint {
+            text-align: center;
+            padding: 0.75rem;
+            background: #eff6ff;
+            color: #1e40af;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            overflow-y: visible;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            background: white;
+            border: 1px solid #e2e8f0;
+        }
+
+        .routine-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            min-width: 900px;
+        }
+
+        .routine-table thead th {
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
             color: white;
-            font-weight: 600;
-            font-size: 0.95em;
+            font-weight: 700;
+            font-size: 0.875rem;
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+            padding: 1rem 0.75rem;
+            text-align: center;
+            border-bottom: 2px solid #1e40af;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .routine-table thead th:first-child {
+            position: sticky;
+            left: 0;
+            z-index: 20;
+        }
+
+        .routine-table tbody td {
+            padding: 1rem 0.75rem;
+            text-align: center;
+            border-bottom: 1px solid #e2e8f0;
+            border-right: 1px solid #e2e8f0;
+            min-height: 75px;
+            transition: all 0.2s ease;
+        }
+
+        .routine-table tbody td:last-child {
+            border-right: none;
+        }
+
+        .routine-table tbody tr:last-child td {
+            border-bottom: none;
         }
 
         .time-cell {
-            background: #f8f9fa;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
             font-weight: 600;
-            color: #495057;
-            font-size: 0.9em;
+            color: #334155;
+            font-size: 0.875rem;
+            position: sticky;
+            left: 0;
+            z-index: 15;
+            border-right: 2px solid #cbd5e1 !important;
+            box-shadow: 2px 0 4px rgba(0, 0, 0, 0.05);
         }
 
         .subject-cell {
             background: white;
-            transition: all 0.3s ease;
             cursor: pointer;
             position: relative;
+            font-weight: 600;
+            color: #1e293b;
+            font-size: 0.9rem;
         }
 
         .subject-cell:hover {
-            background: #f0f4ff;
+            background: #f0f9ff;
             transform: scale(1.02);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
-        }
-
-        .subject-name {
-            font-weight: 500;
-            color: #333;
-            font-size: 0.95em;
         }
 
         .empty-cell {
             background: #fafafa;
-            color: #999;
-            font-style: italic;
-            font-size: 0.85em;
+            color: #94a3b8;
+            font-size: 0.875rem;
         }
 
         .loading {
             text-align: center;
-            padding: 50px;
-            font-size: 1.2em;
-            color: #667eea;
+            padding: 0rem;
+            font-size: 1.1rem;
+            color: #64748b;
         }
 
-        @media (max-width: 1200px) {
-            .routine-grid {
-                font-size: 0.9em;
-            }
-            
-            .grid-cell {
-                padding: 10px;
-                min-height: 60px;
+        /* Footer */
+        footer {
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            color: #f1f5f9;
+            padding: 1.5rem 1rem;
+            margin-top: 2rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .copyright-text {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        .copyright-text a {
+            color: #60a5fa;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .copyright-text a:hover {
+            color: #93c5fd;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .scroll-hint {
+                display: block;
             }
         }
 
         @media (max-width: 768px) {
-            .routine-grid {
-                grid-template-columns: 80px repeat(7, 1fr);
-                font-size: 0.8em;
-                margin: 15px;
-            }
-            
-            .grid-cell {
-                padding: 8px;
-                min-height: 50px;
+            .page-content {
+                padding: 0.75rem;
             }
 
-            .header h1 {
-                font-size: 1.8em;
+            .header {
+                padding: 1.5rem 1.25rem;
+                gap: 0.75rem;
+            }
+
+            .logo {
+                width: 55px;
+                height: 55px;
+            }
+
+            .logo-text {
+                font-size: 1.25rem;
+            }
+
+            .routine-wrapper {
+                padding: 1rem;
+            }
+
+            .routine-table {
+                min-width: 800px;
+            }
+
+            .routine-table thead th,
+            .routine-table tbody td {
+                padding: 0.75rem 0.5rem;
+                font-size: 0.8rem;
+            }
+
+            .time-cell {
+                font-size: 0.75rem;
+            }
+
+            .back-link-top {
+                padding: 0.6rem 1rem;
+                font-size: 0.875rem;
+                margin-bottom: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header {
+                padding: 1.25rem 1rem;
+            }
+
+            .logo {
+                width: 48px;
+                height: 48px;
+            }
+
+            .logo-text {
+                font-size: 1.1rem;
+            }
+
+            .routine-wrapper {
+                padding: 0.75rem;
+            }
+
+            .routine-table {
+                min-width: 700px;
+            }
+
+            .routine-table thead th,
+            .routine-table tbody td {
+                padding: 0.65rem 0.4rem;
+                font-size: 0.75rem;
+            }
+
+            .time-cell {
+                font-size: 0.7rem;
+            }
+
+            .scroll-hint {
+                font-size: 0.8rem;
+                padding: 0.6rem;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>Class Routine</h1>
-            <p>Weekly Schedule</p>
+    <div class="page-content">
+        <a href="#" class="back-link-top" onclick="event.preventDefault(); window.history.back();">Back to Home</a>
+        
+        <div class="container">
+            <div class="header">
+                <div class="logo">
+                    {% if info.website_logo %}
+                    <img src="{{ info.website_logo }}" alt="Logo">
+                    {% endif %}
+                </div>
+                <span class="logo-text">{{ info.website_name }}</span>
+            </div>
+            
+            <div class="routine-wrapper">
+                <div class="scroll-hint">
+                    ← Scroll horizontally to view all days →
+                </div>
+                <div id="routineContent" class="loading">Loading routine...</div>
+            </div>
         </div>
-        <div id="routineContent" class="loading">Loading routine...</div>
     </div>
 
+    <footer>
+        <div class="footer-content">
+            <div class="copyright-text">
+                &copy; <script>document.write(new Date().getFullYear())</script> 
+                Meghnad Da's Coaching Center. All rights reserved. | 
+                Developed by <a href="https://www.redalphas.com/" target="_blank" rel="noopener noreferrer">RedAlphas</a>
+            </div>
+        </div>
+    </footer>
+
     <script>
-        // Sample data - replace with your actual API endpoint
+        // Sample data
         const routineData = [
-            { entry_id: 1, day_name: "Monday", subject: "Mathematics", start_time: "09:00:00" },
-            { entry_id: 2, day_name: "Monday", subject: "Physics", start_time: "10:00:00" },
-            { entry_id: 3, day_name: "Monday", subject: "Chemistry", start_time: "11:00:00" },
-            { entry_id: 4, day_name: "Tuesday", subject: "English", start_time: "09:00:00" },
-            { entry_id: 5, day_name: "Tuesday", subject: "Biology", start_time: "10:00:00" },
-            { entry_id: 6, day_name: "Wednesday", subject: "Computer Science", start_time: "09:00:00" },
-            { entry_id: 7, day_name: "Wednesday", subject: "Mathematics", start_time: "10:00:00" },
-            { entry_id: 8, day_name: "Thursday", subject: "Physics", start_time: "09:00:00" },
-            { entry_id: 9, day_name: "Thursday", subject: "Physical Education", start_time: "11:00:00" },
-            { entry_id: 10, day_name: "Friday", subject: "History", start_time: "09:00:00" },
-            { entry_id: 11, day_name: "Friday", subject: "Geography", start_time: "10:00:00" },
-            { entry_id: 12, day_name: "Saturday", subject: "Art", start_time: "09:00:00" }
+            {% for entry in routine %}
+            { entry_id: {{ entry.entry_id }}, day_name: "{{ entry.day_name }}", subject: "{{ entry.subject }}", start_time: "{{ entry.start_time|time:'H:i' }}" },
+            {% endfor %}
         ];
 
         function formatTime(timeString) {
@@ -174,13 +441,11 @@
             return `${displayHour}:${minutes} ${ampm}`;
         }
 
-        function generateRoutineGrid(data) {
+        function generateRoutineTable(data) {
             const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
             
-            // Extract unique time slots and sort them
             const timeSlots = [...new Set(data.map(entry => entry.start_time))].sort();
             
-            // Organize data by day and time
             const schedule = {};
             days.forEach(day => {
                 schedule[day] = {};
@@ -193,50 +458,40 @@
                 schedule[entry.day_name][entry.start_time] = entry.subject;
             });
 
-            // Build HTML
-            let html = '<div class="routine-grid">';
+            let html = '<div class="table-wrapper"><table class="routine-table">';
             
-            // Header row
-            html += '<div class="grid-cell header-cell">Time</div>';
+            // Header
+            html += '<thead><tr>';
+            html += '<th class="time-cell">Time</th>';
             days.forEach(day => {
-                html += `<div class="grid-cell header-cell">${day}</div>`;
+                html += `<th>${day}</th>`;
             });
+            html += '</tr></thead>';
             
-            // Time slot rows
+            // Body
+            html += '<tbody>';
             timeSlots.forEach(time => {
-                html += `<div class="grid-cell time-cell">${formatTime(time)}</div>`;
+                html += '<tr>';
+                html += `<td class="time-cell">${formatTime(time)}</td>`;
                 days.forEach(day => {
                     const subject = schedule[day][time];
                     if (subject) {
-                        html += `<div class="grid-cell subject-cell">
-                                    <span class="subject-name">${subject}</span>
-                                 </div>`;
+                        html += `<td class="subject-cell">${subject}</td>`;
                     } else {
-                        html += `<div class="grid-cell empty-cell">-</div>`;
+                        html += `<td class="empty-cell">-</td>`;
                     }
                 });
+                html += '</tr>';
             });
+            html += '</tbody>';
             
-            html += '</div>';
+            html += '</table></div>';
             return html;
         }
 
-        // Initialize routine
         document.addEventListener('DOMContentLoaded', function() {
-            // Replace this with your actual API call
-            // fetch('/api/routine/')
-            //     .then(response => response.json())
-            //     .then(data => {
-            //         document.getElementById('routineContent').innerHTML = generateRoutineGrid(data);
-            //     })
-            //     .catch(error => {
-            //         document.getElementById('routineContent').innerHTML = 
-            //             '<p style="color: red;">Error loading routine data</p>';
-            //     });
-
-            // Using sample data for demonstration
             setTimeout(() => {
-                document.getElementById('routineContent').innerHTML = generateRoutineGrid(routineData);
+                document.getElementById('routineContent').innerHTML = generateRoutineTable(routineData);
             }, 500);
         });
     </script>

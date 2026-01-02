@@ -5009,6 +5009,7 @@ footer::before {
             <li><a href="#courses">Courses</a></li>
             <li><a href="#contact">Contact Me</a></li>
             <li><a href="#gallery">Gallery</a></li>
+            <li><a href="{% url "routine" %}">Routine</a></li>
             <div class="auth-buttons">
                 <div class="login-dropdown" id="loginDropdown">
                     <button class="sign-up with-dropdown" onclick="toggleLoginDropdown(event)">
@@ -5060,11 +5061,7 @@ footer::before {
                 way.
             </p>
             <div class="hero-buttons">
-                <button class="btn-primary">Join Course</button>
-                <button class="btn-secondary">
-                    <div class="play-icon"></div>
-                    See how it works?
-                </button>
+                <a href="#courses" style="text-decoration: none;"><button class="btn-primary">Join Course</button></a>
             </div>
         </div>
 
