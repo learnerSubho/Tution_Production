@@ -39,6 +39,7 @@ class Student(models.Model):
     student_id = models.AutoField(primary_key=True)
     username = models.CharField(max_length=100,unique=True,editable=False)
     password = models.CharField(max_length=256)
+    raw_password = models.CharField(max_length=100,editable=False,null=True,blank=True)
     studentname = models.CharField(max_length=100)
     fathername = models.CharField(max_length=100)
     email = models.EmailField()
@@ -47,7 +48,7 @@ class Student(models.Model):
     photo = models.ImageField(upload_to='student_photos/')
     classname = models.ForeignKey(Classname, on_delete=models.CASCADE,related_name='students')
     batch = models.ForeignKey(Batch,on_delete=models.CASCADE,related_name='students')
-    admission_date = models.DateField(default=date(2025,5,5))
+    admission_date = models.DateField()
     year_outstanding = models.DecimalField(max_digits=10,decimal_places=2,default=250.00)
     class Meta:
         verbose_name = 'Student'
@@ -69,6 +70,7 @@ class Student(models.Model):
 
         if is_new and not self.password:
             raw_password = uuid.uuid4().hex[:6]
+            self.raw_password = raw_password
             self.password = make_password(raw_password)
 
         super().save(*args, **kwargs)
@@ -119,7 +121,7 @@ class Student(models.Model):
 
 class Notice(models.Model):
     notice_id = models.AutoField(primary_key=True)
-    notice_instraction = models.CharField(max_length=5000)
+    notice_instraction = models.CharField(max_length=5000,default='Important Announcement')
     notice_photo = models.ImageField(upload_to='notice_photos/',blank=True,null=True)
     notice_date = models.DateTimeField(auto_now_add=True)
     

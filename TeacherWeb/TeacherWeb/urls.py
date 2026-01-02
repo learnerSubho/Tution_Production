@@ -21,6 +21,7 @@ urlpatterns = [
     path('',views.home,name='home'),
     path('technical_support/',views.technical_support,name='technical_support'),
     path('faq/',views.faq,name='faq'),
+    path('routine/',views.routine,name='routine'), #newly added
 ]
 
 if settings.DEBUG:

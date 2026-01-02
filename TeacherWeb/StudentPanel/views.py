@@ -66,11 +66,13 @@ def student_dashboard(request):
 
     if not student:
         return redirect('student_login')
-
     return render(request, 'Student/student_dashboard.html', {
         'student': student,
         'info': Website_Details_For_Easy_Access.objects.first(),
-        'dues':student.fees.all().last()
+        'dues':student.fees.all().last(),
+        'notes':Study_Materials.objects.filter(classname = student.classname, visibility=True, enable_date__gte = student.admission_date).order_by('enable_date')[:2],
+        'notice':Notice.objects.all().first(),
+        'feescard':FeesRecord.objects.filter(student=student).last(),
     })
 
 @require_GET
@@ -79,7 +81,9 @@ def study_materials(request):
     if not student:
         return redirect('student_login')
     
-    notes = Study_Materials.objects.filter(classname = student.classname, visibility=True).order_by('enable_date')
+    notes = Study_Materials.objects.filter(classname = student.classname, visibility=True, enable_date__gte = student.admission_date).order_by('enable_date')
+    print(student.admission_date)
+    print(notes)
     return render(request, 'Student/Notes.html', {
             'student': student,
             'notes': notes,
@@ -101,11 +105,7 @@ def notes_api(request):
     if not student:
         return JsonResponse({'error': 'Unauthorized'}, status=401)
 
-    notes = Study_Materials.objects.filter(
-        classname=student.classname,
-        visibility=True
-    ).order_by('enable_date')
-
+    notes = Study_Materials.objects.filter(classname = student.classname, visibility=True, enable_date__gte = student.admission_date).order_by('enable_date')
     notes_data = []
     for note in notes:
         file_size = 0

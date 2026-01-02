@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 from django.shortcuts import render
-from TeacherPanel.models import Website_Details_For_Easy_Access,Notice,Gallery
+from TeacherPanel.models import Website_Details_For_Easy_Access,Notice,Gallery,RoutineEntry
 def home(request):
     context = {
         'info': Website_Details_For_Easy_Access.objects.first(),
@@ -15,5 +15,5 @@ def technical_support(request):
 def faq(request):
     return render(request, 'Public/faq.html',{'info': Website_Details_For_Easy_Access.objects.first()})
 
-def routine(request):
-    return render(request, 'Public/routine.html',{'info': Website_Details_For_Easy_Access.objects.first()})
+def routine(request): #newly added 
+    return render(request, 'Public/routine.html',{'info': Website_Details_For_Easy_Access.objects.first(), 'routine': RoutineEntry.objects.all()})

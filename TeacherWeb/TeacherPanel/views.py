@@ -307,7 +307,7 @@ def AddStudent(request):
                     classname=models.Classname.objects.get(class_id=classname),
                     batch = models.Batch.objects.get(batch_id = batch),
                     photo=compressed_image(photo),
-                    admission_date = date(2025,5,5)
+                    admission_date = date(2025,1,1)
                 )
                 models.FeesRecord.objects.create(
                     student = student,
@@ -485,49 +485,66 @@ def transactions(request,student_id):
     return render(request,'Teacher/transactions.html',context)
 
 @login_required(login_url='/teacher/loginpage/')
-def salarycard(request, student_id):
-    # 1. Fetch student safely (same logic, safer failure)
-    student = get_object_or_404(models.Student, student_id=student_id)
-    records = models.FeesRecord.objects.filter(
-        student=student,
-        paying_month=True
-    )
-    months = [
-        calendar.month_name[m]
-        for m in range(student.admission_date.month, date.today().month)
-    ]
-    paid_month = []
-    signatures = []
-
-    for record in records:
-        paid_month.append(record.paid_at.strftime("%d-%m-%Y"))
-        signatures.append("Paid")
-        
-    combined = zip_longest(months, paid_month, signatures, fillvalue='Due')
-
-    context = {
-        'combined': combined,
-        'student': student,
-        'info': models.Website_Details_For_Easy_Access.objects.first(),
-    }
-
-    return render(request, 'Teacher/salary_card.html', context)
-
-# def salarycard(request,student_id):
-#     student = models.Student.objects.get(student_id=student_id)
-#     full_month_paid_id = models.FeesRecord.objects.filter(student=student,paying_month=True).values_list('fees_id',flat=True)
-#     months = [calendar.month_name[month] for month in range(student.admission_date.month,date.today().month)]
+# def salarycard(request, student_id):
+#     # 1. Fetch student safely (same logic, safer failure)
+#     student = get_object_or_404(models.Student, student_id=student_id)
+#     records = models.FeesRecord.objects.filter(
+#         student=student,
+#         paying_month=True
+#     )
+#     months = [
+#         calendar.month_name[m]
+#         for m in range(student.admission_date.month, date.today().month)
+#     ]
 #     paid_month = []
 #     signatures = []
-#     for id in full_month_paid_id:
-#         record = models.FeesRecord.objects.get(fees_id=id)
+
+#     for record in records:
 #         paid_month.append(record.paid_at.strftime("%d-%m-%Y"))
-#         signatures.append(1)
-#     combined = zip_longest(months,paid_month,signatures,fillvalue='Due')
-#     context={'combined':combined,
-#              'info':models.Website_Details_For_Easy_Access.objects.first(),
-#              'student':student}
-#     return render(request,'Teacher/salary_card.html',context)
+#         signatures.append("Paid")
+        
+#     combined = zip_longest(months, paid_month, signatures, fillvalue='Due')
+
+#     context = {
+#         'combined': combined,
+#         'student': student,
+#         'info': models.Website_Details_For_Easy_Access.objects.first(),
+#     }
+
+#     return render(request, 'Teacher/salary_card.html', context)
+
+@login_required(login_url='/teacher/loginpage/')
+# def salarycard(request, student_id):
+#     student = get_object_or_404(models.Student, student_id=student_id)
+#     full_month_paid_id = models.FeesRecord.objects.filter(student=student, paying_month=True)
+#     for record in full_month_paid_id:
+#         record.how_many_month
+
+def salarycard(request,student_id):
+    student = models.Student.objects.get(student_id=student_id)
+    full_month_paid_id = models.FeesRecord.objects.filter(student=student,paying_month=True).values_list('fees_id',flat=True)
+    month = ['January','February','March','April','May','June','July','August','September','October','November','December']
+    bw = (date.today() - student.admission_date).days//30
+    print(bw)
+    months = []
+    admission = month.index(calendar.month_name[student.admission_date.month])
+    for i in range(bw):
+        months.append(month[(admission + i)%12])
+    paid_month = []
+    signatures = []
+    for id in full_month_paid_id:
+        record = models.FeesRecord.objects.get(fees_id=id)
+        for num in range(record.how_many_month):
+            paid_month.append(record.paid_at.strftime("%d-%m-%Y"))
+            signatures.append(1)
+    print(paid_month)
+    print(signatures)
+    # print(full_month_paid_id)
+    combined = zip_longest(months,paid_month,signatures,fillvalue='Due')
+    context={'combined':combined,
+             'info':models.Website_Details_For_Easy_Access.objects.first(),
+             'student':student}
+    return render(request,'Teacher/salary_card.html',context)
 # End of the Fees Management
 
 @login_required(login_url='/teacher/loginpage/')
